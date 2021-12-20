@@ -1,0 +1,34 @@
+---
+layout: homepage
+title: Posts
+# Note that this index page uses a full-width layout!
+---
+
+{%- for post in site.posts -%}
+    <article>
+        <time datetime="{{ post.date | date_to_xmlschema }}" class="mono">{{ post.date | date: "%-d %B %Y" }}</time>
+        <a class="sans" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+
+        {%- if post.tags.size != 0 -%}
+            <div class="mono">
+                {%- if post.author -%}
+                    <a href="{{ post.author | prepend: '/author/' | prepend: site.baseurl }}" itemprop="name">{{ post.author }} </a>
+                {%- else -%}
+                    <a href="{{ global_author | prepend: '/author/' | prepend: site.baseurl }}" itemprop="name">{{ site.data.options.global_author }} </a>
+                {%- endif -%}
+                tagged
+                {% assign tags_last_element_index = post.tags.size | minus: 1 %}
+                {% assign counter = 0 %}
+                        
+                {%- for tag in post.tags -%}
+                    {%- assign tag_slug = tag | slugify: "raw" -%}
+                    <a href="/tags#{{ site.baseurl | append: '/tags/' | append: tag_slug | append: '/' }}">{{ tag }}</a>
+                    
+                    {%- assign tag_index = page.tags | indexOf: tag -%}
+                    {%- if counter != tags_last_element_index %}, {% endif -%}
+                    {%- assign counter = counter | plus: 1 -%}
+                {% endfor %}
+            </div>
+        {%- endif -%}
+    </article>
+{%- endfor -%}

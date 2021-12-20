@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  {% include head.html %}
+  <body>
+    {% include header.html %}
+    <article aria-label="Content" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <h1>{{ page.title }}</h1>
+
+        <div itemprop="author" itemscope="" itemtype="http://schema.org/Person" style="height:48px">
+            <img itemprop="image" alt="rbct" src="/assets/author_profile_img/rbct.png">
+            <span class="mono authors">
+                <a href="/author/rbct" itemprop="name">rbct</a>
+            </span>
+        </div>
+
+        <time class="mono" datetime="{{ page.date | date_to_xmlschema }}" itemProp="datePublished">
+            {{ page.date | date: "%-d %B %Y" }}
+        </time>
+
+        <hr>
+        <main itemprop="articleBody" style="position: relative;">
+            {{ content }}
+
+            <footer class="tags">
+                <section class="mono tags">
+                    Tagged
+
+                    {% assign tags_last_element_index = page.tags.size | minus: 1 %}
+                    {% assign counter = 0 %}
+                    
+                    {%- for tag in page.tags -%}
+                        {%- assign tag_slug = tag | slugify: "raw" -%}
+                        <a href="/tags#{{ site.baseurl | append: '/tags/' | append: tag_slug | append: '/' }}">{{ tag }}</a>
+                        
+                        {%- assign tag_index = page.tags | indexOf: tag -%}
+                        {%- if counter != tags_last_element_index %}, {% endif -%}
+                        {%- assign counter = counter | plus: 1 -%}
+                    {% endfor %}
+                </section>
+
+                {%- if page.next -%}
+                    <section class="pagination">
+                        <a href="{{ page.next.url }}">
+                            <div class="mono">NEXT</div>
+                            {{ page.next.title }}
+                        </a>
+                    </section>
+                {%- endif -%}
+                
+                {%- if page.previous -%}
+                    <section class="pagination">
+                        <a href="{{ page.previous.url }}">
+                            <div class="mono">PREVIOUS</div>
+                            {{ page.previous.title }}
+                        </a>
+                    </section>
+                {%- endif -%}
+            </footer>
+        </main>
+    </article>
+  </body>
+</html>

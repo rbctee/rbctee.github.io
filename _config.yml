@@ -1,0 +1,52 @@
+baseurl:
+title: rbct
+author: Robert C. Raducioiu
+simple_search: http://google.com/search
+description: Blog about cybersecurity and other 
+name: rbct
+markdown: kramdown
+markdown_ext: "markdown,mkdown,mkdn,mkd,md"
+permalink: /:short_year/:month/:day/:title
+timezone: Europe/Rome
+excerpt_separator: <!--more-->  # you can specify your own separator, of course.
+exclude: ['Gemfile', 'Gemfile.lock', 'Rakefile', 'UploadToGithub.Rakefile', 'README.md']
+post:
+  template: _post.txt
+  extension: md
+page:
+  template: _page.txt
+  extension: md
+editor: vim
+git:
+  branch: master
+author:
+  name   : "Robert C. Raducioiu"
+  avatar : "/assets/images/cebd54dc8e6ff4101ea1bf381fe66548.png"
+  bio    : "Cyber Security Consultant and CTF Player"
+  links:
+    - label: "InfoSec Notes"
+      icon: "fas fa-fw fa-link"
+      url: "https://docs.rbct.it/"
+    - label: "GitHub"
+      icon: "fab fa-fw fa-github"
+      url: "https://github.com/rbctee"
+    - label: "LinkedIn"
+      icon: "fab fa-fw fa-linkedin-in"
+      url: "https://www.linkedin.com/in/rbct"
+    - label: "HackTheBox"
+      icon: "fas fa-fw fa-cube"
+      url: "https://app.hackthebox.eu/profile/57923"
+      color: "green"
+defaults:
+  - 
+    scope:
+      path: ""
+    values:
+      layout: "default"
+tag_archive:
+  type: liquid
+  path: /tags/
+category_archive:
+  type: liquid
+  path: /categories/
+
