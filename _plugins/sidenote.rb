@@ -5,15 +5,11 @@ module Jekyll
 
     def initialize(tag_name, text, tokens)
       super
-      @text = text.shellsplit
+      @text = text
     end
 
-    # def render(context)
-    #   "<label for='#{@text[0]}' class='margin-toggle sidenote-number'></label><input type='checkbox' id='#{@text[0]}' class='margin-toggle'/><span class='sidenote'>#{@text[1]} </span>"
-    # end
-
     def render(context)
-      "{::nomarkdown}<p>{:/}<sub class='aside'>#{@text[1]}</sub>{::nomarkdown}</p>{:/}"
+      "{::nomarkdown}<p>{:/}<sub class='aside'>#{@text}</sub>{::nomarkdown}</p>{:/}"
     end
   end
 end
