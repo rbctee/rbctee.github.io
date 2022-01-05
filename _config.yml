@@ -4,7 +4,12 @@ author: Robert C. Raducioiu
 simple_search: http://google.com/search
 description: Blog about cybersecurity and other 
 name: rbct
-markdown: kramdown
+markdown: CommonMarkGhPages
+commonmark:
+  extensions: ["strikethrough", "table"]
+# kramdown:
+#   smart_quotes: ["apos", "apos", "quot", "quot"]
+#   entity_output: :as_input
 markdown_ext: "markdown,mkdown,mkdn,mkd,md"
 permalink: /:short_year/:month/:day/:title
 timezone: Europe/Rome
