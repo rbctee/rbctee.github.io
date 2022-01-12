@@ -11,8 +11,10 @@ tags:
   - assembly
   - nasm
   - c
+  - x86
   - exam
   - shellcode
+  - metasploit
 ---
 
 ## Disclaimer
@@ -38,9 +40,9 @@ linux/x86/shell/reverse_nonx_tcp | Spawn a command shell (staged). Connect back 
 linux/x86/shell_find_tag | Spawn a shell on an established connection (proxy/nat safe)
 linux/x86/shell_reverse_tcp_ipv6 | Connect back to attacker and spawn a command shell over IPv6
 
-## Analysis
-
 In this post I'll analyse `linux/x86/adduser`.
+
+## Analysis
 
 ### NDISASM
 
