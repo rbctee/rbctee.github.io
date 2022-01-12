@@ -10,7 +10,11 @@ tags:
   - slae
   - assembly
   - nasm
+  - x86
+  - python
   - c
+  - encoding
+  - decoding
   - exam
   - shellcode
 ---
@@ -29,16 +33,12 @@ The 4th assignment requires you to write a custom encoding scheme. The `PoC` oug
 
 ## Source Code
 
-For this assignment, I uploaded the following files inside the folder [assignment_4](https://github.com/rbctee/SlaeExam/tree/main/code/assignment_4):
+For this assignment, I uploaded the following files inside the folder [assignment/4](https://github.com/rbctee/SlaeExam/tree/main/slae32/assignment/4):
 
 - [attempt_1/encoder.py](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_4/attempt_1/encoder.py): Python encoder using ROR/ROL-NOT-XOR instructions
 - [attempt_1/decoder.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_4/attempt_1/decoder.nasm): Assembly decoder for the encoder above
-- [attempt_2/encoder.py](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_4/attempt_2/encoder.py): Python encoder using ...
-- [attempt_2/decoder.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_4/attempt_2/decoder.nasm)
 
-## First attempt
-
-### Encoding Scheme
+## Encoding Scheme
 
 I tried to think of an encoder that uses just a few mathematical operations and that's not too obvious like XOR encoders.
 
@@ -55,7 +55,7 @@ The encoded shellcode (with the prepended auxiliary bytes) should look like this
 ![Visual representation of the encoded shellcode](/assets/img/slae32/encoded_shellcode.png)
 *Visual representation of the encoded shellcode*
 
-### Python Encoder
+## Python Encoder
 
 Follows the python code that reads the shellcode stored inside `--input`, encodes it according to the previous scheme, and saves it into `--output`:
 
@@ -171,7 +171,7 @@ I ran the script multiple times with larger shellcodes, so I'm pretty sure (like
 The full script is stored on GitHub at [rbctee/SlaeExam](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_4/encoder.py).
 
 
-### Python Decoder
+## Python Decoder
 
 Inside the previous `python` script I also implemented a function that decodes the encoded shellcode:
 
@@ -272,7 +272,7 @@ The line starting with **Assembly data:** contains the bytes you can copy-paste 
 # [+] Assembly data: 0x2,0xa8,0x1e,0xa8,0xad,0x21,0xf5,0x89,0x7a,0xce,0x3d,0x89,0xfb,0xce,0x2a,0x83,0xbb,0x51,0x23,0x68,0x19,0x6c,0xf2,0xc5,0xe3,0x6c,0xf4,0xc5,0xe3,0x2c,0xc1,0xeb
 ```
 
-### Assembly Decoder
+## Assembly Decoder
 
 First step is to prepare the skeleton of the decoder. I used the same shown in the `Episode 31` of the course, employed in conjunction with the `Insertion` encoder:
 
@@ -475,4 +475,8 @@ $ exit
 rbct@slae:~$
 ```
 
-So it works, assignment completed right? Not quite, among the visible problems of the shellcode, its length is quite apparent. Considering the length of the original shellcode is `28` bytes, and the length of the full shellcode is `106` bytes, that means the decoding shellcode is `78` bytes long, which is like `3x` times the lengths of the original shellcode.
+Among the drawbacks of this approach, the length of the decoder stub is quite apparent.
+
+Considering the length of the original shellcode is `28` bytes, and the length of the full shellcode is `106` bytes, that means the decode stub uses `78` bytes, which is like `3x` times the length of the original shellcode.
+
+Although it may not be optimal for small shelcode, it can be useful for bigger shellcode.
