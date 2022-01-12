@@ -27,7 +27,7 @@ Student ID: PA-30398
 
 ## Foreword
 
-The 6th assignment requires you to analyze 3 shellcodes from [Shell-Storm](http://shell-storm.org/shellcode/) and " create polymorphic versions of them to beat pattern matching".
+The 6th assignment requires you to analyze 3 shellcodes from [Shell-Storm](http://shell-storm.org/shellcode/) and "create polymorphic versions of them to beat pattern matching".
 
 There's only 1 constraint:
 
@@ -255,8 +255,8 @@ If the register `EAX` isn't set to 0, then the next call will throw a `SIGSEGV` 
 For this reason, I also wrote a slightly different version that handles this case, not the SIGSEGV error but clearing the EAX register:
 
 ```patch
---- tiny_shellcode2.nasm    2021-12-30 00:12:58.783569130 +0100
-+++ stable_shellcode.nasm   2021-12-30 00:11:13.119573330 +0100
+--- polymorphic_tiny.nasm       2022-01-12 07:54:18.947129214 +0000
++++ polymorphic_stable.nasm     2022-01-12 07:53:52.437239057 +0000
 @@ -37,7 +37,9 @@
      ; call chmod()
      int 0x80
@@ -267,7 +267,7 @@ For this reason, I also wrote a slightly different version that handles this cas
      push eax
  
      ; push "/etc//passwd" to the stack
-@@ -60,6 +62,7 @@
+@@ -60,5 +62,6 @@
  
      ; invoke the exit syscall
      ; exit code is set to ESP, but it's not important
