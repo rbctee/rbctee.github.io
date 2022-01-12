@@ -35,8 +35,8 @@ The 4th assignment requires you to write a custom encoding scheme. The `PoC` oug
 
 For this assignment, I uploaded the following files inside the folder [assignment/4](https://github.com/rbctee/SlaeExam/tree/main/slae32/assignment/4):
 
-- [attempt_1/encoder.py](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_4/attempt_1/encoder.py): Python encoder using ROR/ROL-NOT-XOR instructions
-- [attempt_1/decoder.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_4/attempt_1/decoder.nasm): Assembly decoder for the encoder above
+- [encoder.py](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/4/encoder.py): Python encoder using ROR/ROL-NOT-XOR instructions
+- [decoder.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/4/decoder.nasm): Assembly decoder for the encoder above
 
 ## Encoding Scheme
 
@@ -168,8 +168,7 @@ def encode_shellcode(shellcode: bytes) -> bytes:
 
 I ran the script multiple times with larger shellcodes, so I'm pretty sure (like ~98%) that the encoded shellcode won't contain `NULL` bytes.
 
-The full script is stored on GitHub at [rbctee/SlaeExam](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_4/encoder.py).
-
+The full script is stored on GitHub at [rbctee/SlaeExam](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/4/encoder.py).
 
 ## Python Decoder
 
@@ -458,7 +457,7 @@ AfterRotateByte:
     jmp short Decode
 ```
 
-The full program can be found [here](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_4/attempt_1/decoder.nasm).
+The full program can be found [here](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/4/decoder.nasm).
 
 I used the following commandsd to confirm it works correctly:
 
@@ -468,9 +467,9 @@ rbct@slae:~$ nasm -f elf32 decoder.nasm
 rbct@slae:~$ ld -N -o decoder decoder.o
 rbct@slae:~$ ./decoder
 $ whoami
-rbct
+# rbct
 $ id 
-uid=1000(rbct) gid=1000(rbct) groups=1000(rbct),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),111(lpadmin),112(sambashare)
+# uid=1000(rbct) gid=1000(rbct) groups=1000(rbct),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),111(lpadmin),112(sambashare)
 $ exit
 rbct@slae:~$
 ```
