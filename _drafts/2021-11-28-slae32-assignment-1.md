@@ -8,10 +8,13 @@ categories:
   - blog
 tags:
   - slae
+  - x86
   - assembly
+  - shellcode
   - nasm
   - c
   - exam
+  - python
 ---
 
 ## Disclaimer
@@ -30,16 +33,16 @@ The port number should be easily configurable.
 
 ## Source code
 
-The full source code is stored inside the repository created for this Exam: [rbctee/SlaeExam](https://github.com/rbctee/SlaeExam/tree/main/code/assignment_1/).
+The full source code is stored inside the repository created for this Exam: [rbctee/SlaeExam](https://github.com/rbctee/SlaeExam/tree/main/slae32/assignment/1/attempt).
 
 List of files:
 
-- [first_attempt/shell_bind_tcp.c](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/first_attempt/shell_bind_tcp.c): first attempt at writing a Bind Shell in `C`
-- [first_attempt/shell_bind_tcp.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/first_attempt/shell_bind_tcp.nasm): first attempt at writing a Bind Shell in `Assembly`
-- [final_attempt/shell_bind_tcp.c](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/final_attempt/shell_bind_tcp.c): final attempt at writing a Bind Shell in `C`
-- [final_attempt/shell_bind_tcp.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/final_attempt/shell_bind_tcp.nasm): final attempt at writing a Bind Shell in `Assembly`
-- [final_attempt/automation/wrapper.py](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/final_attempt/automation/wrapper.py): `python` script to automate the generation of shellcode based on arbitrary TCP ports
-- [final_attempt/automation/template.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/final_attempt/automation/template.nasm): generic template used by `wrapper.py`
+- [attempt/first/shell_bind_tcp.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/first/shell_bind_tcp.c): first attempt at writing a Bind Shell in `C`
+- [attempt/first/shell_bind_tcp.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/first/shell_bind_tcp.nasm): first attempt at writing a Bind Shell in `Assembly`
+- [attempt/final/shell_bind_tcp.c](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/final/shell_bind_tcp.c): final attempt at writing a Bind Shell in `C`
+- [attempt/final/shell_bind_tcp.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/final/shell_bind_tcp.nasm): final attempt at writing a Bind Shell in `Assembly`
+- [attempt/final/automation/wrapper.py](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/final/automation/wrapper.py): `python` script to automate the generation of shellcode based on arbitrary TCP ports
+- [attempt/final/automation/template.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/final/automation/template.nasm): generic template used by `wrapper.py`
 
 ## First Attempt
 
@@ -60,7 +63,7 @@ struct sockaddr_in server_address;
 server_socket_fd = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 ```
 
-{% sidenote The `socket()` function creates a socket, which is represented by a `File Descriptor` (abbreviated as `fd`) on Linux systems  %}
+{% sidenote The `socket()` function creates a socket, which is represented by a `File Descriptor` (abbreviated as `fd`) on Linux systems %}
 
 ```cpp
 server_address.sin_family = AF_INET;
@@ -135,7 +138,7 @@ The loop right above checks if the client has sent any data. If so, it executes 
 
 Finally, it uses the function `memset` to clear the buffer that stores the command, in order to avoid previous commands from corrupting next ones.
 
-The full C program can be found inside the [repo created for this exam](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_1/first_attempt/shell_bind_tcp.c).
+The full C program can be found inside the [repo created for this exam](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/first/shell_bind_tcp.c).
 
 ### Assembly
 
@@ -952,7 +955,7 @@ As I mentioned previously in the sidenotes, the script requires the following bi
 - `nasm` (from the homonymous package)
 - `ld` (The GNU linker)
 
-The python script and the `NASM` template are stored inside the aforementioned Git repository, to be more specific they can be found in the folder [/code/assignment_1/final_attempt/automation](https://github.com/rbctee/SlaeExam/tree/main/code/assignment_1/final_attempt/automation).
+The python script and the `NASM` template are stored inside the aforementioned Git repository, to be more specific they can be found in the folder [attempt/final/automation](https://github.com/rbctee/SlaeExam/tree/main/slae32/assignment/1/attempt/final/automation).
 
 ## Testing
 

