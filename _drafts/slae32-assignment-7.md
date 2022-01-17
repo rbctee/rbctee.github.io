@@ -334,11 +334,11 @@ nim c --hints:off --cpu:i386 -t:-m32 -l:-m32 -l:-fno-stack-protector -l:'-z exec
 # Decrypt encrypted data
 ./decrypter --input=/tmp/encrypted.bin --key='0123456789abcdef' --output=/tmp/decrypted.bin
 
-[+] Input shellcode: /tmp/encrypted.bin
-[+] Using encryption key: 0123456789abcdef
-[+] Output file: /tmp/decrypted.bin
-[+] Decrypted bytes: @[49, 192, 80, 104, 47, 47, 115, 104, 104, 47, 98, 105, 110, 137, 227, 80, 83, 137, 225, 176, 11, 205, 128]
-[+] Writing decrypted shellcode to file: /tmp/decrypted.bin
+# [+] Input shellcode: /tmp/encrypted.bin
+# [+] Using encryption key: 0123456789abcdef
+# [+] Output file: /tmp/decrypted.bin
+# [+] Decrypted bytes: @[49, 192, 80, 104, 47, 47, 115, 104, 104, 47, 98, 105, 110, 137, 227, 80, 83, 137, 225, 176, 11, 205, 128]
+# [+] Writing decrypted shellcode to file: /tmp/decrypted.bin
 ```
 
 As you can see, the resulting shellcode, obtained from decrypting the encrypted shellcode, is identical the original one (unencrypted), meaning the program worked correctly. 

