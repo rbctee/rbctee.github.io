@@ -387,7 +387,7 @@ To test this new piece of code, I've created a file named `shellcode.bin` contai
 echo -ne "\x31\xc0\x50\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\xb0\x0b\x89\xe3\x31\xc9\x31\xd2\xcd\x80" > shellcode.bin
 ```
 
-If you were to compile the program `decrypter.nim` for x86 systems, and execute it, it would spawn a `/bin/sh` shell, as shown below:
+If you were to compile the program `decrypter.nim` for 32-bit x86 systems, and execute it, it would spawn a `/bin/sh` shell, as shown below:
 
 ```bash
 rbct@debian11:~/slae32/assignment/7$ ./decrypter --input=/tmp/encrypted.bin --output=/tmp/decrypted.bin --key='0123456789abcdef'
@@ -414,4 +414,4 @@ $ exit
 rbct@debian11:~/slae32/assignment/7$
 ```
 
-As you can see, running the program on a `x86` system (i.e. a 32-bit architecture), the program managed to decrypt and run the shellcode.
+As you can see, running the program on a 32-bit x86 system, the program managed to decrypt and run the shellcode.

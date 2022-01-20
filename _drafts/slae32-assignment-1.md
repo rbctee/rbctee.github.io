@@ -222,7 +222,7 @@ section .text
 
 _start:
 
-    ; SYSCALLS for Linux x86:
+    ; SYSCALLS for 32-bit x86 Linux systems:
     ; /usr/include/i386-linux-gnu/asm/unistd_32.h
     ; or https://web.archive.org/web/20160214193152/http://docs.cs.up.ac.za/programming/asm/derick_tut/syscalls.html
 
@@ -316,7 +316,7 @@ According to the file [include/uapi/linux/socket.h](https://elixir.bootlin.com/l
 typedef unsigned short __kernel_sa_family_t;
 ```
 
-On x86 systems an unsigned short integer occupies `2 bytes` of data. Now there's only `in_port_t` left. The latter is defined inside the file [netinetin.h](https://man7.org/linux/man-pages/man0/netinet_in.h.0p.html):
+On 32-bit x86 systems, an unsigned short integer requires `2 bytes` of data. Now there's only `in_port_t` left. The latter is defined inside the file [netinetin.h](https://man7.org/linux/man-pages/man0/netinet_in.h.0p.html):
 
 > The `<netinet/in.h>` header shall define the following types:
 >

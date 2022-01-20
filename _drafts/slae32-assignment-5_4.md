@@ -345,7 +345,7 @@ struct timespec {
 };
 ```
 
-Based on a few files of the Linux kernel, the size of `time_t` should be `4 bytes` on `x86` systems, same for the `long` type. So we're looking at a struct made out of `8 bytes`.
+Based on a few files of the Linux kernel, the size of `time_t` should be `4 bytes` on 32-bit `x86` systems, same for the `long` type. So we're looking at a struct made out of `8 bytes`.
 
 The first 4 bytes specify the number of `seconds` to sleep, while the other ones specify the number of `nanoseconds` to sleep.
 
