@@ -31,7 +31,12 @@ The 3rd assignment requires you to write shellcode for an `Egg Hunter`. Moreover
 
 ## Source code
 
-TODO
+THe source code for this assignment can be found [here](https://github.com/rbctee/SlaeExam/tree/main/slae32/assignment/3).
+
+Follows the list of files:
+
+- [egg_hunter.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/3/egg_hunter.nasm), the Assembly code of the egg-hunter
+- [test_egg_hunter.c](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/3/test_egg_hunter.c), a C program written for testing the egg-hunter with the `execve` shellcode
 
 ## Theory
 
@@ -173,11 +178,11 @@ main() {
 }
 ```
 
-I saved the `stack -execve` shellcode inside the array `shellcode`, while storing the egg-hunter shellcode inside the array `egghunter`.
+I saved the `execve` shellcode inside an array named `shellcode`, while storing the egg-hunter shellcode inside the array `egghunter`.
 
 Inside the `main` function, the programs prints the length of the two shellcodes, and finally executes the egg-hunter shellcode. It does so by getting the pointer of the latter, and turning it into a function.
 
-Follows the a screenshot demostrating the successful execution of the program:
+Follows a screenshot demostrating the successful execution of the program:
 
 ![Egg-hunter found and executed the execve shellcode](/assets/img/slae32/egg_hunter_shellcode_proof.png)
 *Egg-hunter found and executed the execve shellcode*

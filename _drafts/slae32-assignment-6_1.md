@@ -1,6 +1,6 @@
 ---
 title: "SLAE x86 Exam - Assignment #6 Part 1"
-date: 2022-01-06
+date: 2022-01-04
 toc: true
 search: false
 classes: wide
