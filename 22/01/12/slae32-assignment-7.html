@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html>
+  <!-- Inspired by https://secret.club/ and https://github.com/clayh53/tufte-jekyll -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SLAE x86 Exam - Assignment #7</title>
+    <meta name="description" content="DisclaimerThis blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:https://www.pentesteracadem...">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/fonts.min.css">
+    <link rel="canonical" href="/22/01/12/slae32-assignment-7">
+    <link rel="alternate" type="application/rss+xml" title="rbct" href="/feed.xml" />
+
+    <style>
+         * { margin: 0; box-sizing: border-box; color: inherit; text-decoration: inherit; } html { background: var(--bg-0); color: var(--text-0); width: 100%; text-rendering: optimizeLegibility; font-feature-settings: "kern" 1; font-feature-settings: "liga" 1; min-width: 100vw; overflow-x: hidden; -webkit-text-size-adjust: 100%; } @media all and (min-width:640px) { html{ font-size: 1rem; } } @media all and (min-width:720px) { html{ font-size: 17px; } } @media all and (min-width:960px) { html{ font-size: 1rem; } } body { max-width: 944px; margin: 0 auto; padding: 0 24px; font-family: "JetBrains Mono",monospace; text-rendering: geometricPrecision; -moz-osx-font-smoothing: grayscale; } header, h1, h2, h3, .sans { font-family: 'Space Grotesk', Helvetica, sans-serif; } code, .mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; } body > header { display: flex; justify-content: space-between; align-items: center; margin: 2em 0; } nav a { margin-left: 1.5em; letter-spacing: 0.07em; font-size: 1rem; } :root { --text-0: rgba(255, 255, 255, 87%); --text-1: rgba(255, 255, 255, 60%); --bg-0: #1d2021; --bg-1: rgba(255, 255, 255, 5%); --bg-2: rgba(255, 255, 255, 12%); --accent: #ef5350; --keyword: #b794f6; --string: #89a2f6; --literal: #f88478; --type: #f8819c; } @media (prefers-color-scheme: light) { :root { --text-0: rgba(0, 0, 0, 87%); --text-1: rgba(0, 0, 0, 66%); --bg-0: #fff; --bg-1: #f2f2f2; --bg-2: rgba(0, 0, 0, 12%); --keyword: #7c4dff; --string: #586ada; --literal: #d14641; --type: #bd00f8; } } .tags, .pagination > :nth-child(2) { margin-bottom: 2rem; } .tags, .pagination .mono { font-size: 1rem; } .tags > a, .pagination .mono { color: var(--accent); } .pagination { display: flex; justify-content: space-between; flex-wrap: wrap-reverse; } .pagination > a { font-size: 1rem; display: inline-block; } .pagination .mono { letter-spacing: 0.07em; } article > :not(main) { font-size: 16px; } article > h1 { font-size: 2rem; margin-bottom: 12px; } .authors { position: absolute; margin-top: 4px; color: var(--text-1); } .authors > a { color: var(--text-0); } article > div > img { display: inline; object-fit: cover; height: 48px; width: 48px; border-radius: 100%; margin-right: 8px; background: var(--bg-1); } article > time { color: var(--text-1); position: absolute; margin: -24px 0 0 56px; } article > hr { width: 128px; border: 2.5px solid var(--bg-1); margin-top: 12px; } main { margin: 2rem 0; } main > :nth-last-child(2) { margin-bottom: 2rem; } main img, main video, main iframe, main object { max-width: 100%; height: auto; display: flex; margin: auto; } main iframe { width: 100%; height: 504px; } p, ul, ol { line-height: 1.725; margin-bottom: 1rem; } object { margin-bottom: 1rem; } h1, h2, h3 { position: relative; margin: 1.2rem 0 1.5rem 0; } h3, h2 { line-height: 24px; } main h1:before, h2:before, h3:before { content: "#"; color: var(--accent); font-weight: bold; margin-right: 10px } h3:before { content: "##"; } h1 { font-size: 1.3em; } h3 { font-size: 1.3em; } p a, main li a { text-decoration: underline; } ul { list-style: none; } ul li, ol li { padding-left: 1rem; margin: 0 0 0.2rem 1rem; } ul li::before { content: "•"; float: left; margin-left: -2rem; transform: scale(1.4); } blockquote { color: var(--text-1); font-style: italic; margin: 0 2em 0 0; padding-left: 20px; border-left: 4px solid #444 } .footnotes { border-top: 1px solid var(--bg-1); padding-top: 1rem; } pre { padding-left: 5px; overflow-x: scroll; scrollbar-width: none; -ms-overflow-style: none; } pre::-webkit-scrollbar { width: 0; height: 0; } :not(pre) > code { color: #fe8019; background: var(--bg-1); padding: 2px 4px; } pre > code { display: inline-block; } p > code { font-size: 0.925rem; } @media screen and (min-width: 640px) { pre > code { font-size: 1rem; } } @media screen and (max-width: 944px) { main iframe { height: calc((100vw - 24px) * 0.5625); } ul li::before { margin-left: -1.25rem; } ul li { padding-left: 0.625rem; margin-left: 0.625rem; } ol li { padding-left: 0.25rem; } } .aside { color: var(--text-1); } @media screen and (min-width: 1074px) { article::before { background: radial-gradient( circle at center, var(--bg-1) 25%, transparent 25% ), transparent; background-size: 10px 10px; content: ""; display: block; height: 300px; width: 300px; position: absolute; transform: translate(-72px, -72px); z-index: -1; } article { padding: 24px 0 0 24px; margin: -24px 0 0 -24px; background: var(--bg-0); } article h1:first-of-type { margin-top: 0; } body > header { margin-bottom: 5em; } } @media screen and (max-width: 1584px) { .aside { position: relative; padding: 4px 0 4px 0; border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1); } p:has(aside) { border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1) }} @media screen and (min-width: 1584px) { .aside { float: left; position: absolute; left: 0; transform: translate(calc(-100% - 28px), calc(-100% - 1rem)); width: 320px; text-align: right; clear: both; } footer.tags { position: absolute; left: calc(100% + 24px); width: 320px; top: 0; } } code .gu, code .gh { font-weight: bold; } code .p { color: var(--text-1); } code .c, code .ch, code .cm, code .cp, code .cpf, code .c1, code .cs { color: var(--text-1); } code .o, code .ow { color: var(--keyword); } code .k, code .kn, code .kc, code .kp, code .kr, code .nt, code b { color: var(--keyword); font-weight: bold; } code .kt, code .kd, code .nb, code .nl, code .nv, code .vc, code .vg, code .vi, code .vm, code .gd { color: var(--type); } code .m, code .mb, code .mf, code .mh, code .mi, code .mo, code .il, code .se { color: var(--literal); } code .s, code .sa, code .sb, code .sc, code .dl, code .sd, code .s2, code .sh, code .si, code .sx, code .sr, code .s1, code .ss, code .gi { color: var(--string); } div.epigraph footer { text-align: right; margin-bottom: 2rem;} section.pagination { padding-bottom: 1rem; } img + em { display: block; text-align: center; } table { border: 1px solid; padding: 10px; margin-bottom: 10px } td { padding: 2px 10px; } div.highlighter-rouge, code.language-text { background-color: var(--bg-1); padding: 15px 10px 10px 10px; margin-bottom: 10px } sub { font-size: 0.875rem }
+    </style>
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+    <a href="/">RBCT</a>
+
+    <nav class="group">
+        
+            
+        
+            
+                
+                <a href="/">POSTS</a>
+                
+            
+        
+            
+                
+                <a href="/about/">ABOUT</a>
+                
+            
+        
+    </nav>
+</header>
+    <article aria-label="Content" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <h1>SLAE x86 Exam - Assignment #7</h1>
+
+        <div itemprop="author" itemscope="" itemtype="http://schema.org/Person" style="height:48px">
+            <img itemprop="image" alt="rbct" src="/assets/author_profile_img/rbct.png">
+            <span class="mono authors">
+                <a href="/author/rbct" itemprop="name">rbct</a>
+            </span>
+        </div>
+
+        <time class="mono" datetime="2022-01-12T00:00:00+01:00" itemProp="datePublished">
+            12 January 2022
+        </time>
+
+        <hr>
+        <main itemprop="articleBody" style="position: relative;">
+            <h2 id="disclaimer">Disclaimer</h2>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:</p>
+<p><a href="https://www.pentesteracademy.com/course?id=3">https://www.pentesteracademy.com/course?id=3</a></p>
+<p>Student ID: PA-30398</p>
+<h2 id="foreword">Foreword</h2>
+<p>The 7th assignment requires you to create a custom crypter. You're free to use any existing encryption scheme.</p>
+<p>Moreover, you can use any programming language.</p>
+<h2 id="source-code">Source Code</h2>
+<p>The files regarding this assignment are:</p>
+<ul>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/7/encrypter.nim">encrypter.nim</a>, the program that encrypts the shellcode</li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/7/decrypter.nim">decrypter.nim</a>, the program that decrypts encrypter shellcode and runs it</li>
+</ul>
+<h2 id="tiny-encryption-alghorithm">Tiny Encryption Alghorithm</h2>
+<p>Among the many encryption algorithm invented up until now, there's one named <strong>Tiny Encryption Algorithm</strong> (<code>TEA</code>), a block cipher whose implementation is quite simple.</p>
+<p>As you may read on <a href="https://en.wikipedia.org/wiki/Tiny_Encryption_Algorithm">Wikipedia</a>,</p>
+<blockquote>
+<p>it was first presented at the Fast Software Encryption workshop in Leuven in <code>1994</code>, and first published in the proceedings of that workshop.</p>
+</blockquote>
+<p><code>TEA</code> operates on two <code>32-bit</code> unsigned integers and uses a <code>128-bit</code> key.</p>
+<p>Moreover:</p>
+<blockquote>
+<p>It has a <strong>Feistel structure</strong> with a suggested 64 rounds, typically implemented in pairs termed cycles.</p>
+<p>It has an extremely simple key schedule, mixing all of the key material in exactly the same way for each cycle.</p>
+<p>Different multiples of a magic constant are used to prevent simple attacks based on the symmetry of the rounds.</p>
+<p>The magic constant, <code>2654435769</code> or <code>0x9E3779B9</code> is chosen to be ⌊ <code>232 / ϕ</code> ⌋, where <code>ϕ</code> is the <strong>golden ratio</strong> [...]</p>
+</blockquote>
+<h3 id="nim-encrypter">Nim Encrypter</h3>
+<p>On the <code>Wikipedia</code> page I've mentioned previosly there's already a snippet of code containing the functions necessary to encrypt and decyrpt data using the algorithm.</p>
+<p>The functions are written in <code>C</code>, so rewriting them in <code>C/C++</code> is pretty much useless, as they are already there.</p>
+<p>For this reason, I've decided to use another language, which this time isn't <code>Python</code>, but <code>Nim</code>.</p>
+<p>I've already used the latter for <a href="https://github.com/rbctee/NimScripts/blob/master/windows/privesc/admin_to_system.nim">Privilege Escalation</a> and <a href="https://github.com/rbctee/NimScripts/blob/master/windows/malware/process_hollowing.nim">Process Hollowing</a> on Windows systems, so I thought I might as well take advantage of this chance to <strong>actually</strong> learn a bit of Nim.</p>
+<h4 id="encryption">Encryption</h4>
+<p>First comes the encryption. Converting the C code into Nim wasn't that difficult, as both of them are statically typed languages.</p>
+<p>First, here's the the encryption function I had to convert, taken directly from <a href="https://en.wikipedia.org/wiki/Tiny_Encryption_Algorithm">Wikipedia</a>:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">encrypt</span> <span class="p">(</span><span class="kt">uint32_t</span> <span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="k">const</span> <span class="kt">uint32_t</span> <span class="n">k</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+<span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">v0</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v1</span>  <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">i</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">delta</span> <span class="o">=</span> <span class="mh">0x9E3779B9</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">k0</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">k1</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">k2</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">k3</span> <span class="o">=</span> <span class="n">k</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>
+    
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">32</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">sum</span> <span class="o">+=</span> <span class="n">delta</span><span class="p">;</span>
+        <span class="n">v0</span> <span class="o">+=</span> <span class="p">((</span><span class="n">v1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">k0</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">v1</span> <span class="o">+</span> <span class="n">sum</span><span class="p">)</span> <span class="o">^</span> <span class="p">((</span><span class="n">v1</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">k1</span><span class="p">);</span>
+        <span class="n">v1</span> <span class="o">+=</span> <span class="p">((</span><span class="n">v0</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">k2</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">v0</span> <span class="o">+</span> <span class="n">sum</span><span class="p">)</span> <span class="o">^</span> <span class="p">((</span><span class="n">v0</span> <span class="o">&gt;&gt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">k3</span><span class="p">);</span> 
+    <span class="p">}</span>
+
+    <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">v0</span><span class="p">;</span>
+    <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">v1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>As you can see, it is based on <code>XOR</code>, <a href="https://en.wikipedia.org/wiki/Circular_shift">Circular shifts</a> and addition operations. All of them are repeated 32 times using a loop.</p>
+<p>Follows the <code>Nim</code> code I wrote for this function, plus <em>some</em> comments to document what I've learned along the way:</p>
+<div class="language-nim highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#</span>
+<span class="c">#    References for the Encryption function:</span>
+<span class="c">#        - https://it.wikipedia.org/wiki/Tiny_Encryption_Algorithm</span>
+<span class="c">#        - https://link.springer.com/content/pdf/10.1007/3-540-60590-8_29.pdf</span>
+<span class="c">#</span>
+<span class="c">#    As per the reference, the function accepts the following arguments:</span>
+<span class="c">#        - 'v': an array made up of 2 unsigned 32-bit integers (hence uint32)</span>
+<span class="c">#            it contains 8 bytes of data to encrypt</span>
+<span class="c">#        - 'k': an array made up of 4 uint32 integers, hence a 128-bits key</span>
+<span class="c">#            it's the encryption key</span>
+<span class="c">#</span>
+<span class="c">#    As for how to encode data and key to uint32 integers, it's up to you</span>
+<span class="c">#    In fact, in the original whitepaper I didn't find anything about</span>
+<span class="c">#        this matter</span>
+<span class="c">#</span>
+<span class="k">proc </span><span class="nf">encrypt</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="kt">array</span><span class="o">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">uint32</span><span class="o">]</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="kt">array</span><span class="o">[</span><span class="mi">4</span><span class="p">,</span> <span class="n">uint32</span><span class="o">]</span><span class="p">):</span> <span class="kt">array</span><span class="o">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">uint32</span><span class="o">]</span> <span class="o">=</span>
+
+    <span class="c">#</span>
+    <span class="c">#    Variables used by the encryption function.</span>
+    <span class="c">#    Follows the difference between the 'let' and 'var' statements:</span>
+    <span class="c">#        - 'let': After the initialization their value cannot change</span>
+    <span class="c">#        - 'var': After the initialization their value CAN be changed</span>
+    <span class="c">#</span>
+    <span class="c">#    Moreover, by default the value of an integer is 0, so it doesn't need</span>
+    <span class="c">#    to be inizialed to 0</span>
+    <span class="c">#</span>
+    <span class="k">let</span>
+        <span class="c">#</span>
+        <span class="c">#    According to the whitepaper:</span>
+        <span class="c">#</span>
+        <span class="c">#    &gt; A different multiple of delta is used in each round so that no</span>
+        <span class="c">#    &gt; bit of the multiple will not change frequently. We suspect the</span>
+        <span class="c">#    &gt; algorithm is not very sensitive to the value of delta and we</span>
+        <span class="c">#    &gt; merely need to avoid a bad value.</span>
+        <span class="c">#    &gt; It will be noted that delta turns out to be odd with truncation</span>
+        <span class="c">#    &gt;  or nearest rounding, so no extra precautions are needed to</span>
+        <span class="c">#    &gt; ensure that all the digits of sum change.</span>
+        <span class="c">#</span>
+        <span class="n">delta</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="k">cast</span><span class="o">[</span><span class="n">uint32</span><span class="o">]</span><span class="p">(</span><span class="mh">0x9e3779b9</span><span class="p">)</span>
+
+        <span class="n">k0</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">k</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+        <span class="n">k1</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">k</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+        <span class="n">k2</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">k</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span>
+        <span class="n">k3</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">k</span><span class="o">[</span><span class="mi">3</span><span class="o">]</span>
+    <span class="k">var</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">v</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">v</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+        <span class="n">sum</span><span class="p">:</span> <span class="n">uint32</span>
+
+
+    <span class="c">#</span>
+    <span class="c">#    The algorithm uses 32 cycles (64 rounds) to encrypt data </span>
+    <span class="c">#</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">countup</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">31</span><span class="p">):</span>
+
+        <span class="n">sum</span> <span class="o">+=</span> <span class="n">delta</span>
+        <span class="n">v0</span> <span class="o">+=</span> <span class="p">((</span><span class="n">v1</span> <span class="ow">shl</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">k0</span><span class="p">)</span> <span class="ow">xor</span> <span class="p">(</span><span class="n">v1</span> <span class="o">+</span> <span class="n">sum</span><span class="p">)</span> <span class="ow">xor</span> <span class="p">((</span><span class="n">v1</span> <span class="ow">shr</span> <span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">k1</span><span class="p">)</span>
+        <span class="n">v1</span> <span class="o">+=</span> <span class="p">((</span><span class="n">v0</span> <span class="ow">shl</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">k2</span><span class="p">)</span> <span class="ow">xor</span> <span class="p">(</span><span class="n">v0</span> <span class="o">+</span> <span class="n">sum</span><span class="p">)</span> <span class="ow">xor</span> <span class="p">((</span><span class="n">v0</span> <span class="ow">shr</span> <span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">k3</span><span class="p">)</span>
+
+    <span class="c">#</span>
+    <span class="c">#    Data is returned as an array of 2 uint32 integers, which represent 8</span>
+    <span class="c">#        bytes of encrypted data</span>
+    <span class="c">#</span>
+    <span class="k">return</span> <span class="o">[</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="o">]</span>
+</code></pre></div></div>
+<p>As I mentioned in the comments, it's up to you to decide how to encode <code>8 bytes</code> of data into <code>2 unsigned 32-bit integer</code> values, or so it seemed (please correct me if I'm wrong). Because of this, I had to write two other functions: one to <code>encode</code> data, and the other one to <code>decode</code> it.</p>
+<p>Follows the code of the encoding function, the other one (<code>proc decode</code>) can be viewed <a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/7/encrypter.nim">here</a>:</p>
+<div class="language-nim highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#</span>
+<span class="c">#    The function 'encode' was written to encode 4 bytes of data into a uint32</span>
+<span class="c">#        integer, as is needed by the function 'encrypt'</span>
+<span class="c">#</span>
+<span class="k">proc </span><span class="nf">encode</span><span class="p">(</span><span class="n">shellcode_buffer</span><span class="p">:</span> <span class="kt">array</span><span class="o">[</span><span class="mi">4</span><span class="p">,</span> <span class="n">byte</span><span class="o">]</span><span class="p">):</span> <span class="n">uint32</span> <span class="o">=</span>
+
+    <span class="k">var</span>
+        <span class="n">r</span><span class="p">:</span> <span class="n">uint32</span>
+        <span class="n">rotation_offset</span><span class="p">:</span> <span class="kt">int</span>
+        <span class="n">byte_value</span><span class="p">:</span> <span class="n">uint32</span>
+
+    <span class="c">#</span>
+    <span class="c">#    I think it's better to explain this function with an example.</span>
+    <span class="c">#    Let's suppose we have 4 bytes: [0x10, 0x20, 0x30, 0x40]</span>
+    <span class="c">#    This function places these bytes inside a 32-bit variable, like this:</span>
+    <span class="c">#        - 0x40302010</span>
+    <span class="c">#</span>
+    <span class="c">#    As you can see, the first value is the Least Significant Byte, while</span>
+    <span class="c">#        the last one is the most significant value.</span>
+    <span class="c">#</span>
+    <span class="c">#    To perform this operations, I'm using the function 'rotateLeftBits' to</span>
+    <span class="c">#        rotate the bits by 8/16/24 positions to the left.</span>
+    <span class="c">#</span>
+    <span class="c">#    In the case of the previous 4 bytes, it would end up like this:</span>
+    <span class="c">#        1. 0x00000010</span>
+    <span class="c">#        2. 0x00002000</span>
+    <span class="c">#        3. 0x00300000</span>
+    <span class="c">#        4. 0x40000000</span>
+    <span class="c">#</span>
+    <span class="c">#    Summing these numbers together, we obtain 0x40302010 (or 1076895760)</span>
+    <span class="c">#</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">countup</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
+
+        <span class="n">byte_value</span> <span class="o">=</span> <span class="n">shellcode_buffer</span><span class="o">[</span><span class="n">i</span><span class="o">]</span>
+
+        <span class="c">#</span>
+        <span class="c">#    Index:</span>
+        <span class="c">#        0 -&gt; rotation_offset = 0</span>
+        <span class="c">#        1 -&gt; rotation_offset = 8 (shift by 8 bits to the left)</span>
+        <span class="c">#        2 -&gt; rotation_offset = 16 (shift by 16 bits to the left)</span>
+        <span class="c">#        3 -&gt; rotation_offset = 24 (shift by 24 bits to the left)</span>
+        <span class="c">#</span>
+        <span class="n">rotation_offset</span> <span class="o">=</span> <span class="mi">8</span> <span class="o">*</span> <span class="n">i</span>
+
+        <span class="k">var</span> <span class="n">rotatedByte</span> <span class="o">=</span> <span class="n">rotateLeftBits</span><span class="p">(</span><span class="k">cast</span><span class="o">[</span><span class="n">uint32</span><span class="o">]</span><span class="p">(</span><span class="n">byte_value</span><span class="p">),</span> <span class="n">rotation_offset</span><span class="p">)</span>
+        <span class="n">r</span> <span class="o">+=</span> <span class="n">rotatedByte</span>
+
+    <span class="k">return</span> <span class="n">r</span>
+</code></pre></div></div>
+<p>Hopefully the comments I've added to the code are enough. If they weren't, here's a brief summary: given an array of 4 bytes, e.g. <code>[0x10,0x20,0x30,0x40]</code>, the function convertes them to the integer <code>0x40302010</code>, mimicking a <code>Little Endian</code> system.</p>
+<p>Compiling and running the program, it returns the following output:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nim c <span class="nt">--hints</span>:off <span class="nt">--cpu</span>:i386 <span class="nt">-t</span>:-m32 <span class="nt">-l</span>:-m32 <span class="nt">-l</span>:-fno-stack-protector <span class="nt">-l</span>:<span class="s1">'-z execstack'</span> encrypter.nim
+
+./encrypter
+
+<span class="c"># [+] Usage:</span>
+<span class="c">#         ./encrypter --input=shellcode.bin --output=encrypter.bin --key='0123456789abcdef'</span>
+
+./encrypter <span class="nt">--input</span><span class="o">=</span>./shellcode.bin <span class="nt">--output</span><span class="o">=</span>/tmp/encrypted.bin <span class="nt">--key</span><span class="o">=</span><span class="s1">'0123456789abcdef'</span>
+
+<span class="c"># [+] Input shellcode: ./shellcode.bin</span>
+<span class="c"># [+] Output file: /tmp/encrypted.bin</span>
+<span class="c"># [+] Using encryption key: 0123456789abcdef</span>
+<span class="c"># [+] Key: 0123456789abcdef</span>
+<span class="c"># [+] Encoded key: [858927408, 926299444, 1650538808, 1717920867]</span>
+<span class="c"># [+] Shellcode without padding: @[49, 192, 80, 104, 47, 47, 115, 104, 104, 47, 98, 105, 110, 137, 227, 80, 83, 137, 225, 176, 11, 205, 128]</span>
+<span class="c">#         Length: 23</span>
+<span class="c"># [+] Shellcode with padding: @[49, 192, 80, 104, 47, 47, 115, 104, 104, 47, 98, 105, 110, 137, 227, 80, 83, 137, 225, 176, 11, 205, 128, 0]</span>
+<span class="c">#         Length: 24</span>
+<span class="c"># [+] Saving encrypted shellcode to file: /tmp/encrypted.bin</span>
+<span class="c"># [+] Decrypted shellcode: @[49, 192, 80, 104, 47, 47, 115, 104, 104, 47, 98, 105, 110, 137, 227, 80, 83, 137, 225, 176, 11, 205, 128]</span>
+</code></pre></div></div>
+<h4 id="decryption">Decryption</h4>
+<p>As regards the decryption of encrypted data, I had to convert the following <code>C</code> function (again, taken from <a href="https://it.wikipedia.org/wiki/Tiny_Encryption_Algorithm">Wikipedia</a>):</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">decrypt</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="o">*</span> <span class="n">v</span><span class="p">,</span> <span class="kt">uint32_t</span><span class="o">*</span> <span class="n">k</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">v0</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v1</span><span class="o">=</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sum</span><span class="o">=</span><span class="mh">0xC6EF3720</span><span class="p">,</span> <span class="n">i</span><span class="p">;</span>  <span class="cm">/* set up ;sum == delta*32 */</span>
+    <span class="kt">uint32_t</span> <span class="n">delta</span><span class="o">=</span><span class="mh">0x9e3779b9</span><span class="p">;</span>                     <span class="cm">/* a key schedule constant */</span>
+    <span class="kt">uint32_t</span> <span class="n">k0</span><span class="o">=</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">k1</span><span class="o">=</span><span class="n">k</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">k2</span><span class="o">=</span><span class="n">k</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">k3</span><span class="o">=</span><span class="n">k</span><span class="p">[</span><span class="mi">3</span><span class="p">];</span>   <span class="cm">/* cache key */</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">32</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>                         <span class="cm">/* basic cycle start */</span>
+        <span class="n">v1</span> <span class="o">-=</span> <span class="p">((</span><span class="n">v0</span><span class="o">&lt;&lt;</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">k2</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">v0</span> <span class="o">+</span> <span class="n">sum</span><span class="p">)</span> <span class="o">^</span> <span class="p">((</span><span class="n">v0</span><span class="o">&gt;&gt;</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">k3</span><span class="p">);</span>
+        <span class="n">v0</span> <span class="o">-=</span> <span class="p">((</span><span class="n">v1</span><span class="o">&lt;&lt;</span><span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">k0</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">v1</span> <span class="o">+</span> <span class="n">sum</span><span class="p">)</span> <span class="o">^</span> <span class="p">((</span><span class="n">v1</span><span class="o">&gt;&gt;</span><span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">k1</span><span class="p">);</span>
+        <span class="n">sum</span> <span class="o">-=</span> <span class="n">delta</span><span class="p">;</span>                                   
+    <span class="p">}</span>                                              <span class="cm">/* end cycle */</span>
+    <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=</span><span class="n">v0</span><span class="p">;</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="n">v1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>As before, the <code>Nim</code> code is very similar:</p>
+<div class="language-nim highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#</span>
+<span class="c">#   References for the Decryption function:</span>
+<span class="c">#       - https://it.wikipedia.org/wiki/Tiny_Encryption_Algorithm</span>
+<span class="c">#       - https://link.springer.com/content/pdf/10.1007/3-540-60590-8_29.pdf</span>
+<span class="c">#</span>
+<span class="c">#   As per the reference, the function accepts the following arguments:</span>
+<span class="c">#       - 'v': an array made up of 2 uint32 integers</span>
+<span class="c">#           it contains 8 bytes of encrypted data to decrypt</span>
+<span class="c">#       - 'k': an array made up of 4 uint32 integers, hence a 128-bits key</span>
+<span class="c">#           it's the decryption key</span>
+<span class="c">#</span>
+<span class="c">#   As for how to encode data and key to uint32 integers, it's up to you</span>
+<span class="c">#   In fact, in the original whitepaper I didn't find anything about</span>
+<span class="c">#       this matter</span>
+<span class="c">#</span>
+<span class="k">proc </span><span class="nf">decrypt</span><span class="p">(</span><span class="n">v</span><span class="p">:</span> <span class="kt">array</span><span class="o">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">uint32</span><span class="o">]</span><span class="p">,</span> <span class="n">k</span><span class="p">:</span> <span class="kt">array</span><span class="o">[</span><span class="mi">4</span><span class="p">,</span> <span class="n">uint32</span><span class="o">]</span><span class="p">):</span> <span class="kt">array</span><span class="o">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">uint32</span><span class="o">]</span> <span class="o">=</span>
+
+    <span class="k">let</span>
+        <span class="c">#</span>
+        <span class="c">#    According to the whitepaper:</span>
+        <span class="c">#</span>
+        <span class="c">#    &gt; A different multiple of delta is used in each round so that no</span>
+        <span class="c">#    &gt; bit of the multiple will not change frequently. We suspect the</span>
+        <span class="c">#    &gt; algorithm is not very sensitive to the value of delta and we</span>
+        <span class="c">#    &gt; merely need to avoid a bad value.</span>
+        <span class="c">#    &gt; It will be noted that delta turns out to be odd with truncation</span>
+        <span class="c">#    &gt;  or nearest rounding, so no extra precautions are needed to</span>
+        <span class="c">#    &gt; ensure that all the digits of sum change.</span>
+        <span class="c">#</span>
+        <span class="n">delta</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="k">cast</span><span class="o">[</span><span class="n">uint32</span><span class="o">]</span><span class="p">(</span><span class="mh">0x9e3779b9</span><span class="p">)</span>
+
+        <span class="n">k0</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">k</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+        <span class="n">k1</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">k</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+        <span class="n">k2</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">k</span><span class="o">[</span><span class="mi">2</span><span class="o">]</span>
+        <span class="n">k3</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">k</span><span class="o">[</span><span class="mi">3</span><span class="o">]</span>
+
+    <span class="k">var</span>
+        <span class="n">v0</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">v</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+        <span class="n">v1</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="n">v</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+        <span class="n">sum</span><span class="p">:</span> <span class="n">uint32</span> <span class="o">=</span> <span class="k">cast</span><span class="o">[</span><span class="n">uint32</span><span class="o">]</span><span class="p">(</span><span class="mh">0xc6ef3720</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">countup</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">31</span><span class="p">):</span>
+
+        <span class="n">v1</span> <span class="o">-=</span> <span class="p">((</span><span class="n">v0</span> <span class="ow">shl</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">k2</span><span class="p">)</span> <span class="ow">xor</span> <span class="p">(</span><span class="n">v0</span> <span class="o">+</span> <span class="n">sum</span><span class="p">)</span> <span class="ow">xor</span> <span class="p">((</span><span class="n">v0</span> <span class="ow">shr</span> <span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">k3</span><span class="p">)</span>
+        <span class="n">v0</span> <span class="o">-=</span> <span class="p">((</span><span class="n">v1</span> <span class="ow">shl</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="n">k0</span><span class="p">)</span> <span class="ow">xor</span> <span class="p">(</span><span class="n">v1</span> <span class="o">+</span> <span class="n">sum</span><span class="p">)</span> <span class="ow">xor</span> <span class="p">((</span><span class="n">v1</span> <span class="ow">shr</span> <span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="n">k1</span><span class="p">)</span>
+        <span class="n">sum</span> <span class="o">-=</span> <span class="n">delta</span>
+
+    <span class="k">return</span> <span class="o">[</span><span class="n">v0</span><span class="p">,</span> <span class="n">v1</span><span class="o">]</span>
+</code></pre></div></div>
+<p>The full source code can be found <a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/7/decrypter.nim">here</a>.</p>
+<p>Once I compiled and ran the program, it would successfully decrypt back the encrypted shellcode, as shown below:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Compile for 32-bit systems and set the stack as executable</span>
+nim c <span class="nt">--hints</span>:off <span class="nt">--cpu</span>:i386 <span class="nt">-t</span>:-m32 <span class="nt">-l</span>:-m32 <span class="nt">-l</span>:-fno-stack-protector <span class="nt">-l</span>:<span class="s1">'-z execstack'</span> decrypter.nim
+
+<span class="c"># Show help usage</span>
+./decrypter
+
+<span class="c"># [+] Usage:</span>
+<span class="c">#         ./decrypter --input=encrypted.bin --key='0123456789abcdef' [--output=decrypted.bin] [--execute]</span>
+
+<span class="c"># Decrypt encrypted data</span>
+./decrypter <span class="nt">--input</span><span class="o">=</span>/tmp/encrypted.bin <span class="nt">--key</span><span class="o">=</span><span class="s1">'0123456789abcdef'</span> <span class="nt">--output</span><span class="o">=</span>/tmp/decrypted.bin
+
+<span class="c"># [+] Input shellcode: /tmp/encrypted.bin</span>
+<span class="c"># [+] Using encryption key: 0123456789abcdef</span>
+<span class="c"># [+] Output file: /tmp/decrypted.bin</span>
+<span class="c"># [+] Decrypted bytes: @[49, 192, 80, 104, 47, 47, 115, 104, 104, 47, 98, 105, 110, 137, 227, 80, 83, 137, 225, 176, 11, 205, 128]</span>
+<span class="c"># [+] Writing decrypted shellcode to file: /tmp/decrypted.bin</span>
+</code></pre></div></div>
+<p>As you can see, the resulting shellcode, obtained from decrypting the encrypted shellcode, is identical the original one (unencrypted), meaning the program worked correctly.</p>
+<p>As regards running shellcode, it is a bit trickier ... maybe more than a bit. There are two problems:</p>
+<ul>
+<li>sequences (dynamic arrays) are stored on the heap, which isn't set as executable</li>
+<li>arrays (fixed-size structures) are stored on the stack, which I've set as executable using the aforementioned flags (<code>-l:-fno-stack-protector -l:'-z execstack'</code>).</li>
+</ul>
+<p>Given I wanted to create a program that simply reads some shellcode (e.g. from a <code>shellcode.bin</code> file) and executes it, I couldn't use arrays, which are of fixed size, as I've already mentioned. But I couldn't use sequences either, as the shellcode wouldn't be executable and the program would return <code>SIGSEGV</code> (Segmentation Fault).</p>
+<p>The solution, although not very optimal, was to:</p>
+<ol>
+<li>use a very large array (in my case I chose <code>1024 bytes</code>)</li>
+<li>copy the bytes inside this data structure</li>
+<li>set the <code>EIP</code> register (Instruction Pointer) to the address of the first value of the array</li>
+</ol>
+<p>Setting the EIP register was yet another hurdle. I couldn't simply get the address and then jump right to it, but I had to create a function pointing to the address of the first value of the array.</p>
+<p>Follows the code that performs the execution of the shellcode, extracted from the program I linked previously:</p>
+<div class="language-nim highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">proc </span><span class="nf">main</span><span class="p">():</span> <span class="n">void</span> <span class="o">=</span>
+
+    <span class="k">var</span> <span class="n">shellcode_empty_array</span><span class="p">:</span> <span class="kt">array</span><span class="o">[</span><span class="mi">1024</span><span class="p">,</span> <span class="n">byte</span><span class="o">]</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">byte_value</span> <span class="ow">in</span> <span class="n">decrypted_shellcode_bytes</span><span class="p">:</span>
+        <span class="n">shellcode_empty_array</span><span class="o">[</span><span class="n">index</span><span class="o">]</span> <span class="o">=</span> <span class="n">byte_value</span>
+    
+    <span class="c"># get the address of the decrypted shellcode</span>
+    <span class="k">let</span> <span class="n">shellcode_pointer</span> <span class="o">=</span> <span class="k">cast</span><span class="o">[</span><span class="n">ByteAddress</span><span class="o">]</span><span class="p">(</span><span class="n">shellcode_empty_array</span><span class="p">.</span><span class="k">addr</span><span class="p">)</span>
+    
+    <span class="c"># create a function pointing to this address</span>
+    <span class="k">var</span> <span class="n">run_shellcode</span> <span class="p">:</span> <span class="p">(</span><span class="k">proc</span><span class="p">()</span> <span class="p">{.</span><span class="n">cdecl</span><span class="p">,</span> <span class="n">gcsafe</span><span class="p">.})</span> <span class="o">=</span> <span class="k">cast</span><span class="o">[</span><span class="p">(</span><span class="k">proc</span><span class="p">()</span> <span class="p">{.</span><span class="n">cdecl</span><span class="p">,</span> <span class="n">gcsafe</span><span class="p">.})</span><span class="o">]</span><span class="p">(</span><span class="n">shellcode_pointer</span><span class="p">)</span>
+
+    <span class="c"># in my case the function echo is based on fwrite, so you can set a</span>
+    <span class="c">#   breakpoint on fwrite if you want to check the shellcode:</span>
+    <span class="c">#       gef&gt; b *fwrite</span>
+    <span class="n">echo</span> <span class="s">"[+] Running shellcode"</span>
+    <span class="n">run_shellcode</span><span class="p">()</span>
+</code></pre></div></div>
+<p>To test this new piece of code, I've created a file named <code>shellcode.bin</code> containing the following shellcode (<code>execve</code> of <code>/bin/sh</code>):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nt">-ne</span> <span class="s2">"</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">6e</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">62</span><span class="se">\x</span><span class="s2">69</span><span class="se">\x</span><span class="s2">b0</span><span class="se">\x</span><span class="s2">0b</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e3</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c9</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">d2</span><span class="se">\x</span><span class="s2">cd</span><span class="se">\x</span><span class="s2">80"</span> <span class="o">&gt;</span> shellcode.bin
+</code></pre></div></div>
+<p>If you were to compile the program <code>decrypter.nim</code> for 32-bit x86 systems, and execute it, it would spawn a <code>/bin/sh</code> shell, as shown below:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rbct@debian11:~/slae32/assignment/7<span class="nv">$ </span>./decrypter <span class="nt">--input</span><span class="o">=</span>/tmp/encrypted.bin <span class="nt">--output</span><span class="o">=</span>/tmp/decrypted.bin <span class="nt">--key</span><span class="o">=</span><span class="s1">'0123456789abcdef'</span>
+
+<span class="c"># [+] Input shellcode: /tmp/encrypted.bin</span>
+<span class="c"># [+] Using encryption key: 0123456789abcdef</span>
+<span class="c"># [+] Output file: /tmp/decrypted.bin</span>
+<span class="c"># [+] Decrypted bytes: @[49, 192, 80, 104, 110, 47, 115, 104, 104, 47, 47, 98, 105, 176, 11, 137, 227, 49, 201, 49, 210, 205, 128]</span>
+<span class="c"># [+] Writing decrypted shellcode to file: /tmp/decrypted.bin</span>
+
+rbct@debian11:~/slae32/assignment/7<span class="nv">$ </span>./decrypter <span class="nt">--input</span><span class="o">=</span>/tmp/encrypted.bin <span class="nt">--output</span><span class="o">=</span>/tmp/decrypted.bin <span class="nt">--key</span><span class="o">=</span><span class="s1">'0123456789abcdef'</span> <span class="nt">--execute</span>
+
+<span class="c"># [+] Input shellcode: /tmp/encrypted.bin</span>
+<span class="c"># [+] Using encryption key: 0123456789abcdef</span>
+<span class="c"># [+] Output file: /tmp/decrypted.bin</span>
+<span class="c"># [+] Decrypted bytes: @[49, 192, 80, 104, 110, 47, 115, 104, 104, 47, 47, 98, 105, 176, 11, 137, 227, 49, 201, 49, 210, 205, 128]</span>
+<span class="c"># [+] Writing decrypted shellcode to file: /tmp/decrypted.bin</span>
+<span class="c"># [+] Running shellcode</span>
+<span class="nv">$ </span><span class="nb">whoami</span>
+<span class="c"># rbct</span>
+<span class="nv">$ </span><span class="nb">id</span>
+<span class="c"># uid=1000(rbct) gid=1000(rbct) groups=1000(rbct),24(cdrom),25(floppy),29(audio),30(dip),44(video),46(plugdev),109(netdev),113(bluetooth),118(scanner)</span>
+<span class="nv">$ </span><span class="nb">exit
+</span>rbct@debian11:~/slae32/assignment/7<span class="err">$</span>
+</code></pre></div></div>
+<p>As you can see, running the program on a 32-bit x86 system, the program managed to decrypt and run the shellcode.</p>
+
+
+            <footer class="tags">
+                <section class="mono tags">
+                    Tagged
+
+                    
+                    <a href="/tags#/tags/slae/">slae</a>, <a href="/tags#/tags/x86/">x86</a>, <a href="/tags#/tags/assembly/">assembly</a>, <a href="/tags#/tags/c/">c</a>, <a href="/tags#/tags/exam/">exam</a>, <a href="/tags#/tags/shellcode/">shellcode</a>, <a href="/tags#/tags/nim/">nim</a>, <a href="/tags#/tags/encryption/">encryption</a>
+                </section><section class="pagination">
+                        <a href="/22/01/04/slae32-assignment-6_3">
+                            <div class="mono">PREVIOUS</div>
+                            SLAE x86 Exam - Assignment #6 Part 3
+                        </a>
+                    </section></footer>
+        </main>
+    </article>
+  </body>
+</html>

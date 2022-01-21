@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+  <!-- Inspired by https://secret.club/ and https://github.com/clayh53/tufte-jekyll -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SLAE x86 Exam - Assignment #3</title>
+    <meta name="description" content="DisclaimerThis blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:https://www.pentesteracadem...">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/fonts.min.css">
+    <link rel="canonical" href="/21/12/21/slae32-assignment-3">
+    <link rel="alternate" type="application/rss+xml" title="rbct" href="/feed.xml" />
+
+    <style>
+         * { margin: 0; box-sizing: border-box; color: inherit; text-decoration: inherit; } html { background: var(--bg-0); color: var(--text-0); width: 100%; text-rendering: optimizeLegibility; font-feature-settings: "kern" 1; font-feature-settings: "liga" 1; min-width: 100vw; overflow-x: hidden; -webkit-text-size-adjust: 100%; } @media all and (min-width:640px) { html{ font-size: 1rem; } } @media all and (min-width:720px) { html{ font-size: 17px; } } @media all and (min-width:960px) { html{ font-size: 1rem; } } body { max-width: 944px; margin: 0 auto; padding: 0 24px; font-family: "JetBrains Mono",monospace; text-rendering: geometricPrecision; -moz-osx-font-smoothing: grayscale; } header, h1, h2, h3, .sans { font-family: 'Space Grotesk', Helvetica, sans-serif; } code, .mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; } body > header { display: flex; justify-content: space-between; align-items: center; margin: 2em 0; } nav a { margin-left: 1.5em; letter-spacing: 0.07em; font-size: 1rem; } :root { --text-0: rgba(255, 255, 255, 87%); --text-1: rgba(255, 255, 255, 60%); --bg-0: #1d2021; --bg-1: rgba(255, 255, 255, 5%); --bg-2: rgba(255, 255, 255, 12%); --accent: #ef5350; --keyword: #b794f6; --string: #89a2f6; --literal: #f88478; --type: #f8819c; } @media (prefers-color-scheme: light) { :root { --text-0: rgba(0, 0, 0, 87%); --text-1: rgba(0, 0, 0, 66%); --bg-0: #fff; --bg-1: #f2f2f2; --bg-2: rgba(0, 0, 0, 12%); --keyword: #7c4dff; --string: #586ada; --literal: #d14641; --type: #bd00f8; } } .tags, .pagination > :nth-child(2) { margin-bottom: 2rem; } .tags, .pagination .mono { font-size: 1rem; } .tags > a, .pagination .mono { color: var(--accent); } .pagination { display: flex; justify-content: space-between; flex-wrap: wrap-reverse; } .pagination > a { font-size: 1rem; display: inline-block; } .pagination .mono { letter-spacing: 0.07em; } article > :not(main) { font-size: 16px; } article > h1 { font-size: 2rem; margin-bottom: 12px; } .authors { position: absolute; margin-top: 4px; color: var(--text-1); } .authors > a { color: var(--text-0); } article > div > img { display: inline; object-fit: cover; height: 48px; width: 48px; border-radius: 100%; margin-right: 8px; background: var(--bg-1); } article > time { color: var(--text-1); position: absolute; margin: -24px 0 0 56px; } article > hr { width: 128px; border: 2.5px solid var(--bg-1); margin-top: 12px; } main { margin: 2rem 0; } main > :nth-last-child(2) { margin-bottom: 2rem; } main img, main video, main iframe, main object { max-width: 100%; height: auto; display: flex; margin: auto; } main iframe { width: 100%; height: 504px; } p, ul, ol { line-height: 1.725; margin-bottom: 1rem; } object { margin-bottom: 1rem; } h1, h2, h3 { position: relative; margin: 1.2rem 0 1.5rem 0; } h3, h2 { line-height: 24px; } main h1:before, h2:before, h3:before { content: "#"; color: var(--accent); font-weight: bold; margin-right: 10px } h3:before { content: "##"; } h1 { font-size: 1.3em; } h3 { font-size: 1.3em; } p a, main li a { text-decoration: underline; } ul { list-style: none; } ul li, ol li { padding-left: 1rem; margin: 0 0 0.2rem 1rem; } ul li::before { content: "•"; float: left; margin-left: -2rem; transform: scale(1.4); } blockquote { color: var(--text-1); font-style: italic; margin: 0 2em 0 0; padding-left: 20px; border-left: 4px solid #444 } .footnotes { border-top: 1px solid var(--bg-1); padding-top: 1rem; } pre { padding-left: 5px; overflow-x: scroll; scrollbar-width: none; -ms-overflow-style: none; } pre::-webkit-scrollbar { width: 0; height: 0; } :not(pre) > code { color: #fe8019; background: var(--bg-1); padding: 2px 4px; } pre > code { display: inline-block; } p > code { font-size: 0.925rem; } @media screen and (min-width: 640px) { pre > code { font-size: 1rem; } } @media screen and (max-width: 944px) { main iframe { height: calc((100vw - 24px) * 0.5625); } ul li::before { margin-left: -1.25rem; } ul li { padding-left: 0.625rem; margin-left: 0.625rem; } ol li { padding-left: 0.25rem; } } .aside { color: var(--text-1); } @media screen and (min-width: 1074px) { article::before { background: radial-gradient( circle at center, var(--bg-1) 25%, transparent 25% ), transparent; background-size: 10px 10px; content: ""; display: block; height: 300px; width: 300px; position: absolute; transform: translate(-72px, -72px); z-index: -1; } article { padding: 24px 0 0 24px; margin: -24px 0 0 -24px; background: var(--bg-0); } article h1:first-of-type { margin-top: 0; } body > header { margin-bottom: 5em; } } @media screen and (max-width: 1584px) { .aside { position: relative; padding: 4px 0 4px 0; border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1); } p:has(aside) { border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1) }} @media screen and (min-width: 1584px) { .aside { float: left; position: absolute; left: 0; transform: translate(calc(-100% - 28px), calc(-100% - 1rem)); width: 320px; text-align: right; clear: both; } footer.tags { position: absolute; left: calc(100% + 24px); width: 320px; top: 0; } } code .gu, code .gh { font-weight: bold; } code .p { color: var(--text-1); } code .c, code .ch, code .cm, code .cp, code .cpf, code .c1, code .cs { color: var(--text-1); } code .o, code .ow { color: var(--keyword); } code .k, code .kn, code .kc, code .kp, code .kr, code .nt, code b { color: var(--keyword); font-weight: bold; } code .kt, code .kd, code .nb, code .nl, code .nv, code .vc, code .vg, code .vi, code .vm, code .gd { color: var(--type); } code .m, code .mb, code .mf, code .mh, code .mi, code .mo, code .il, code .se { color: var(--literal); } code .s, code .sa, code .sb, code .sc, code .dl, code .sd, code .s2, code .sh, code .si, code .sx, code .sr, code .s1, code .ss, code .gi { color: var(--string); } div.epigraph footer { text-align: right; margin-bottom: 2rem;} section.pagination { padding-bottom: 1rem; } img + em { display: block; text-align: center; } table { border: 1px solid; padding: 10px; margin-bottom: 10px } td { padding: 2px 10px; } div.highlighter-rouge, code.language-text { background-color: var(--bg-1); padding: 15px 10px 10px 10px; margin-bottom: 10px } sub { font-size: 0.875rem }
+    </style>
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+    <a href="/">RBCT</a>
+
+    <nav class="group">
+        
+            
+        
+            
+                
+                <a href="/">POSTS</a>
+                
+            
+        
+            
+                
+                <a href="/about/">ABOUT</a>
+                
+            
+        
+    </nav>
+</header>
+    <article aria-label="Content" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <h1>SLAE x86 Exam - Assignment #3</h1>
+
+        <div itemprop="author" itemscope="" itemtype="http://schema.org/Person" style="height:48px">
+            <img itemprop="image" alt="rbct" src="/assets/author_profile_img/rbct.png">
+            <span class="mono authors">
+                <a href="/author/rbct" itemprop="name">rbct</a>
+            </span>
+        </div>
+
+        <time class="mono" datetime="2021-12-21T00:00:00+01:00" itemProp="datePublished">
+            21 December 2021
+        </time>
+
+        <hr>
+        <main itemprop="articleBody" style="position: relative;">
+            <h2 id="disclaimer">Disclaimer</h2>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:</p>
+<p><a href="https://www.pentesteracademy.com/course?id=3">https://www.pentesteracademy.com/course?id=3</a></p>
+<p>Student ID: PA-30398</p>
+<h2 id="foreword">Foreword</h2>
+<p>The 3rd assignment requires you to write shellcode for an <code>Egg Hunter</code>. Moreover, it should be <em>configurable for different payloads</em>.</p>
+<h2 id="source-code">Source code</h2>
+<p>THe source code for this assignment can be found <a href="https://github.com/rbctee/SlaeExam/tree/main/slae32/assignment/3">here</a>.</p>
+<p>Follows the list of files:</p>
+<ul>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/3/egg_hunter.nasm">egg_hunter.nasm</a>, the Assembly code of the egg-hunter</li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/3/test_egg_hunter.c">test_egg_hunter.c</a>, a C program written for testing the egg-hunter with the <code>execve</code> shellcode</li>
+</ul>
+<h2 id="theory">Theory</h2>
+<p>Now comes the question: what is an <em>Egg Hunter</em>?</p>
+<p>According to a <a href="https://www.exploit-db.com/docs/english/18482-egg-hunter---a-twist-in-buffer-overflow.pdf">paper</a> from <code>Exploit-DB</code>:</p>
+<blockquote>
+<p>When the &quot;Egg hunter&quot; shellcode is executed, it searches for the unique &quot;tag&quot; that was prefixed with the large payload and starts the execution of the payload.
+[...]
+The Egg hunting technique is used when there are not enough available consecutive memory locations to insert the shellcode. Instead, a unique &quot;tag&quot; is prefixed with shellcode.</p>
+</blockquote>
+<h2 id="practice">Practice</h2>
+<h3 id="implementation">Implementation</h3>
+<p>Given I had zero experience with <code>egg hunters</code>, I tried to search for documents detailing how to create this type of shellcode.</p>
+<p>I stumbled on this particular document - <a href="http://www.hick.org/code/skape/papers/egghunt-shellcode.pdf">Safely Searching Process Virtual Address Space</a> - which shows some techniques you can employ for your own implementation.</p>
+<p>Since the <code>SIGSEGV handler technique</code> is considered <em>infeasible</em>, mainly due to its size, I decided to try using the <strong>system call technique</strong>.</p>
+<p>The system call I chose to use is <a href="https://man7.org/linux/man-pages/man2/chdir.2.html">chdir()</a>. Follows its prototype:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;unistd.h&gt;
+</span>
+<span class="kt">int</span> <span class="nf">chdir</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">path</span><span class="p">);</span>
+</code></pre></div></div>
+<p>All it does is try to change the <strong>Current Working Directory</strong> (<code>CWD</code>) to the path pointed to the argument <code>path</code> (which is a pointer).</p>
+<p>Since it accepts a pointer, we can use it to test memory addresses. Given the function already implements a <code>SIGSEGV handler</code>, it doesn't throw a SIGSEGV error, crashing the program.</p>
+<p>Instead, it returns the error <strong>0xfffffff2</strong> (<code>EFAULT</code>), indicating that a bad address was passed to the function.</p>
+<p>Follows my implementation in Assembly language:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Author: Robert C. Raducioiu (rbct)</span>
+
+<span class="nf">global</span> <span class="nv">_start</span>
+
+<span class="nf">section</span> <span class="nv">.text</span>
+
+<span class="nl">_start:</span>
+
+    <span class="c1">; clear registers for later use</span>
+    <span class="nf">xor</span> <span class="nb">ebx</span><span class="p">,</span> <span class="nb">ebx</span>
+    <span class="nf">mul</span> <span class="nb">ebx</span>
+
+<span class="c1">; This routine checks loops over memory addresses, checking if they are valid</span>
+<span class="c1">; If the address is valid the shellcode continues to CheckBytes</span>
+<span class="nl">CheckAddress:</span>
+
+    <span class="c1">; increment memory address by 1 (or use "add ebx, 4" if</span>
+    <span class="c1">;   you're sure about the offset)</span>
+    <span class="nf">inc</span> <span class="nb">ebx</span>
+
+    <span class="c1">; call chdir(EBX)</span>
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span> <span class="nb">eax</span>
+    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span> <span class="mi">12</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+
+    <span class="c1">; if the return value is 0xfffffff2 (EFAULT), go back to CheckAddress,</span>
+    <span class="c1">;   otherwise continue to CheckBytes</span>
+    <span class="nf">cmp</span> <span class="nb">al</span><span class="p">,</span> <span class="mh">0xf2</span>
+    <span class="nf">jz</span> <span class="nb">Ch</span><span class="nv">eckAddress</span>
+
+<span class="c1">; This routine checks the 4 bytes stored at the address validated by</span>
+<span class="c1">;   Checkaddress. The goal is to find the Egg Hunter Tag, in this case "rbct"</span>
+<span class="nl">CheckBytes:</span>
+
+    <span class="c1">; load the 4 bytes from the memory address we're checking</span>
+    <span class="nf">mov</span> <span class="nb">edx</span><span class="p">,</span> <span class="kt">DWORD</span><span class="p">[</span><span class="nb">ebx</span><span class="p">]</span>
+
+    <span class="c1">; string "rbcs"</span>
+    <span class="nf">mov</span> <span class="nb">esi</span><span class="p">,</span> <span class="mh">0x72626373</span>
+    
+    <span class="c1">; increment esi, thus: "rbct"</span>
+    <span class="nf">inc</span> <span class="nb">esi</span>
+
+    <span class="c1">; check if the 4 bytes are equal to the flag, otherwise</span>
+    <span class="c1">;   check the next 4 bytes</span>
+    <span class="nf">cmp</span> <span class="nb">edx</span><span class="p">,</span> <span class="nb">esi</span>
+    <span class="nf">jnz</span> <span class="nb">Ch</span><span class="nv">eckAddress</span>
+
+    <span class="c1">; if the two DWORDs are equal, then increment the address by 4, and</span>
+    <span class="c1">;   execute the shellcode</span>
+    <span class="nf">add</span> <span class="nb">ebx</span><span class="p">,</span> <span class="mi">4</span>
+    <span class="nf">call</span> <span class="nb">ebx</span>
+
+</code></pre></div></div>
+<h3 id="testing">Testing</h3>
+<p>I've tested this egg-hunter above with the <code>exit shellcode</code>. To do this, I've appended the following Assembly code at the end of the previous file:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">section</span> <span class="nv">.data</span>
+
+    <span class="nl">shellcode:</span> <span class="kd">db</span> <span class="mh">0x74</span><span class="p">,</span> <span class="mh">0x63</span><span class="p">,</span> <span class="mh">0x62</span><span class="p">,</span> <span class="mh">0x72</span><span class="p">,</span> <span class="mh">0x31</span><span class="p">,</span> <span class="mh">0xc0</span><span class="p">,</span> <span class="mh">0x40</span><span class="p">,</span> <span class="mh">0xcd</span><span class="p">,</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p>After running it, I've confirmed it works correctly:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># assembling</span>
+nasm <span class="nt">-f</span> elf32 egg_hunter.nasm
+
+<span class="c"># linking</span>
+<span class="c">#   also set the stack as executable (for the exit shellcode)</span>
+ld <span class="nt">-N</span> <span class="nt">-o</span> egg_hunter egg_hunter.o
+
+./egg_hunter
+
+</code></pre></div></div>
+<p>Instead of throwing a <code>SIGSEGV</code> error, it ran the exit shellcode successfully.</p>
+<p>Next, I decided to try it with the <code>execve-stack shellcode</code>:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+</span>
+<span class="c1">// tag "rbct" prepended to the shellcode</span>
+<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">shellcode</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"</span><span class="se">\x74\x63\x62\x72\x31\xc0\x50\x68\x6e\x2f\x73\x68\x68\x2f\x2f\x62\x69\xb0\x0b\x89\xe3\x31\xc9\x31\xd2\xcd\x80</span><span class="s">"</span><span class="p">;</span>
+
+<span class="c1">// egg-hunter shellcode</span>
+<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">egghunter</span><span class="p">[]</span> <span class="o">=</span> <span class="s">"</span><span class="se">\x31\xdb\xf7\xe3\x43\x31\xc0\xb0\x0c\xcd\x80\x3c\xf2\x74\xf5\x8b\x13\xbe\x73\x63\x62\x72\x46\x39\xf2\x75\xe9\x83\xc3\x04\xff\xd3</span><span class="s">"</span><span class="p">;</span>
+
+<span class="n">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[+] Shellcode length: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">shellcode</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"[+] Egg-hunter length: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">egghunter</span><span class="p">));</span>
+
+    <span class="c1">// run the egg-hunter shellcode</span>
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">)()</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="p">)())</span><span class="n">egghunter</span><span class="p">;</span>
+    <span class="n">ret</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>I saved the <code>execve</code> shellcode inside an array named <code>shellcode</code>, while storing the egg-hunter shellcode inside the array <code>egghunter</code>.</p>
+<p>Inside the <code>main</code> function, the programs prints the length of the two shellcodes, and finally executes the egg-hunter shellcode. It does so by getting the pointer of the latter, and turning it into a function.</p>
+<p>Follows a screenshot demostrating the successful execution of the program:</p>
+<p><img src="/assets/img/slae32/egg_hunter_shellcode_proof.png" alt="Egg-hunter found and executed the execve shellcode" />
+<em>Egg-hunter found and executed the execve shellcode</em></p>
+
+
+            <footer class="tags">
+                <section class="mono tags">
+                    Tagged
+
+                    
+                    <a href="/tags#/tags/slae/">slae</a>, <a href="/tags#/tags/assembly/">assembly</a>, <a href="/tags#/tags/nasm/">nasm</a>, <a href="/tags#/tags/c/">c</a>, <a href="/tags#/tags/egghunter/">egghunter</a>, <a href="/tags#/tags/shellcode/">shellcode</a>, <a href="/tags#/tags/exam/">exam</a>, <a href="/tags#/tags/shellcode/">shellcode</a>
+                </section><section class="pagination">
+                        <a href="/21/12/21/slae32-assignment-4">
+                            <div class="mono">NEXT</div>
+                            SLAE x86 Exam - Assignment #4
+                        </a>
+                    </section><section class="pagination">
+                        <a href="/21/12/19/slae32-assignment-2">
+                            <div class="mono">PREVIOUS</div>
+                            SLAE x86 Exam - Assignment #2
+                        </a>
+                    </section></footer>
+        </main>
+    </article>
+  </body>
+</html>

