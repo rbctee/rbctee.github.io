@@ -37,7 +37,7 @@ The full source code is stored inside the repository created for this Exam: [rbc
 
 List of files:
 
-- [attempt/first/shell_bind_tcp.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/first/shell_bind_tcp.c): first attempt at writing a Bind Shell in `C`
+- [attempt/first/shell_bind_tcp.c](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/first/shell_bind_tcp.c): first attempt at writing a Bind Shell in `C`
 - [attempt/first/shell_bind_tcp.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/first/shell_bind_tcp.nasm): first attempt at writing a Bind Shell in `Assembly`
 - [attempt/final/shell_bind_tcp.c](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/final/shell_bind_tcp.c): final attempt at writing a Bind Shell in `C`
 - [attempt/final/shell_bind_tcp.nasm](https://github.com/rbctee/SlaeExam/blob/main/slae32/assignment/1/attempt/final/shell_bind_tcp.nasm): final attempt at writing a Bind Shell in `Assembly`
