@@ -28,7 +28,7 @@ title:    Tags
 
 <section class="tags mono"> 
     {%- for tag in tags -%}
-        <a href="#{{ tag | slugify }}" class="codinfox-tag-mark">
+        <a href="#{{ tag | slugify }}">
             {{ tag }}
         </a>
     {%- endfor -%}
