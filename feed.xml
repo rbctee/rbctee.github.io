@@ -2,11 +2,11 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>rbct</title>
-    <description>Blog about cybersecurity and other</description>
+    <description>Blog about cybersecurity</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sat, 29 Jan 2022 16:31:26 +0100</pubDate>
-    <lastBuildDate>Sat, 29 Jan 2022 16:31:26 +0100</lastBuildDate>
+    <pubDate>Sat, 29 Jan 2022 17:18:12 +0100</pubDate>
+    <lastBuildDate>Sat, 29 Jan 2022 17:18:12 +0100</lastBuildDate>
     <generator>Jekyll v4.2.0</generator>
     
       <item>

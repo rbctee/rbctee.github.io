@@ -1,0 +1,1833 @@
+<!DOCTYPE html>
+<html><!-- Inspired by https://secret.club/ and https://github.com/clayh53/tufte-jekyll -->
+
+<head>
+   <meta charset="utf-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+   <title>Tags</title>
+   <meta name="description" content="Blog about cybersecurity">
+  
+   <link rel="stylesheet" type="text/css" href="/assets/css/fonts.min.css">
+   <link rel="canonical" href="/tags">
+   <link rel="alternate" type="application/rss+xml" title="rbct" href="/feed.xml" />
+  
+   <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; color: inherit; text-decoration: inherit; } html { background: var(--bg-0); color: var(--text-0); width: 100%; text-rendering: optimizeLegibility; font-feature-settings: "kern" 1; font-feature-settings: "liga" 1; min-width: 100vw; overflow-x: hidden; -webkit-text-size-adjust: 100%; } @media all and (min-width:640px) { html{ font-size: 16.5px; } } @media all and (min-width:720px) { html{ font-size: 17px; } } @media all and (min-width:960px) { html{ font-size: 1rem; } } body { text-rendering: geometricPrecision; -moz-osx-font-smoothing: grayscale; max-width: 944px; margin: 0 auto; padding: 0 24px; font-family: "Charter", serif; } header, h1, h2, h3, .sans { font-family: 'Space Grotesk', Helvetica, sans-serif; } code, .mono { font-family: 'JetBrains Mono', monospace; font-weight: 500; } :root { --text-0: rgba(255, 255, 255, 87%); --text-1: rgba(255, 255, 255, 60%); --bg-0: #1d2021; --bg-1: rgba(255, 255, 255, 5%); --bg-2: rgba(255, 255, 255, 12%); --accent: #ef5350; } @media (prefers-color-scheme: light) { :root { --text-0: rgba(0, 0, 0, 87%); --text-1: rgba(0, 0, 0, 66%); --bg-0: #fff; --bg-1: #f2f2f2; --bg-2: rgba(0,0,0,12%); } } body > header { display: flex; justify-content: space-between; align-items: center; margin: 2em 0; } nav a { margin-left: 1.5em; letter-spacing: 0.07em; font-size: 1rem; } .tags > a { padding: 0 12px; background: var(--bg-2); display: inline-block; margin: 4px; font-size: 0.8rem; height: 32px; line-height: 32px; } .tags { margin: 4rem 0 4rem 0; display: flex; flex-wrap: wrap; } h2 { font-weight: bold !important; margin-bottom: .2rem; font-size: 1.4rem; } h2:before { color: var(--accent); content: "#"; font-weight: bold; position: relative; margin-right: 10px; } ul { margin-bottom: 2rem; list-style: none; line-height: 1.35; } li { position: relative; margin-bottom: 1rem; } li > a { font-size: 1.2rem; } time, li > div { font-size: .9rem; color: var(--text-1); } li > div > a { color: var(--text-0); } time { display: block; } @media screen and (min-width: 1248px) { time { position: absolute; left: 0; top: 0; transform: translateX(calc(-100% - 24px)); } } @media screen and (max-width: 1248px) { li { margin-left: -24px; padding-left: 20px; border-left: solid 4px var(--bg-2); } } section.tags.mono > a { font-size: 0.9rem }
+   </style>
+</head>
+  <body><!--- Header and nav template site-wide -->
+<header>
+    <a href="/">RBCT</a>
+
+    <nav class="group">
+        
+
+            
+            
+
+        
+
+            
+            
+
+                
+                <a href="/">POSTS</a>
+                
+
+            
+
+        
+
+            
+            
+
+                
+                <a href="/about/">ABOUT</a>
+                
+
+            
+
+        
+
+            
+            
+
+        
+    </nav>
+</header><main aria-label="Content">
+      
+
+
+
+
+
+
+
+
+<section class="tags mono"><a href="#assembly" class="codinfox-tag-mark">
+            assembly
+        </a><a href="#c" class="codinfox-tag-mark">
+            c
+        </a><a href="#decoding" class="codinfox-tag-mark">
+            decoding
+        </a><a href="#egghunter" class="codinfox-tag-mark">
+            egghunter
+        </a><a href="#encoding" class="codinfox-tag-mark">
+            encoding
+        </a><a href="#encryption" class="codinfox-tag-mark">
+            encryption
+        </a><a href="#exam" class="codinfox-tag-mark">
+            exam
+        </a><a href="#metasploit" class="codinfox-tag-mark">
+            metasploit
+        </a><a href="#nasm" class="codinfox-tag-mark">
+            nasm
+        </a><a href="#nim" class="codinfox-tag-mark">
+            nim
+        </a><a href="#polymorphism" class="codinfox-tag-mark">
+            polymorphism
+        </a><a href="#python" class="codinfox-tag-mark">
+            python
+        </a><a href="#shellcode" class="codinfox-tag-mark">
+            shellcode
+        </a><a href="#slae" class="codinfox-tag-mark">
+            slae
+        </a><a href="#x86" class="codinfox-tag-mark">
+            x86
+        </a></section>
+
+
+
+    <h2 id="assembly" class="mono">Assembly</h2>
+
+    <ul>
+        
+            
+                <li>
+                    <time datetime="2022-01-12T00:00:00+01:00" class="mono">
+                        12 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/12/slae32-assignment-7">SLAE x86 Exam - Assignment #7</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nim">nim</a>, <a href="/tags#encryption">encryption</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_3">SLAE x86 Exam - Assignment #6 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_2">SLAE x86 Exam - Assignment #6 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_1">SLAE x86 Exam - Assignment #6 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_4">SLAE x86 Exam - Assignment #5 Part 4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#x86">x86</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_3">SLAE x86 Exam - Assignment #5 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_2">SLAE x86 Exam - Assignment #5 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_1">SLAE x86 Exam - Assignment #5 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#x86">x86</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-4">SLAE x86 Exam - Assignment #4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#x86">x86</a>, <a href="/tags#python">python</a>, <a href="/tags#c">c</a>, <a href="/tags#encoding">encoding</a>, <a href="/tags#decoding">decoding</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-3">SLAE x86 Exam - Assignment #3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#egghunter">egghunter</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-19T00:00:00+01:00" class="mono">
+                        19 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/19/slae32-assignment-2">SLAE x86 Exam - Assignment #2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-11-28T00:00:00+01:00" class="mono">
+                        28 November 2021
+                    </time>
+
+                    <a class="sans" href="/21/11/28/slae32-assignment-1">SLAE x86 Exam - Assignment #1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+</ul>
+
+
+    <h2 id="c" class="mono">C</h2>
+
+    <ul>
+        
+            
+                <li>
+                    <time datetime="2022-01-12T00:00:00+01:00" class="mono">
+                        12 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/12/slae32-assignment-7">SLAE x86 Exam - Assignment #7</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nim">nim</a>, <a href="/tags#encryption">encryption</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_3">SLAE x86 Exam - Assignment #6 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_2">SLAE x86 Exam - Assignment #6 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_1">SLAE x86 Exam - Assignment #6 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_4">SLAE x86 Exam - Assignment #5 Part 4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#x86">x86</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_3">SLAE x86 Exam - Assignment #5 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_2">SLAE x86 Exam - Assignment #5 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_1">SLAE x86 Exam - Assignment #5 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#x86">x86</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-4">SLAE x86 Exam - Assignment #4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#x86">x86</a>, <a href="/tags#python">python</a>, <a href="/tags#c">c</a>, <a href="/tags#encoding">encoding</a>, <a href="/tags#decoding">decoding</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-3">SLAE x86 Exam - Assignment #3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#egghunter">egghunter</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-19T00:00:00+01:00" class="mono">
+                        19 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/19/slae32-assignment-2">SLAE x86 Exam - Assignment #2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-11-28T00:00:00+01:00" class="mono">
+                        28 November 2021
+                    </time>
+
+                    <a class="sans" href="/21/11/28/slae32-assignment-1">SLAE x86 Exam - Assignment #1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+</ul>
+
+
+    <h2 id="decoding" class="mono">Decoding</h2>
+
+    <ul>
+        
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-4">SLAE x86 Exam - Assignment #4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#x86">x86</a>, <a href="/tags#python">python</a>, <a href="/tags#c">c</a>, <a href="/tags#encoding">encoding</a>, <a href="/tags#decoding">decoding</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+  
+            
+  
+            
+  
+</ul>
+
+
+    <h2 id="egghunter" class="mono">Egghunter</h2>
+
+    <ul>
+        
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-3">SLAE x86 Exam - Assignment #3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#egghunter">egghunter</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+  
+            
+  
+</ul>
+
+
+    <h2 id="encoding" class="mono">Encoding</h2>
+
+    <ul>
+        
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-4">SLAE x86 Exam - Assignment #4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#x86">x86</a>, <a href="/tags#python">python</a>, <a href="/tags#c">c</a>, <a href="/tags#encoding">encoding</a>, <a href="/tags#decoding">decoding</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+  
+            
+  
+            
+  
+</ul>
+
+
+    <h2 id="encryption" class="mono">Encryption</h2>
+
+    <ul>
+        
+            
+                <li>
+                    <time datetime="2022-01-12T00:00:00+01:00" class="mono">
+                        12 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/12/slae32-assignment-7">SLAE x86 Exam - Assignment #7</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nim">nim</a>, <a href="/tags#encryption">encryption</a>
+                    </div>
+                </li>
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+</ul>
+
+
+    <h2 id="exam" class="mono">Exam</h2>
+
+    <ul>
+        
+            
+                <li>
+                    <time datetime="2022-01-12T00:00:00+01:00" class="mono">
+                        12 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/12/slae32-assignment-7">SLAE x86 Exam - Assignment #7</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nim">nim</a>, <a href="/tags#encryption">encryption</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_3">SLAE x86 Exam - Assignment #6 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_2">SLAE x86 Exam - Assignment #6 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_1">SLAE x86 Exam - Assignment #6 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_4">SLAE x86 Exam - Assignment #5 Part 4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#x86">x86</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_3">SLAE x86 Exam - Assignment #5 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_2">SLAE x86 Exam - Assignment #5 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_1">SLAE x86 Exam - Assignment #5 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#x86">x86</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-4">SLAE x86 Exam - Assignment #4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#x86">x86</a>, <a href="/tags#python">python</a>, <a href="/tags#c">c</a>, <a href="/tags#encoding">encoding</a>, <a href="/tags#decoding">decoding</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-3">SLAE x86 Exam - Assignment #3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#egghunter">egghunter</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-19T00:00:00+01:00" class="mono">
+                        19 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/19/slae32-assignment-2">SLAE x86 Exam - Assignment #2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-11-28T00:00:00+01:00" class="mono">
+                        28 November 2021
+                    </time>
+
+                    <a class="sans" href="/21/11/28/slae32-assignment-1">SLAE x86 Exam - Assignment #1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+</ul>
+
+
+    <h2 id="metasploit" class="mono">Metasploit</h2>
+
+    <ul>
+        
+            
+  
+            
+  
+            
+  
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_4">SLAE x86 Exam - Assignment #5 Part 4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#x86">x86</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_3">SLAE x86 Exam - Assignment #5 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_2">SLAE x86 Exam - Assignment #5 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_1">SLAE x86 Exam - Assignment #5 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#x86">x86</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+</ul>
+
+
+    <h2 id="nasm" class="mono">Nasm</h2>
+
+    <ul>
+        
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_3">SLAE x86 Exam - Assignment #6 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_2">SLAE x86 Exam - Assignment #6 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_1">SLAE x86 Exam - Assignment #6 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_4">SLAE x86 Exam - Assignment #5 Part 4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#x86">x86</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_3">SLAE x86 Exam - Assignment #5 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_2">SLAE x86 Exam - Assignment #5 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_1">SLAE x86 Exam - Assignment #5 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#x86">x86</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-4">SLAE x86 Exam - Assignment #4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#x86">x86</a>, <a href="/tags#python">python</a>, <a href="/tags#c">c</a>, <a href="/tags#encoding">encoding</a>, <a href="/tags#decoding">decoding</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-3">SLAE x86 Exam - Assignment #3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#egghunter">egghunter</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-19T00:00:00+01:00" class="mono">
+                        19 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/19/slae32-assignment-2">SLAE x86 Exam - Assignment #2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-11-28T00:00:00+01:00" class="mono">
+                        28 November 2021
+                    </time>
+
+                    <a class="sans" href="/21/11/28/slae32-assignment-1">SLAE x86 Exam - Assignment #1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+</ul>
+
+
+    <h2 id="nim" class="mono">Nim</h2>
+
+    <ul>
+        
+            
+                <li>
+                    <time datetime="2022-01-12T00:00:00+01:00" class="mono">
+                        12 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/12/slae32-assignment-7">SLAE x86 Exam - Assignment #7</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nim">nim</a>, <a href="/tags#encryption">encryption</a>
+                    </div>
+                </li>
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+</ul>
+
+
+    <h2 id="polymorphism" class="mono">Polymorphism</h2>
+
+    <ul>
+        
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_3">SLAE x86 Exam - Assignment #6 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_2">SLAE x86 Exam - Assignment #6 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_1">SLAE x86 Exam - Assignment #6 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+</ul>
+
+
+    <h2 id="python" class="mono">Python</h2>
+
+    <ul>
+        
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-4">SLAE x86 Exam - Assignment #4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#x86">x86</a>, <a href="/tags#python">python</a>, <a href="/tags#c">c</a>, <a href="/tags#encoding">encoding</a>, <a href="/tags#decoding">decoding</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-19T00:00:00+01:00" class="mono">
+                        19 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/19/slae32-assignment-2">SLAE x86 Exam - Assignment #2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-11-28T00:00:00+01:00" class="mono">
+                        28 November 2021
+                    </time>
+
+                    <a class="sans" href="/21/11/28/slae32-assignment-1">SLAE x86 Exam - Assignment #1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+</ul>
+
+
+    <h2 id="shellcode" class="mono">Shellcode</h2>
+
+    <ul>
+        
+            
+                <li>
+                    <time datetime="2022-01-12T00:00:00+01:00" class="mono">
+                        12 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/12/slae32-assignment-7">SLAE x86 Exam - Assignment #7</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nim">nim</a>, <a href="/tags#encryption">encryption</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_3">SLAE x86 Exam - Assignment #6 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_2">SLAE x86 Exam - Assignment #6 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_1">SLAE x86 Exam - Assignment #6 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_4">SLAE x86 Exam - Assignment #5 Part 4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#x86">x86</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_3">SLAE x86 Exam - Assignment #5 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_2">SLAE x86 Exam - Assignment #5 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_1">SLAE x86 Exam - Assignment #5 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#x86">x86</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-4">SLAE x86 Exam - Assignment #4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#x86">x86</a>, <a href="/tags#python">python</a>, <a href="/tags#c">c</a>, <a href="/tags#encoding">encoding</a>, <a href="/tags#decoding">decoding</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-3">SLAE x86 Exam - Assignment #3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#egghunter">egghunter</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-19T00:00:00+01:00" class="mono">
+                        19 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/19/slae32-assignment-2">SLAE x86 Exam - Assignment #2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-11-28T00:00:00+01:00" class="mono">
+                        28 November 2021
+                    </time>
+
+                    <a class="sans" href="/21/11/28/slae32-assignment-1">SLAE x86 Exam - Assignment #1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+</ul>
+
+
+    <h2 id="slae" class="mono">Slae</h2>
+
+    <ul>
+        
+            
+                <li>
+                    <time datetime="2022-01-12T00:00:00+01:00" class="mono">
+                        12 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/12/slae32-assignment-7">SLAE x86 Exam - Assignment #7</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nim">nim</a>, <a href="/tags#encryption">encryption</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_3">SLAE x86 Exam - Assignment #6 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_2">SLAE x86 Exam - Assignment #6 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_1">SLAE x86 Exam - Assignment #6 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_4">SLAE x86 Exam - Assignment #5 Part 4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#x86">x86</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_3">SLAE x86 Exam - Assignment #5 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_2">SLAE x86 Exam - Assignment #5 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_1">SLAE x86 Exam - Assignment #5 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#x86">x86</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-4">SLAE x86 Exam - Assignment #4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#x86">x86</a>, <a href="/tags#python">python</a>, <a href="/tags#c">c</a>, <a href="/tags#encoding">encoding</a>, <a href="/tags#decoding">decoding</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-3">SLAE x86 Exam - Assignment #3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#egghunter">egghunter</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-19T00:00:00+01:00" class="mono">
+                        19 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/19/slae32-assignment-2">SLAE x86 Exam - Assignment #2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-11-28T00:00:00+01:00" class="mono">
+                        28 November 2021
+                    </time>
+
+                    <a class="sans" href="/21/11/28/slae32-assignment-1">SLAE x86 Exam - Assignment #1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+</ul>
+
+
+    <h2 id="x86" class="mono">X86</h2>
+
+    <ul>
+        
+            
+                <li>
+                    <time datetime="2022-01-12T00:00:00+01:00" class="mono">
+                        12 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/12/slae32-assignment-7">SLAE x86 Exam - Assignment #7</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nim">nim</a>, <a href="/tags#encryption">encryption</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_3">SLAE x86 Exam - Assignment #6 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_2">SLAE x86 Exam - Assignment #6 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2022-01-04T00:00:00+01:00" class="mono">
+                        4 January 2022
+                    </time>
+
+                    <a class="sans" href="/22/01/04/slae32-assignment-6_1">SLAE x86 Exam - Assignment #6 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#polymorphism">polymorphism</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_4">SLAE x86 Exam - Assignment #5 Part 4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#x86">x86</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_3">SLAE x86 Exam - Assignment #5 Part 3</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_2">SLAE x86 Exam - Assignment #5 Part 2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>, <a href="/tags#x86">x86</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-25T00:00:00+01:00" class="mono">
+                        25 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/25/slae32-assignment-5_1">SLAE x86 Exam - Assignment #5 Part 1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#x86">x86</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#metasploit">metasploit</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-21T00:00:00+01:00" class="mono">
+                        21 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/21/slae32-assignment-4">SLAE x86 Exam - Assignment #4</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#x86">x86</a>, <a href="/tags#python">python</a>, <a href="/tags#c">c</a>, <a href="/tags#encoding">encoding</a>, <a href="/tags#decoding">decoding</a>, <a href="/tags#exam">exam</a>, <a href="/tags#shellcode">shellcode</a>
+                    </div>
+                </li>
+            
+  
+            
+  
+            
+                <li>
+                    <time datetime="2021-12-19T00:00:00+01:00" class="mono">
+                        19 December 2021
+                    </time>
+
+                    <a class="sans" href="/21/12/19/slae32-assignment-2">SLAE x86 Exam - Assignment #2</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+            
+                <li>
+                    <time datetime="2021-11-28T00:00:00+01:00" class="mono">
+                        28 November 2021
+                    </time>
+
+                    <a class="sans" href="/21/11/28/slae32-assignment-1">SLAE x86 Exam - Assignment #1</a>
+
+                    <div class="mono"><a href="" itemprop="name">rbct </a>tagged
+                        
+                        <a href="/tags#slae">slae</a>, <a href="/tags#x86">x86</a>, <a href="/tags#assembly">assembly</a>, <a href="/tags#shellcode">shellcode</a>, <a href="/tags#nasm">nasm</a>, <a href="/tags#c">c</a>, <a href="/tags#exam">exam</a>, <a href="/tags#python">python</a>
+                    </div>
+                </li>
+            
+  
+</ul>
+
+
+</div>
+
+    </main>
+  </body>
+</html>
