@@ -4,13 +4,18 @@
 
     <nav class="group">
         {% for node in site.pages %}
-            {% unless node.nav_exclude %}
+
+            {% assign is_tag = node.url | startswith: "/tag" %}
+            {% unless node.nav_exclude or is_tag %}
+
                 {% if page.url == node.url %}
                 <a class="active" href="{{node.url | prepend: site.baseurl}}" class="active">{{ node.title | upcase }}</a>
                 {% else %}
                 <a href="{{node.url | prepend: site.baseurl}}">{{ node.title | upcase }}</a>
                 {% endif %}
+
             {% endunless %}
+
         {% endfor %}
     </nav>
 </header>

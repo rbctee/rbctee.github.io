@@ -6,15 +6,7 @@ search: false
 classes: wide
 categories:
   - blog
-tags:
-  - slae
-  - x86
-  - assembly
-  - shellcode
-  - nasm
-  - c
-  - exam
-  - python
+tags: [slae, x86, assembly, shellcode, nasm, c, exam, python]
 ---
 
 ## Disclaimer

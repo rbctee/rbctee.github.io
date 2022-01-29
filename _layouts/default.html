@@ -9,7 +9,7 @@
         <div itemprop="author" itemscope="" itemtype="http://schema.org/Person" style="height:48px">
             <img itemprop="image" alt="rbct" src="/assets/author_profile_img/rbct.png">
             <span class="mono authors">
-                <a href="/author/rbct" itemprop="name">rbct</a>
+                <a href="" itemprop="name">rbct</a>
             </span>
         </div>
 
@@ -30,7 +30,7 @@
                     
                     {%- for tag in page.tags -%}
                         {%- assign tag_slug = tag | slugify: "raw" -%}
-                        <a href="/tags#{{ site.baseurl | append: '/tags/' | append: tag_slug | append: '/' }}">{{ tag }}</a>
+                        <a href="/tags#{{ tag_slug }}">{{ tag }}</a>
                         
                         {%- assign tag_index = page.tags | indexOf: tag -%}
                         {%- if counter != tags_last_element_index %}, {% endif -%}

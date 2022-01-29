@@ -2,7 +2,7 @@ baseurl:
 title: rbct
 author: Robert C. Raducioiu
 simple_search: http://google.com/search
-description: Blog about cybersecurity and other 
+description: Blog about cybersecurity
 name: rbct
 markdown: CommonMarkGhPages
 commonmark:
