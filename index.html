@@ -12,9 +12,9 @@ title: Posts
         {%- if post.tags.size != 0 -%}
             <div class="mono">
                 {%- if post.author -%}
-                    <a href="{{ post.author | prepend: '/author/' | prepend: site.baseurl }}" itemprop="name">{{ post.author }} </a>
+                    <a href="" itemprop="name">{{ post.author }} </a>
                 {%- else -%}
-                    <a href="{{ global_author | prepend: '/author/' | prepend: site.baseurl }}" itemprop="name">{{ site.data.options.global_author }} </a>
+                    <a href="" itemprop="name">{{ site.data.options.global_author }} </a>
                 {%- endif -%}
                 tagged
                 {% assign tags_last_element_index = post.tags.size | minus: 1 %}

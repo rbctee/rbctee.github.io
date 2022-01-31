@@ -19,4 +19,4 @@ sudo gem install jgd
 jgd -n
 ```
 
-P.S. You have to serve the content from the branch `gh-pages`.
+P.S. You have to serve the content from the branch `gh-pages`. Moreover, before using `jgd`, make sure you committed the files.
